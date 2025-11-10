@@ -4,17 +4,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0d1016">
   <title>Kim & Partner – Hochzeit in Thailand</title>
-  <meta name="description" content="Hochzeit von Kim & Partner in Thailand – RSVP, Infos, Galerie & Gästebuch" />
+  <meta name="description" content="Hochzeit von Kim & Partner in Thailand – RSVP, Infos, Galerie & Chat" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
   <style>
     :root{
-      --bg: #0d1016;
-      --glass: rgba(255,255,255,.08);
-      --glass2: rgba(255,255,255,.10);
-      --border: rgba(255,255,255,.14);
+      --bg: #0c1016;
+      --card: rgba(255,255,255,0.07);
       --fg: #eef2fa;
       --muted:#aab0c0;
       --brand:#ff8fb2;
@@ -23,168 +21,154 @@
       --ok:#39d353;
       --warn:#ffcc00;
       --error:#ff6b6b;
-      --shadow: 0 16px 48px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.06);
-      --radius: 18px;
-      --radius-lg: 22px;
-      --ring: 0 0 0 8px rgba(255,143,178,.08);
+      --shadow: 0 12px 34px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+      --radius: 16px;
     }
-    * { box-sizing:border-box; }
-    html,body {
-      margin:0; padding:0; color:var(--fg);
+    * { box-sizing: border-box; }
+    html,body { margin:0; padding:0; color:var(--fg);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       background:
-        radial-gradient(1400px 700px at 10% -10%, rgba(255,143,178,.08), transparent 60%),
-        radial-gradient(1200px 600px at 110% 0%, rgba(120,211,255,.08), transparent 60%),
-        linear-gradient(180deg, #0b0e14 0%, #0d1016 60%, #0a0c12 100%);
-      min-height:100%;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
+        radial-gradient(1600px 800px at 10% -10%, rgba(255,143,178,.08), transparent 60%),
+        radial-gradient(1400px 700px at 110% 0%, rgba(120,211,255,.08), transparent 60%),
+        linear-gradient(180deg, #0c1016 0%, #0f1117 60%, #0b0e14 100%) no-repeat;
+      min-height: 100vh;
     }
     a { color: var(--brand2); text-decoration: none; }
     img { max-width:100%; display:block; border-radius: 14px; }
-    .wrap { max-width: 1200px; margin:0 auto; padding: 0 20px; }
+
+    .thai {
+      background:
+        url('img/thai_border.svg') center top/280px repeat-x,
+        url('img/thai_border.svg') center bottom/280px repeat-x;
+      padding-top: 24px; padding-bottom: 24px;
+    }
+
+    #splash{
+      position:fixed; inset:0; z-index:1000;
+      background: #000 url('img/hero.jpg') center/cover no-repeat;
+      display:grid; place-items:center;
+      transition: opacity .9s ease;
+    }
+    #splash::after{
+      content:""; position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.55));
+    }
+    #splash .title{
+      position:relative; z-index:2; text-align:center;
+      padding:16px 24px; border-radius:999px;
+      background: rgba(255,255,255,.14); backdrop-filter: blur(8px);
+      box-shadow: var(--shadow);
+      font-weight:800; letter-spacing:.6px;
+    }
+    #splash.hide{ opacity:0; pointer-events:none; }
 
     header{
-      position:sticky; top:0; z-index:40;
-      background: rgba(13,16,22,.55);
-      backdrop-filter: blur(14px);
-      border-bottom:1px solid rgba(255,255,255,.08);
+      position:sticky; top:0; z-index:20;
+      background:rgba(15,17,21,.55); backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,.08);
     }
-    .nav{ display:flex; align-items:center; justify-content:space-between; gap:18px; padding:18px 0; }
-    .brand{ display:flex; align-items:center; gap:14px; }
-    .brand .dot{
-      width:14px; height:14px; border-radius:50%;
-      background: conic-gradient(from 60deg, var(--brand), var(--brand2), var(--accent));
-      box-shadow: 0 0 22px rgba(255,143,178,.85);
+    .wrap{ max-width:1100px; margin:0 auto; padding:20px; }
+    nav{ display:flex; align-items:center; gap:14px; justify-content:space-between; }
+    .brand{ display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.3px; }
+    .brand .dot{ width:12px; height:12px; border-radius:50%;
+      background: conic-gradient(from 45deg, var(--brand), var(--brand2), var(--accent));
+      box-shadow:0 0 22px rgba(255,143,178,.8);
     }
-    .brand .names{ font-family: "Playfair Display", serif; font-weight:700; letter-spacing:.2px; font-size: clamp(18px, 2vw, 22px); }
-    .navlinks a{
-      padding:10px 14px; border-radius:12px; color:var(--fg);
-    }
-    .navlinks a:hover{ background: rgba(255,255,255,.08); }
-    .cta{ display:inline-flex; align-items:center; gap:10px; padding:10px 16px; border-radius:12px; background:linear-gradient(135deg,var(--brand),var(--brand2)); color:#0c0f14; font-weight:800; box-shadow:0 8px 24px rgba(255,143,178,.28), 0 6px 16px rgba(120,211,255,.18); }
+    .navlinks a{ padding:8px 12px; border-radius:10px; }
+    .navlinks a:hover{ background:rgba(255,255,255,.07); }
 
-    .hero{
-      position:relative; overflow:hidden; isolation:isolate;
-      padding: clamp(48px, 8vw, 90px) 0 28px;
-      text-align:center;
-    }
-    .hero::before{
-      content:""; position:absolute; inset:-10% -5% auto -5%; height:68%;
-      background: url('img/hero.jpg') center/cover no-repeat;
-      filter: saturate(1.05) contrast(1.05) brightness(.85);
-      z-index:-1; opacity:.35; border-bottom-left-radius: 50% 14%; border-bottom-right-radius: 50% 14%;
-    }
-    .hero h1{ font-family:"Playfair Display", serif; font-weight:700; font-size: clamp(30px, 6.5vw, 60px); margin:0 0 10px; }
-    .hero p{ color:var(--muted); margin:0 auto; max-width: 780px; }
-    .hero .meta{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:16px; }
-    .pill{ display:inline-flex; align-items:center; gap:10px; padding:10px 14px; border-radius:999px;
-           background: var(--glass); border:1px solid var(--border); }
-    .divider{ height:28px; opacity:.7; background:url('img/thai_border.svg') center/280px repeat-x; }
-    .section{ padding: 32px 0 16px; }
-    .grid{ display:grid; gap:20px; grid-template-columns: repeat(12, 1fr); }
-    .col-12{ grid-column: span 12; }
-    .col-6{ grid-column: span 12; }
-    @media(min-width:920px){ .col-6{ grid-column: span 6; } }
+    .hero{ padding:64px 20px 18px; text-align:center; }
+    .hero h1{ font-size: clamp(28px, 6vw, 52px); margin:0 0 8px; }
+    .hero p{ color:var(--muted); margin:0; }
 
+    section{ padding:28px 20px 18px; }
     .card{
-      background: var(--glass);
-      border:1px solid var(--border);
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.10);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: 22px;
-      transition: transform .25s ease, box-shadow .25s ease;
+      padding: 20px;
     }
-    .card:hover{ transform: translateY(-2px); box-shadow: 0 18px 48px rgba(0,0,0,.45); }
+    .grid{ display:grid; gap:18px; grid-template-columns: repeat(12, 1fr); }
+    .col-12{ grid-column: span 12; }
+    .col-6{ grid-column: span 12; }
+    @media(min-width:860px){ .col-6{ grid-column: span 6; } }
 
     form label{ display:block; font-weight:700; margin:12px 0 6px; }
     input[type="text"], input[type="email"], textarea, select, input[type="number"]{
       width:100%; padding:12px 14px; border-radius:12px;
-      border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06); color:var(--fg);
-      outline:none; transition: box-shadow .2s ease, border-color .2s ease;
+      border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.07); color:var(--fg);
+      outline:none;
     }
-    input:focus, textarea:focus, select:focus{ border-color: rgba(255,255,255,.22); box-shadow: var(--ring); }
-    textarea{ min-height:100px; resize:vertical; }
+    textarea{ min-height:90px; resize:vertical; }
     .row{ display:flex; gap:12px; flex-wrap:wrap; }
-    .row > *{ flex:1; min-width:180px; }
+    .row > *{ flex:1; min-width:160px; }
     .radios{ display:flex; gap:12px; flex-wrap: wrap; }
-    .chip{ display:inline-flex; align-items:center; gap:10px; padding:10px 14px;
-           border-radius:999px; border:1px solid rgba(255,255,255,.14); cursor:pointer;
-           background:rgba(255,255,255,.07); }
+    .chip{
+      display:inline-flex; align-items:center; gap:10px; padding:10px 14px;
+      border-radius:999px; border:1px solid rgba(255,255,255,.12); cursor:pointer;
+      background:rgba(255,255,255,.06);
+    }
+    .chip input{ display:none; }
     .chip[data-checked="true"]{ outline:2px solid rgba(255,255,255,.2); background:rgba(255,255,255,.12); }
-    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px;
-          border:0; padding:12px 18px; border-radius:12px; cursor:pointer; font-weight:800;
-          color:#0c0f14; background:linear-gradient(135deg, var(--brand), var(--brand2));
-          box-shadow: 0 12px 28px rgba(255,143,178,.30), 0 8px 22px rgba(120,211,255,.22); }
-    .btn.ghost{ background: transparent; color:var(--fg); border:1px solid rgba(255,255,255,.20); }
     .hint{ color:var(--muted); font-size:14px; }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      border:0; padding:12px 16px; border-radius:12px; cursor:pointer; font-weight:800;
+      color:#0c0f14; background:linear-gradient(135deg, var(--brand), var(--brand2));
+      box-shadow: 0 10px 20px rgba(255,137,168,.25), 0 6px 18px rgba(138,198,255,.18);
+    }
+    .btn.ghost{ background: transparent; color:var(--fg); border:1px solid rgba(255,255,255,.18); }
     .success{ color: var(--ok); font-weight:700; }
     .error{ color: var(--error); font-weight:700; }
     .warn{ color: var(--warn); font-weight:700; }
 
+    .pill{
+      display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
+      background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12);
+    }
+
     .gallery{ display:grid; gap:10px; grid-template-columns: repeat(2, 1fr); }
-    @media(min-width:760px){ .gallery{ grid-template-columns: repeat(4, 1fr); } }
-    .gallery img{ border-radius:16px; aspect-ratio: 1/1; object-fit:cover; cursor:pointer; transition: transform .2s ease; }
-    .gallery img:hover{ transform: translateY(-2px) scale(1.01); }
-    .lightbox{ position:fixed; inset:0; background:rgba(0,0,0,.88); display:none; align-items:center; justify-content:center; z-index:50; }
+    @media(min-width:700px){ .gallery{ grid-template-columns: repeat(4, 1fr); } }
+    .gallery img{ border-radius:12px; aspect-ratio: 1/1; object-fit:cover; cursor:pointer; }
+
+    .lightbox{ position:fixed; inset:0; background:rgba(0,0,0,.85); display:none; align-items:center; justify-content:center; z-index:50; }
     .lightbox.show{ display:flex; }
-    .lightbox img{ max-width:92vw; max-height:84vh; border-radius:16px; box-shadow:0 12px 40px rgba(0,0,0,.5); }
-    .lightbox .close{ position:absolute; top:16px; right:20px; font-size:28px; cursor:pointer; color:#fff; }
-
-    .bubble{ background:var(--glass2); border:1px solid var(--border); border-radius:18px; padding:12px 14px; }
-    .bubble .name{ font-weight:700; }
-    .bubble .msg{ color:var(--fg); opacity:.95; margin-top:4px; }
-
-    #splash{ position:fixed; inset:0; z-index:1000;
-      background: #000 url('img/hero.jpg') center/cover no-repeat; display:grid; place-items:center; transition: opacity .9s ease; }
-    #splash::after{ content:""; position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.55)); }
-    #splash .title{ position:relative; z-index:2; text-align:center; padding:16px 24px; border-radius:999px;
-      background: rgba(255,255,255,.14); backdrop-filter: blur(8px); box-shadow: var(--shadow);
-      font-weight:800; letter-spacing:.6px; }
-    #splash.hide{ opacity:0; pointer-events:none; }
+    .lightbox img{ max-width:90vw; max-height:80vh; border-radius:14px; }
+    .lightbox .close{ position:absolute; top:14px; right:18px; font-size:28px; cursor:pointer; }
 
     footer{ padding:60px 20px; text-align:center; color:var(--muted); }
-    @media (prefers-reduced-motion: reduce){ *{ transition:none !important; animation:none !important; } }
   </style>
+
 </head>
 <body>
   <div id="splash" aria-hidden="true">
     <div class="title">Kim &amp; Partner • 20. Juni 2026 • Thailand 🇹🇭</div>
   </div>
 
-  <header>
-    <div class="wrap nav">
-      <div class="brand">
-        <span class="dot"></span>
-        <span class="names">Kim & Partner</span>
-      </div>
-      <div class="navlinks">
-        <a href="#rsvp">Check-in</a>
-        <a href="#infos">Infos</a>
-        <a href="#galerie">Galerie</a>
-        <a href="#chat">Gästebuch</a>
-        <a class="cta" href="admin.html">Admin</a>
-      </div>
+  <header class="thai">
+    <div class="wrap">
+      <nav>
+        <div class="brand"><span class="dot"></span> <span>Hochzeit</span></div>
+        <div class="navlinks">
+          <a href="#rsvp">Check-in</a>
+          <a href="#infos">Infos</a>
+          <a href="#galerie">Galerie</a>
+          <a href="#chat">Gästebuch</a>
+          <a href="admin.html">Admin</a>
+        </div>
+      </nav>
     </div>
   </header>
 
-  <section class="hero">
-    <div class="wrap">
-      <h1>Willkommen zu unserer Hochzeit in Thailand</h1>
-      <p>Palmen, Sonne, Meer – und ihr mittendrin. Hier könnt ihr eure Zusage geben, alle Infos finden, Bilder anschauen und liebe Grüße im Gästebuch hinterlassen.</p>
-      <div class="meta">
-        <span class="pill">📍 Koh Samui</span>
-        <span class="pill">💌 Dresscode: Festlich & sommerlich</span>
-        <span class="pill">🗓️ 20. Juni 2026</span>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
   <main>
-    <section id="rsvp" class="section">
+    <div class="wrap hero">
+      <h1>Willkommen zu unserer Hochzeit in Thailand 🌺🏝️</h1>
+      <p>Wir freuen uns riesig, dass ihr dabei seid. Bitte nutzt den Check-in und stöbert durch Infos, Galerie & Gästebuch.</p>
+      <div class="pill" style="margin-top:10px;">💌 Dresscode: Festlich & sommerlich • 📍 Koh Samui</div>
+    </div>
+
+    <section id="rsvp">
       <div class="wrap grid">
         <div class="col-6">
           <div class="card">
@@ -248,41 +232,39 @@
         <div class="col-6">
           <div class="card">
             <h2 style="margin-top:0">Ablauf &amp; Ort</h2>
-            <ul class="clean" style="list-style:none; padding:0; margin:0; display:grid; gap:10px;">
-              <li><span class="pill">🗓️</span> <strong>Datum:</strong> 20. Juni 2026</li>
-              <li><span class="pill">💍</span> <strong>Trauung:</strong> 14:00 Uhr, Strandzeremonie Koh Samui</li>
-              <li><span class="pill">🎉</span> <strong>Feier:</strong> ab 16:00 Uhr, Beach Resort</li>
-              <li><span class="pill">👗</span> <strong>Dresscode:</strong> Festlich, sommerlich</li>
-              <li><span class="pill">🚗</span> <strong>Anfahrt:</strong> Shuttle vom Hotel • Taxis verfügbar</li>
-              <li><span class="pill">🛌</span> <strong>Übernachtung:</strong> Resort-Kontingent (Stichwort „Hochzeit Kim“)</li>
+            <ul class="clean">
+              <li><strong>Datum:</strong> 20. Juni 2026</li>
+              <li><strong>Trauung:</strong> 14:00 Uhr, Strandzeremonie Koh Samui</li>
+              <li><strong>Feier:</strong> ab 16:00 Uhr, Beach Resort</li>
+              <li><strong>Dresscode:</strong> Festlich, sommerlich</li>
+              <li><strong>Anfahrt:</strong> Shuttle vom Hotel • Taxis verfügbar</li>
+              <li><strong>Übernachtung:</strong> Resort-Kontingent (Stichwort „Hochzeit Kim“)</li>
             </ul>
-            <p class="hint" style="margin-top:10px">QR-Code führt direkt auf diese Seite – einfach scannen.</p>
+            <p class="hint" style="margin-top:10px">
+              QR-Code: Er führt direkt auf diese Seite – einfach scannen.
+            </p>
           </div>
         </div>
       </div>
     </section>
 
-    <div class="divider"></div>
-
-    <section id="infos" class="section">
+    <section id="infos" class="thai">
       <div class="wrap grid">
         <div class="col-12">
           <div class="card">
             <h2 style="margin-top:0">Weitere Informationen</h2>
             <p>Thailand-Flair, Palmen & Sonnenuntergang – wir freuen uns auf einen unvergesslichen Tag mit euch! 🇹🇭🌅</p>
-            <ul class="clean" style="list-style:none; padding:0; margin:0; display:grid; gap:10px;">
+            <ul class="clean">
               <li><strong>Geschenke:</strong> Eure Anwesenheit ist unser Geschenk. Wer mag: <em>Reisekasse</em> 💞</li>
               <li><strong>Kinder:</strong> Sehr gern! Kinderbetreuung am Strand.</li>
-              <li><strong>Fotos:</strong> Nach der Feier füllen wir die Galerie. Hashtag <span class="pill">#KimUndPartnerInThailand</span></li>
+              <li><strong>Fotos:</strong> Nach der Feier füllen wir die Galerie. Hashtag <span class="mono">#KimUndPartnerInThailand</span></li>
             </ul>
           </div>
         </div>
       </div>
     </section>
 
-    <div class="divider"></div>
-
-    <section id="galerie" class="section">
+    <section id="galerie">
       <div class="wrap grid">
         <div class="col-12">
           <div class="card">
@@ -300,9 +282,7 @@
       <div class="lightbox" id="lightbox"><span class="close" id="lbClose">✕</span><img id="lbImg" alt=""></div>
     </section>
 
-    <div class="divider"></div>
-
-    <section id="chat" class="section">
+    <section id="chat" class="thai">
       <div class="wrap grid">
         <div class="col-12">
           <div class="card">
@@ -327,10 +307,11 @@
 
   <script>
     const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec";
+    const ADMIN_TOKEN = "";
 
     const splash = document.getElementById('splash');
     const hideSplash = () => splash.classList.add('hide');
-    window.addEventListener('load', () => setTimeout(hideSplash, 1100));
+    window.addEventListener('load', () => setTimeout(hideSplash, 1200));
     splash.addEventListener('click', hideSplash);
 
     document.querySelectorAll('[data-chip]').forEach(label => {
@@ -351,12 +332,19 @@
 
     const form = document.getElementById('rsvpForm');
     const statusEl = document.getElementById('status');
+    const resetBtn = document.getElementById('resetBtn');
     const submitBtn = document.getElementById('submitBtn');
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       statusEl.textContent = "";
       statusEl.className = "";
+
+      if (!SHEET_ENDPOINT || !SHEET_ENDPOINT.startsWith('https')) {
+        statusEl.textContent = "Konfiguration fehlt: SHEET_ENDPOINT ist nicht gesetzt.";
+        statusEl.className = "error";
+        return;
+      }
 
       const fd = new FormData(form);
       const name = (document.getElementById('name').value || "").trim();
@@ -386,7 +374,7 @@
         ua: navigator.userAgent
       });
 
-      try{
+      try {
         submitBtn && (submitBtn.disabled = true);
         statusEl.textContent = "Sende …";
         const res = await fetch(SHEET_ENDPOINT, {
@@ -407,7 +395,7 @@
         }
       } catch (err) {
         console.error(err);
-        statusEl.textContent = "Speichern fehlgeschlagen – bitte kurz später erneut probieren.";
+        statusEl.textContent = "Speichern fehlgeschlagen. Bitte Apps Script aktualisieren (siehe README: type=rsvp Unterstützung).";
         statusEl.className = "error";
       } finally {
         submitBtn && (submitBtn.disabled = false);
@@ -436,7 +424,7 @@
         chatStatus.textContent = "Gesendet 💬";
         loadChat();
       } catch(e) {
-        chatStatus.textContent = "Chat speichern fehlgeschlagen.";
+        chatStatus.textContent = "Chat speichern fehlgeschlagen. Bitte Apps Script auf type=chat erweitern (siehe README).";
       }
     });
 
@@ -449,14 +437,14 @@
         const res = await fetch(url, { method: "GET" });
         const j = await res.json();
         if (!j.ok) throw new Error(j.error || "Fehler");
-        (j.rows || []).slice(-50).forEach(r => {
+        (j.rows || []).slice(-40).forEach(r => {
           const div = document.createElement('div');
-          div.className = "bubble";
-          div.innerHTML = `<div class="name>${{r.name || 'Gast'}}</div><div class="msg">${{r.message || ''}}</div>`;
+          div.className = "card";
+          div.innerHTML = `<strong>${r.name || 'Gast'}</strong><div class="hint" style="margin-top:4px;">${r.message || ''}</div>`;
           chatList.appendChild(div);
         });
       } catch(e) {
-        chatStatus.textContent = "Chat laden nicht möglich.";
+        chatStatus.textContent = "Chat laden nicht möglich (Apps Script GET nicht aktiv).";
       }
     }
     loadChat();
