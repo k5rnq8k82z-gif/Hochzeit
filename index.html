@@ -1,209 +1,97 @@
-<!doctype html>
-<html lang="de">
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<title>Maria & Kim – Hochzeit in Thailand</title>
-<meta name="description" content="Hochzeit von Maria & Kim in Thailand – RSVP, Infos, Galerie & Gästebuch"/>
-<link rel="icon" href="img/hero.jpg" type="image/jpeg"/>
-<link rel="apple-touch-icon" href="img/hero.jpg"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+/* Code.gs – RSVP + Chat kompatibel zu deinem Frontend */
 
-<style>
-:root{
-  --bg-0:#080a0f; --bg-1:#0c0f16; --bg-2:#0f1420;
-  --fg:#e9eef6; --muted:#a5b0c4;
-  --neon1:#7ad9ff; --neon2:#ff86c8; --gold:#f0cc7a;
-  --card:rgba(255,255,255,.06); --edge:rgba(255,255,255,.12);
-  --blur:10px; --radius:16px; --shadow:0 18px 40px rgba(0,0,0,.45);
-  --ok:#39d353; --error:#ff6b6b;
+const SHEET_RSVP = 'rsvp';
+const SHEET_CHAT = 'chat';
+
+// Sorgt dafür, dass die Header exakt so vorliegen (und erstellt das Sheet bei Bedarf)
+function ensureRsvpSheet_() {
+  const ss = SpreadsheetApp.getActive();
+  let sh = ss.getSheetByName(SHEET_RSVP);
+  if (!sh) sh = ss.insertSheet(SHEET_RSVP);
+  const header = ['timestamp','name','attending','guests','email','message',
+                  'c1name','c1age','c2name','c2age','c3name','c3age','c4name','c4age','ua'];
+  const range = sh.getRange(1,1,1,header.length);
+  const current = range.getValues()[0];
+  // wenn abweichend, Header setzen
+  if (header.join('|') !== current.join('|')) {
+    range.setValues([header]);
+  }
+  return sh;
 }
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;color:var(--fg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-  background:radial-gradient(1200px 600px at 10% -10%,rgba(122,217,255,.09),transparent 60%),
-  radial-gradient(1000px 580px at 110% 0%,rgba(255,134,200,.08),transparent 60%),
-  linear-gradient(180deg,var(--bg-0)0%,var(--bg-1)60%,var(--bg-2)100%);min-height:100vh;}
-a{color:var(--neon1);text-decoration:none}
-img{max-width:100%;display:block;border-radius:14px}
-
-/* Header & Layout */
-header{position:sticky;top:0;z-index:20;background:rgba(8,11,18,.6);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08)}
-.wrap{max-width:1100px;margin:0 auto;padding:20px}
-nav{display:flex;align-items:center;justify-content:space-between;gap:14px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700}
-.navlinks a{padding:8px 12px;border-radius:10px;color:#cfd7e6;font-weight:600}
-.navlinks a:hover{background:rgba(255,255,255,.08)}
-
-/* Hero */
-.hero{border-bottom:1px solid rgba(255,255,255,.08)}
-.hero-inner{display:grid;grid-template-columns:1.05fr .95fr;gap:28px;align-items:center;width:min(1100px,92vw);margin:0 auto;padding:20px;min-height:clamp(380px,50vh,560px)}
-@media(max-width:860px){.hero-inner{grid-template-columns:1fr;gap:16px}}
-.photo{position:relative;overflow:hidden;border-radius:18px;box-shadow:var(--shadow);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid var(--edge)}
-.photo img{width:100%;height:100%;aspect-ratio:16/10;object-fit:cover;object-position:50% 35%}
-.panel{position:relative;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:22px;box-shadow:var(--shadow);backdrop-filter:blur(var(--blur))}
-.panel::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(90deg,var(--neon1),var(--neon2));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
-h1{margin:0 0 6px;color:#e8f3ff;font-family:"Playfair Display",ui-serif,Georgia,serif;font-weight:600;font-size:clamp(28px,5.2vw,44px)}
-.muted{color:var(--muted)}
-.pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);color:#dbe6ff;font-weight:700}
-
-/* Cards & Sections */
-section{padding:28px 20px 18px}
-.card{background:var(--card);backdrop-filter:blur(var(--blur));border:1px solid var(--edge);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
-.grid{display:grid;gap:18px;grid-template-columns:repeat(12,1fr)}
-.col-12{grid-column:span 12}.col-6{grid-column:span 12}@media(min-width:860px){.col-6{grid-column:span 6}}
-form label{display:block;font-weight:700;margin:12px 0 6px;color:#e8f3ff}
-input,textarea,select{width:100%;padding:12px 14px;border-radius:12px;color:var(--fg);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);outline:none}
-textarea{min-height:100px;resize:vertical}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;padding:12px 16px;border-radius:14px;border:1px solid rgba(122,217,255,.55);font-weight:800;color:#081019;background:linear-gradient(135deg,#7ad9ff,#ff86c8);box-shadow:0 10px 24px rgba(122,217,255,.25)}
-.btn:hover{transform:translateY(-1px)}
-.success{color:var(--ok);font-weight:700}.error{color:var(--error);font-weight:700}
-.gallery{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
-.gallery img{border-radius:14px;aspect-ratio:1/1;object-fit:cover;cursor:pointer;border:1px solid rgba(255,255,255,.14);box-shadow:0 8px 20px rgba(0,0,0,.35)}
-.lightbox{position:fixed;inset:0;background:rgba(5,7,12,.92);display:none;align-items:center;justify-content:center;z-index:50;backdrop-filter:blur(4px)}
-.lightbox.show{display:flex}
-.lightbox img{max-width:90vw;max-height:80vh;border-radius:16px;background:#0b1018}
-footer{padding:60px 20px;text-align:center;color:var(--muted);font-size:14px}
-</style>
-</head>
-<body>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-inner">
-    <div class="photo"><img src="img/hero.jpg" alt="Maria & Kim – Save the Date"></div>
-    <div class="panel">
-      <h1>Maria &amp; Kim</h1>
-      <p class="muted" id="hero_subtitle">Save the Date • 01. Juni 2026 • Koh Samui, Thailand</p>
-      <div class="pill" id="hero_dress">💌 Dresscode: Festlich &amp; sommerlich</div>
-    </div>
-  </div>
-</section>
-
-<header>
-  <div class="wrap">
-    <nav>
-      <div class="brand">
-        <svg viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7ad9ff"/><stop offset="1" stop-color="#ff86c8"/></linearGradient></defs>
-        <circle cx="32" cy="32" r="30" fill="url(#g)" opacity=".18"/><circle cx="32" cy="32" r="29" fill="none" stroke="url(#g)" stroke-width="1.5"/>
-        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Playfair Display,serif" font-size="20" fill="#f0cc7a">M♡K</text></svg>
-        <span>Maria &amp; Kim</span>
-      </div>
-      <div class="navlinks">
-        <a href="#rsvp">Check-in</a><a href="#infos">Infos</a><a href="#galerie">Galerie</a><a href="#chat">Gästebuch</a><a href="admin.html">Admin</a>
-      </div>
-    </nav>
-  </div>
-</header>
-
-<main>
-  <!-- (RSVP etc. bleibt wie bei dir oben – unverändert) -->
-  <!-- Nur Galerie & Infos werden dynamisch ersetzt -->
-
-  <section id="infos">
-    <div class="wrap grid">
-      <div class="col-12">
-        <div class="card">
-          <h2>Weitere Informationen</h2>
-          <p id="info_intro">Meer, Palmen & Neon-Sunset – wir freuen uns auf einen unvergesslichen Tag mit euch! 🌴🌅</p>
-          <ul class="clean">
-            <li><strong>Geschenke:</strong> <span id="info_gifts">Eure Anwesenheit ist unser Geschenk. Wer mag: <em>Reisekasse</em> 💞</span></li>
-            <li><strong>Kinder:</strong> <span id="info_kids">Sehr gern! Kinderbetreuung am Strand.</span></li>
-            <li><strong>Fotos:</strong> Nach der Feier füllen wir die Galerie. Hashtag <span class="mono" id="info_hashtag">#MariaUndKimInThailand</span></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="galerie">
-    <div class="wrap grid">
-      <div class="col-12">
-        <div class="card">
-          <h2>Galerie</h2>
-          <div class="gallery" id="gallery"></div>
-          <p class="hint">Tipp: Bild antippen – Lightbox öffnet sich.</p>
-        </div>
-      </div>
-    </div>
-    <div class="lightbox" id="lightbox"><span class="close" id="lbClose">✕</span><img id="lbImg" alt=""></div>
-  </section>
-
-  <!-- Chat bleibt identisch -->
-  <section id="chat">
-    <div class="wrap grid"><div class="col-12"><div class="card">
-      <h2>Gästebuch / Chat 💬</h2>
-      <p class="hint">Hinterlasst uns gern eine liebe Nachricht!</p>
-      <div class="row"><input id="chatName" type="text" placeholder="Dein Name"><input id="chatText" type="text" placeholder="Deine Nachricht …"/><button class="btn" id="chatSend">Senden</button></div>
-      <p id="chatStatus" class="hint"></p><div id="chatList" style="margin-top:14px;display:grid;gap:10px"></div>
-    </div></div></div>
-  </section>
-</main>
-
-<footer>Mit Liebe gemacht. © Maria &amp; Kim</footer>
-
-<script>
-const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec";
-
-/* --- Dynamische Texte aus texts-Tab --- */
-async function loadTexts(){
-  try{
-    const url=new URL(SHEET_ENDPOINT);url.searchParams.set("type","texts");url.searchParams.set("list","1");url.searchParams.set("token","030520");
-    const res=await fetch(url);const j=await res.json();if(!j.ok)return;
-    const t=j.items||{};
-    if(t.hero_subtitle) document.getElementById("hero_subtitle").textContent=t.hero_subtitle;
-    if(t.info_dresscode) document.getElementById("hero_dress").innerHTML="💌 Dresscode: "+t.info_dresscode;
-    if(t.info_gifts) document.getElementById("info_gifts").innerHTML=t.info_gifts;
-    if(t.info_kids) document.getElementById("info_kids").textContent=t.info_kids;
-    if(t.info_hashtag) document.getElementById("info_hashtag").textContent=t.info_hashtag;
-  }catch(e){console.warn("texts fehlgeschlagen",e);}
+function ensureChatSheet_() {
+  const ss = SpreadsheetApp.getActive();
+  let sh = ss.getSheetByName(SHEET_CHAT);
+  if (!sh) sh = ss.insertSheet(SHEET_CHAT);
+  const header = ['timestamp','name','message','ua'];
+  const range = sh.getRange(1,1,1,header.length);
+  const current = range.getValues()[0];
+  if (header.join('|') !== current.join('|')) {
+    range.setValues([header]);
+  }
+  return sh;
 }
 
-/* --- Galerie dynamisch laden --- */
-async function loadGallery(){
-  try{
-    const url=new URL(SHEET_ENDPOINT);url.searchParams.set("type","gallery");url.searchParams.set("list","1");
-    const res=await fetch(url);const j=await res.json();if(!j.ok)return;
-    const g=document.getElementById("gallery");g.innerHTML="";
-    (j.rows||[]).forEach(r=>{
-      const img=document.createElement("img");img.src=r.url;img.alt=r.filename||"Foto";
-      g.appendChild(img);
-    });
-  }catch(e){console.warn("gallery fehlgeschlagen",e);}
+function doPost(e) {
+  try {
+    const params = e.parameter || {};
+    const type = (params.type || '').toLowerCase();
+
+    if (type === 'rsvp') {
+      const sh = ensureRsvpSheet_();
+      const row = [
+        new Date(),
+        params.name || '',
+        params.attending || '',
+        params.guests || '',
+        params.email || '',
+        params.message || '',
+        params.c1name || '', params.c1age || '',
+        params.c2name || '', params.c2age || '',
+        params.c3name || '', params.c3age || '',
+        params.c4name || '', params.c4age || '',
+        params.ua || ''
+      ];
+      sh.appendRow(row);
+      return json_({ ok:true });
+    }
+
+    if (type === 'chat') {
+      const sh = ensureChatSheet_();
+      const row = [ new Date(), params.name || 'Gast', params.message || '', params.ua || '' ];
+      sh.appendRow(row);
+      return json_({ ok:true });
+    }
+
+    return json_({ ok:false, error:'Unknown type' }, 400);
+  } catch (err) {
+    return json_({ ok:false, error:String(err) }, 500);
+  }
 }
 
-/* --- Lightbox --- */
-const lb=document.getElementById("lightbox"),lbImg=document.getElementById("lbImg");
-document.getElementById("gallery").addEventListener("click",e=>{if(e.target.tagName==="IMG"){lbImg.src=e.target.src;lb.classList.add("show");}});
-document.getElementById("lbClose").addEventListener("click",()=>lb.classList.remove("show"));
-lb.addEventListener("click",e=>{if(e.target===lb)lb.classList.remove("show");});
+function doGet(e) {
+  try {
+    const params = e.parameter || {};
+    const type = (params.type || '').toLowerCase();
 
-/* --- Chat --- */
-const chatName=document.getElementById("chatName"),chatText=document.getElementById("chatText"),chatSend=document.getElementById("chatSend"),chatList=document.getElementById("chatList"),chatStatus=document.getElementById("chatStatus");
-chatSend.addEventListener("click",async()=>{
-  const n=(chatName.value||"").trim(),t=(chatText.value||"").trim();
-  if(!n||!t){chatStatus.textContent="Bitte Name & Nachricht.";return;}
-  try{
-    const r=await fetch(SHEET_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams({type:"chat",name:n,message:t,ua:navigator.userAgent})});
-    const j=await r.json();if(!j.ok)throw 0;
-    chatText.value="";chatStatus.textContent="Gesendet 💬";loadChat();
-  }catch{chatStatus.textContent="Fehler beim Senden.";}
-});
-async function loadChat(){
-  chatList.innerHTML="";
-  try{
-    const u=new URL(SHEET_ENDPOINT);u.searchParams.set("type","chat");u.searchParams.set("list","1");
-    const r=await fetch(u);const j=await r.json();if(!j.ok)throw 0;
-    (j.rows||[]).slice(-40).forEach(row=>{
-      const c=document.createElement("div");c.className="card";c.innerHTML=`<strong>${row.name||"Gast"}</strong><div class="hint">${row.message||""}</div>`;
-      chatList.appendChild(c);
-    });
-  }catch{chatStatus.textContent="Chat laden nicht möglich.";}
+    if (type === 'chat' && params.list) {
+      const sh = ensureChatSheet_();
+      const last = Math.max(2, sh.getLastRow());
+      const data = sh.getRange(2,1,last-1,4).getValues(); // timestamp, name, message, ua
+      const rows = data
+        .filter(r => r[1] || r[2])
+        .map(r => ({ timestamp: r[0], name: r[1], message: r[2] }));
+      return json_({ ok:true, rows });
+    }
+
+    return json_({ ok:false, error:'Unsupported GET' }, 400);
+  } catch (err) {
+    return json_({ ok:false, error:String(err) }, 500);
+  }
 }
 
-/* Init */
-loadTexts();
-loadGallery();
-loadChat();
-</script>
-</body>
-</html>
+function json_(obj, code) {
+  const out = ContentService.createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+  if (code) { out.setResponseCode(code); }
+  return out;
+}
