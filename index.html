@@ -392,7 +392,7 @@
           <div class="card">
             <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif;">Galerie</h2>
             <div class="gallery" id="gallery">
-              <!-- Fallback-Platzhalter (werden dynamisch ersetzt, falls Backend liefert) -->
+              <!-- Fallback-Platzhalter (werden dynamisch ersetzt, falls lokale Bilder gefunden werden) -->
               <img src="img/pic1.jpg" alt="Strand">
               <img src="img/pic2.jpg" alt="Palmen">
               <img src="img/pic3.jpg" alt="Thailand">
@@ -572,105 +572,108 @@
     }
     loadChat();
 
-    /* ===== Galerie: dynamisch 4 Bilder rotieren ===== */
-    (function setupDynamicGallery(){
-      const SHOW_COUNT = 4;          // immer 4 anzeigen
-      const ROTATE_MS = 5000;        // alle 5s wechseln
+    /* ===== Galerie: dynamisch 4 Bilder aus /img/ rotieren (ohne Backend) ===== */
+    (function setupLocalFolderGallery(){
+      const SHOW_COUNT = 4;       // immer 4 anzeigen
+      const ROTATE_MS  = 5000;    // alle 5s wechseln
+      const PREFIX     = 'gal-';  // Dateipräfix in /img/
+      const PAD        = 3;       // 001, 002, ...
+      const START      = 1;       // Startnummer
+      const MAX        = 200;     // Obergrenze
+      const EXTENSIONS = ['jpg','jpeg','png','webp'];
+      const STOP_AFTER_CONSECUTIVE_MISSES = 20;
+
       const galleryEl = document.getElementById('gallery');
       if (!galleryEl || !window.fetch) return;
 
-      let imgs = [];                 // Array von URLs
-      let cursor = 0;                // Startindex für "Seiten"
-      let timer = null;              // Interval-Handle
+      let urls = [];
+      let cursor = 0;
+      let timer  = null;
 
-      // Preloader (optional)
-      const preload = (urls) => urls.forEach(u => { const i = new Image(); i.src = u; });
+      const pad = (n,len)=> String(n).padStart(len,'0');
 
-      // Hilfsfunktion: 4 URLs ab Index holen (wrap-around)
-      function slice4(list, start){
-        const out = [];
-        for(let i=0;i<SHOW_COUNT;i++){
-          out.push(list[(start+i) % list.length]);
-        }
-        return out;
+      async function exists(url){
+        try{
+          const res = await fetch(url, { method:'GET', cache:'no-store' });
+          return res.ok;
+        }catch(_){ return false; }
       }
 
-      // sanfter Austausch
-      function renderFour(urls){
-        // Wenn noch keine 4 Bilder im DOM: frisch aufbauen/ersetzen
-        const currentImgs = galleryEl.querySelectorAll('img');
-        if (currentImgs.length !== SHOW_COUNT) {
-          galleryEl.innerHTML = '';
-          urls.forEach(u => {
-            const img = document.createElement('img');
-            img.loading = 'lazy';
-            img.decoding = 'async';
-            img.src = u;
-            img.alt = 'Galerie';
+      async function scanImages(){
+        const found = [];
+        let missesInRow = 0;
+        for (let i = START; i <= MAX; i++){
+          let hit = null;
+          for (const ext of EXTENSIONS){
+            const u = `img/${PREFIX}${pad(i,PAD)}.${ext}`;
+            // eslint-disable-next-line no-await-in-loop
+            if (await exists(u)) { hit = u; break; }
+          }
+          if (hit){
+            found.push(hit);
+            missesInRow = 0;
+          } else {
+            missesInRow++;
+            if (missesInRow >= STOP_AFTER_CONSECUTIVE_MISSES && found.length) break;
+          }
+        }
+        return found;
+      }
+
+      const preload = (arr)=> arr.forEach(u=>{ const im=new Image(); im.src=u; });
+
+      function sliceN(list,start,n){
+        const out=[]; for(let i=0;i<n;i++) out.push(list[(start+i)%list.length]); return out;
+      }
+
+      function renderFour(arr){
+        const current = galleryEl.querySelectorAll('img');
+        if (current.length !== SHOW_COUNT){
+          galleryEl.innerHTML='';
+          arr.forEach(u=>{
+            const img=document.createElement('img');
+            img.loading='lazy'; img.decoding='async'; img.src=u; img.alt='Galerie';
             galleryEl.appendChild(img);
           });
           return;
         }
-        // Schon 4 vorhanden: Fade-Out + Austausch + Fade-In
-        const nodes = Array.from(currentImgs);
-        nodes.forEach(n => n.setAttribute('data-fade','out'));
+        const nodes = Array.from(current);
+        nodes.forEach(n=>n.setAttribute('data-fade','out'));
         setTimeout(()=>{
           nodes.forEach((n,i)=>{
             n.removeAttribute('data-fade');
-            n.src = urls[i];
+            n.src = arr[i];
           });
-        }, 220);
+        },220);
       }
 
-      async function loadFromSheet(){
-        try{
-          const u = new URL(SHEET_ENDPOINT);
-          u.searchParams.set('type','gallery');
-          u.searchParams.set('list','1');
-          const res = await fetch(u.toString());
-          const j = await res.json();
-          if(!j.ok || !Array.isArray(j.items) || j.items.length === 0) return false;
+      function startRotation(){
+        if (urls.length < SHOW_COUNT){
+          while (urls.length && urls.length < SHOW_COUNT) urls = urls.concat(urls);
+        }
+        if (!urls.length) return; // Fallback (pic1–pic4) bleiben
 
-          // URLs einsammeln (unterstützt url/link/src, je nach Backend)
-          imgs = j.items
-            .map(it => it && (it.url || it.link || it.src))
-            .filter(Boolean);
+        cursor = 0;
+        renderFour(sliceN(urls, cursor, SHOW_COUNT));
+        preload(sliceN(urls, (cursor+SHOW_COUNT)%urls.length, SHOW_COUNT));
 
-          // Wenn weniger als 4 vorhanden, duplizieren, damit der Rotator nicht hängt
-          while (imgs.length > 0 && imgs.length < SHOW_COUNT) {
-            imgs = imgs.concat(imgs);
-          }
-
-          // Initiales Rendering + Preload der nächsten 4
-          if (imgs.length >= SHOW_COUNT){
-            cursor = 0;
-            renderFour(slice4(imgs, cursor));
-            preload(slice4(imgs, (cursor + SHOW_COUNT) % imgs.length));
-
-            // vorhandenen Timer stoppen (Hot-Reload)
-            if (timer) clearInterval(timer);
-            if (imgs.length > SHOW_COUNT) {
-              timer = setInterval(()=>{
-                // Variante A: seitenweise weiter (4er-Blöcke)
-                cursor = (cursor + SHOW_COUNT) % imgs.length;
-
-                // Variante B (lebendiger): nur 1 weiter
-                // cursor = (cursor + 1) % imgs.length;
-
-                renderFour(slice4(imgs, cursor));
-                preload(slice4(imgs, (cursor + SHOW_COUNT) % imgs.length));
-              }, ROTATE_MS);
-            }
-          }
-          return true;
-        }catch(e){
-          // bei Fehler: Fallback (statische 4) stehen lassen
-          return false;
+        if (timer) clearInterval(timer);
+        if (urls.length > SHOW_COUNT){
+          timer = setInterval(()=>{
+            cursor = (cursor + 1) % urls.length; // fließender Wechsel
+            renderFour(sliceN(urls, cursor, SHOW_COUNT));
+            preload(sliceN(urls, (cursor+SHOW_COUNT)%urls.length, SHOW_COUNT));
+          }, ROTATE_MS);
         }
       }
 
-      // ausführen
-      loadFromSheet();
+      (async function init(){
+        try{
+          urls = await scanImages();
+        }catch(_){ urls = []; }
+        if (urls.length) startRotation();
+        // Wenn keine gal-XXX.* gefunden wurden, bleibt alles wie vorher.
+      })();
     })();
   </script>
 </body>
