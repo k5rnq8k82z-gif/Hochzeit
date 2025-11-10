@@ -10,233 +10,212 @@
 
   <style>
     :root{
-      /* Helle, romantische Palette */
-      --bg: #fffdf9;
-      --paper: #ffffff;
-      --ink: #2a2a2a;
-      --muted:#6f7783;
-      --brand:#e99ab1;      /* Rosé */
-      --brand2:#95d6ea;     /* Pastellblau */
-      --accent:#d9b45f;     /* Warmes Gold */
-      --ok:#2ea85f;
-      --warn:#d79b00;
-      --error:#e86a6a;
-      --card: rgba(255,255,255,0.85);
-      --shadow: 0 12px 36px rgba(36, 42, 58, .10);
+      /* Palette aus deinem Hero (Sand, Blush, Gold, Meer) */
+      --sand-50:#fffdf8;
+      --sand-100:#fbf3e7;
+      --sand-200:#f4e6d3;
+      --blush-50:#f7eee9;
+      --blush-100:#f4e6e0;
+      --gold:#b48a4a;             /* typografisches Gold */
+      --gold-soft:#d8c19a;        /* zarter Goldschimmer */
+      --sea:#78cfd2;              /* Meer / Türkis */
+      --palm:#6b8b5a;             /* Palmgrün (nur Akzent) */
+      --ink:#3e2f26;              /* edles Dunkelbraun statt Schwarz */
+      --muted:#7b7169;
+
+      --bg: var(--sand-50);
+      --paper:#ffffff;
+      --card: rgba(255,255,255,.9);
+      --shadow: 0 14px 36px rgba(76,60,46,.10);
       --radius: 16px;
+
+      --ok:#2ea85f; --warn:#d79b00; --error:#e86a6a;
     }
 
-    * { box-sizing: border-box; }
+    *{box-sizing:border-box}
     html,body{
       margin:0; padding:0; color:var(--ink);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       background:
-        radial-gradient(1200px 600px at 0% -10%, rgba(233,154,177,.18), transparent 60%),
-        radial-gradient(1000px 520px at 110% 10%, rgba(149,214,234,.16), transparent 60%),
-        radial-gradient(900px 480px at 50% 120%, rgba(217,180,95,.10), transparent 60%),
-        linear-gradient(180deg, #fffdf9 0%, #fffaf4 100%);
+        radial-gradient(1200px 600px at 0% -10%, rgba(244,230,211,.35), transparent 60%),
+        radial-gradient(900px 520px at 110% 10%, rgba(247,238,233,.45), transparent 60%),
+        linear-gradient(180deg, var(--bg) 0%, #fffaf2 100%);
       min-height:100vh;
     }
-    a { color: var(--brand); text-decoration: none; }
-    img { max-width:100%; display:block; border-radius: 14px; }
+    a{ color: var(--gold); text-decoration: none;}
+    img{ max-width:100%; display:block; border-radius:14px;}
 
-    /* Zarte Zierlinie (Thai-Flair, aber hell) */
-    .thai {
-      background:
-        url('img/thai_border_light.svg') center top/280px repeat-x,
-        url('img/thai_border_light.svg') center bottom/280px repeat-x;
-      padding-top: 22px; padding-bottom: 22px;
-    }
-
-    /* Splash – hell & luftig */
-    #splash{
-      position:fixed; inset:0; z-index:1000;
-      background: #fff url('img/hero.jpg') center/cover no-repeat;
-      display:grid; place-items:center;
-      transition: opacity .9s ease;
-    }
-    #splash::after{
-      content:""; position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,.85));
-    }
-    #splash .title{
-      position:relative; z-index:2; text-align:center;
-      padding:14px 22px; border-radius:999px;
-      background: rgba(255,255,255,.7); backdrop-filter: blur(8px);
-      box-shadow: var(--shadow);
-      font-weight:800; letter-spacing:.4px; color:#5b3e43;
-      border: 1px solid rgba(233,154,177,.35);
-    }
-    #splash.hide{ opacity:0; pointer-events:none; }
-
-    /* Header – hell, elegant, sticky */
+    /* Header – hell & luftig */
     header{
       position:sticky; top:0; z-index:20;
-      background:rgba(255,255,255,.7); backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(36,42,58,.08);
+      background:rgba(255,255,255,.8); backdrop-filter: blur(12px);
+      border-bottom:1px solid rgba(60,45,32,.10);
     }
-    .wrap{ max-width:1100px; margin:0 auto; padding:20px; }
-    nav{ display:flex; align-items:center; gap:14px; justify-content:space-between; }
+    .wrap{ max-width:1100px; margin:0 auto; padding:20px;}
+    nav{ display:flex; align-items:center; justify-content:space-between; gap:14px;}
     .brand{
-      display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.3px; color:#5b3e43;
-      font-family: "Playfair Display", ui-serif, Georgia, serif;
+      display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.3px;
+      color:var(--ink); font-family:"Playfair Display", ui-serif, Georgia, serif;
     }
     .brand .dot{
-      width:12px; height:12px; border-radius:50%;
-      background: conic-gradient(from 45deg, var(--brand), var(--brand2), var(--accent));
-      box-shadow: 0 0 16px rgba(233,154,177,.8);
-      border: 1px solid rgba(233,154,177,.45);
+      width:12px; height:12px; border-radius:999px;
+      background: conic-gradient(from 45deg, var(--gold), var(--sea), var(--gold-soft));
+      box-shadow:0 0 16px rgba(212,179,116,.65);
+      border:1px solid rgba(212,179,116,.55);
     }
-    .navlinks a{
-      padding:8px 12px; border-radius:10px; color:#4b5563; font-weight:600;
-    }
-    .navlinks a:hover{ background:rgba(233,154,177,.12); }
+    .navlinks a{ padding:8px 12px; border-radius:10px; color:#5b4a3b; font-weight:600;}
+    .navlinks a:hover{ background:rgba(212,179,116,.14); }
 
-    /* Hero – Serif Headline + Subline */
-    .hero{ padding:64px 20px 18px; text-align:center; }
+    /* HERO – mit deinem Bild */
+    .hero{
+      position:relative; isolation:isolate;
+      padding:0; margin:0; color:var(--ink);
+    }
+    .hero .hero-img{
+      height:56vh; min-height:420px; max-height:720px;
+      background:url('img/hero.jpg') center/cover no-repeat; /* <— dein Bild */
+      border-bottom:1px solid rgba(60,45,32,.10);
+    }
+    /* Helle Schleier-Gradienten für bessere Lesbarkeit */
+    .hero .hero-img::after{
+      content:""; position:absolute; inset:0;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.85) 0%, rgba(255,255,255,.35) 40%, rgba(255,255,255,.12) 65%, rgba(255,255,255,0) 100%);
+      pointer-events:none;
+    }
+    .hero .hero-content{
+      position:absolute; inset:0; display:grid; place-items:center; padding:20px;
+    }
+    .hero-inner{
+      width:min(920px, 92vw);
+      display:grid; grid-template-columns: 1.1fr .9fr; gap:28px; align-items:center;
+    }
+    @media (max-width:820px){ .hero-inner{ grid-template-columns: 1fr; gap:18px; } }
+
+    .hero .left{
+      /* leer – Bild dominiert links, Text rechts */
+    }
+    .hero .right{
+      background:linear-gradient(180deg,#fff, #fff6ee);
+      border:1px solid rgba(212,179,116,.35);
+      border-radius:20px; padding:20px 22px;
+      box-shadow: var(--shadow);
+    }
     .hero h1{
-      font-family: "Playfair Display", ui-serif, Georgia, serif;
-      font-weight:600; color:#4a3a3f;
-      font-size: clamp(30px, 6vw, 56px); margin:0 0 6px;
-      letter-spacing:.2px;
+      font-family:"Playfair Display", ui-serif, Georgia, serif;
+      font-weight:600; color:#7a5b2f; /* goldbraun */
+      font-size: clamp(30px, 6vw, 56px); margin:0 0 8px; letter-spacing:.2px;
     }
-    .hero p{ color:var(--muted); margin:0; font-size: clamp(16px, 2.6vw, 18px); }
+    .hero p{ color:var(--muted); margin:0;}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
+      background: linear-gradient(180deg, #fff, #fff7ee);
+      border:1px solid rgba(212,179,116,.45); color:#6d5330; font-weight:700;
+    }
 
-    /* Sektionen & Cards */
     section{ padding:28px 20px 18px; }
     .card{
-      background: var(--card);
-      backdrop-filter: blur(6px);
-      border: 1px solid rgba(36,42,58,.08);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 22px;
+      background:var(--card); backdrop-filter: blur(6px);
+      border:1px solid rgba(60,45,32,.10);
+      border-radius:var(--radius); box-shadow:var(--shadow); padding:22px;
     }
-    .grid{ display:grid; gap:18px; grid-template-columns: repeat(12, 1fr); }
-    .col-12{ grid-column: span 12; }
-    .col-6{ grid-column: span 12; }
-    @media(min-width:860px){ .col-6{ grid-column: span 6; } }
+    .grid{ display:grid; gap:18px; grid-template-columns:repeat(12, 1fr); }
+    .col-12{ grid-column:span 12; }
+    .col-6{ grid-column:span 12; }
+    @media(min-width:860px){ .col-6{ grid-column:span 6; } }
 
-    /* Formulare – hell & weich */
-    form label{ display:block; font-weight:700; margin:12px 0 6px; color:#3d3941;}
+    /* Form */
+    form label{ display:block; font-weight:700; margin:12px 0 6px; color:#4a382a;}
     input[type="text"], input[type="email"], textarea, select, input[type="number"]{
-      width:100%; padding:12px 14px; border-radius:12px;
-      border:1px solid rgba(36,42,58,.12);
-      background:#ffffff; color:var(--ink); outline:none;
-      transition: box-shadow .2s ease, border-color .2s ease;
+      width:100%; padding:12px 14px; border-radius:12px; background:#fff; color:var(--ink);
+      border:1px solid rgba(60,45,32,.16); outline:none; transition:border-color .2s, box-shadow .2s;
     }
     input:focus, textarea:focus, select:focus{
-      border-color: rgba(233,154,177,.55);
-      box-shadow: 0 0 0 6px rgba(233,154,177,.18);
+      border-color: rgba(212,179,116,.65); box-shadow: 0 0 0 6px rgba(212,179,116,.16);
     }
     textarea{ min-height:100px; resize:vertical; }
     .row{ display:flex; gap:12px; flex-wrap:wrap; }
     .row > *{ flex:1; min-width:160px; }
-
-    .radios{ display:flex; gap:12px; flex-wrap: wrap; }
+    .radios{ display:flex; gap:12px; flex-wrap:wrap; }
     .chip{
-      display:inline-flex; align-items:center; gap:10px; padding:10px 14px;
-      border-radius:999px; border:1px solid rgba(36,42,58,.12); cursor:pointer;
-      background:#ffffff; font-weight:600; color:#3e3d43;
-      transition: transform .12s ease, border-color .2s ease, box-shadow .2s ease;
+      display:inline-flex; align-items:center; gap:10px; padding:10px 14px; cursor:pointer;
+      border-radius:999px; background:#fff; border:1px solid rgba(60,45,32,.16);
+      font-weight:600; color:#4a3f36; transition: transform .12s, box-shadow .2s, border-color .2s;
     }
-    .chip:hover{ transform: translateY(-1px); box-shadow: 0 8px 16px rgba(36,42,58,.08); }
+    .chip:hover{ transform:translateY(-1px); box-shadow:0 8px 16px rgba(76,60,46,.08); }
     .chip input{ display:none; }
     .chip[data-checked="true"]{
-      border-color: rgba(233,154,177,.6);
-      box-shadow: 0 0 0 6px rgba(233,154,177,.16);
-      background: linear-gradient(180deg, #fff, #fff6fa);
+      border-color: rgba(212,179,116,.75);
+      box-shadow: 0 0 0 6px rgba(212,179,116,.16);
+      background: linear-gradient(180deg, #fff, #fff7ee);
     }
-
-    .hint{ color:var(--muted); font-size:14px; }
 
     .btn{
-      display:inline-flex; align-items:center; justify-content:center; gap:10px;
-      border:0; padding:12px 16px; border-radius:14px; cursor:pointer; font-weight:800;
-      color:#3f2a2f; background:linear-gradient(135deg, #ffe4ec, #fef6d9);
-      box-shadow: 0 8px 20px rgba(233,154,177,.25), 0 6px 18px rgba(149,214,234,.18);
-      border: 1px solid rgba(233,154,177,.35);
-      transition: transform .12s ease, box-shadow .2s ease, filter .2s ease;
+      display:inline-flex; align-items:center; justify-content:center; gap:10px; cursor:pointer;
+      padding:12px 16px; border-radius:14px; border:1px solid rgba(212,179,116,.55);
+      font-weight:800; color:#5b4527;
+      background:linear-gradient(135deg, #fff2dc, #fee7e4); /* Sand ↔ Blush */
+      box-shadow:0 8px 20px rgba(212,179,116,.22), 0 6px 18px rgba(120,207,210,.12);
+      transition: transform .12s, box-shadow .2s, filter .2s;
     }
-    .btn:hover{ transform: translateY(-1px); box-shadow: 0 14px 26px rgba(233,154,177,.24); filter: brightness(1.02); }
-    .btn.ghost{
-      background: #fff; color:#4a3a3f; border:1px solid rgba(36,42,58,.16);
-      box-shadow: none;
-    }
+    .btn:hover{ transform:translateY(-1px); box-shadow:0 14px 26px rgba(212,179,116,.22); filter:brightness(1.02); }
+    .btn.ghost{ background:#fff; color:#4a3a30; border:1px solid rgba(60,45,32,.16); box-shadow:none;}
 
-    .success{ color: var(--ok); font-weight:700; }
-    .error{ color: var(--error); font-weight:700; }
-    .warn{ color: var(--warn); font-weight:700; }
+    .success{ color: var(--ok); font-weight:700;}
+    .error{ color: var(--error); font-weight:700;}
+    .hint{ color:var(--muted); font-size:14px; }
 
-    .pill{
-      display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
-      background: linear-gradient(180deg, #fff, #fff7fb);
-      border:1px solid rgba(233,154,177,.35);
-      color:#5b3e43; font-weight:700;
-    }
+    ul.clean{ list-style:none; padding-left:0; margin:0; display:grid; gap:8px;}
+    ul.clean li::before{ content:"❖"; margin-right:8px; color:var(--gold); }
 
-    /* Liste hübscher */
-    ul.clean{ list-style: none; padding-left:0; margin:0; display:grid; gap:8px; }
-    ul.clean li::before{
-      content:"❀"; margin-right:8px; color:var(--brand);
-    }
-
-    /* Galerie – helle Kacheln */
-    .gallery{ display:grid; gap:10px; grid-template-columns: repeat(2, 1fr); }
-    @media(min-width:700px){ .gallery{ grid-template-columns: repeat(4, 1fr); } }
+    /* Galerie & Lightbox (hell) */
+    .gallery{ display:grid; gap:10px; grid-template-columns:repeat(2,1fr); }
+    @media(min-width:700px){ .gallery{ grid-template-columns:repeat(4,1fr); } }
     .gallery img{
-      border-radius:14px; aspect-ratio: 1/1; object-fit:cover; cursor:pointer;
-      box-shadow: 0 8px 20px rgba(36,42,58,.06); border:1px solid rgba(36,42,58,.08);
-      transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+      border-radius:14px; aspect-ratio:1/1; object-fit:cover; cursor:pointer;
+      border:1px solid rgba(60,45,32,.10); box-shadow:0 8px 20px rgba(76,60,46,.06);
+      transition:transform .2s, box-shadow .2s, filter .2s;
     }
-    .gallery img:hover{ transform: translateY(-2px) scale(1.01); box-shadow: 0 14px 28px rgba(36,42,58,.10); filter: saturate(1.05); }
+    .gallery img:hover{ transform:translateY(-2px) scale(1.01); box-shadow:0 14px 28px rgba(76,60,46,.10); filter:saturate(1.05); }
 
-    /* Lightbox – hell & neutral */
     .lightbox{
       position:fixed; inset:0; background:rgba(255,255,255,.92);
-      display:none; align-items:center; justify-content:center; z-index:50;
-      backdrop-filter: blur(4px);
+      display:none; align-items:center; justify-content:center; z-index:50; backdrop-filter: blur(4px);
     }
     .lightbox.show{ display:flex; }
     .lightbox img{
-      max-width:90vw; max-height:80vh; border-radius:16px;
-      box-shadow: 0 30px 60px rgba(36,42,58,.18);
-      border: 1px solid rgba(36,42,58,.12);
-      background: #fff;
+      max-width:90vw; max-height:80vh; border-radius:16px; background:#fff;
+      border:1px solid rgba(60,45,32,.12); box-shadow:0 30px 60px rgba(76,60,46,.18);
     }
     .lightbox .close{
-      position:absolute; top:14px; right:18px; font-size:28px; cursor:pointer; color:#3d3941;
-      background:#fff; border-radius:999px; padding:4px 12px; border:1px solid rgba(36,42,58,.12);
-      box-shadow: var(--shadow);
+      position:absolute; top:14px; right:18px; font-size:28px; cursor:pointer; color:#4a3a2f;
+      background:#fff; border-radius:999px; padding:4px 12px; border:1px solid rgba(60,45,32,.12); box-shadow: var(--shadow);
     }
 
-    footer{
-      padding:60px 20px; text-align:center; color:var(--muted);
-      font-size:14px;
-    }
-
-    /* Zarter Divider */
-    .divider{
-      height:1px; background: linear-gradient(90deg, transparent, rgba(36,42,58,.12), transparent);
-      margin: 22px 0;
-    }
-
-    /* Admin-Link subtiler */
-    .navlinks a[href="admin.html"]{
-      opacity:.7;
-    }
+    footer{ padding:60px 20px; text-align:center; color:var(--muted); font-size:14px; }
+    .divider{ height:1px; background:linear-gradient(90deg, transparent, rgba(60,45,32,.12), transparent); margin:22px 0;}
   </style>
 </head>
 <body>
-  <!-- Splash (tap/klick schließt, Auto-Fade) -->
-  <div id="splash" aria-hidden="true">
-    <div class="title">Kim &amp; Partner • 20. Juni 2026 • Thailand 🇹🇭</div>
-  </div>
+  <!-- HERO mit deinem Bild -->
+  <section class="hero">
+    <div class="hero-img"></div>
+    <div class="hero-content">
+      <div class="hero-inner">
+        <div class="left"></div>
+        <div class="right">
+          <h1>SAVE THE DATE • 01. Juni 2026</h1>
+          <p>Zwei Herzen, ein Versprechen – Hochzeit auf Koh Samui, Thailand.</p>
+          <div class="pill" style="margin-top:10px;">💌 Dresscode: Festlich & sommerlich • 📍 Koh Samui</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <header class="thai">
+  <header>
     <div class="wrap">
       <nav>
-        <div class="brand"><span class="dot"></span> <span>Hochzeit</span></div>
+        <div class="brand"><span class="dot"></span><span>Hochzeit</span></div>
         <div class="navlinks">
           <a href="#rsvp">Check-in</a>
           <a href="#infos">Infos</a>
@@ -249,17 +228,11 @@
   </header>
 
   <main>
-    <div class="wrap hero">
-      <h1>Willkommen zu unserer Hochzeit in Thailand</h1>
-      <p>Wir freuen uns riesig, dass ihr dabei seid. Nutzt gern den Check-in und stöbert durch Infos, Galerie & Gästebuch.</p>
-      <div class="pill" style="margin-top:12px;">💌 Dresscode: Festlich & sommerlich • 📍 Koh Samui</div>
-    </div>
-
     <section id="rsvp">
       <div class="wrap grid">
         <div class="col-6">
           <div class="card">
-            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif; color:#4a3a3f;">Check-in / Zusage</h2>
+            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif; color:#7a5b2f;">Check-in / Zusage</h2>
             <p class="hint">Bitte füllt die Felder aus. Ihr könnt Begleitpersonen mit Namen & Alter angeben.</p>
 
             <form id="rsvpForm" name="rsvp" method="post" action="/" data-netlify="true" netlify-honeypot="bot-field" novalidate>
@@ -315,9 +288,9 @@
 
         <div class="col-6">
           <div class="card">
-            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif; color:#4a3a3f;">Ablauf &amp; Ort</h2>
+            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif; color:#7a5b2f;">Ablauf &amp; Ort</h2>
             <ul class="clean">
-              <li><strong>Datum:</strong> 20. Juni 2026</li>
+              <li><strong>Datum:</strong> 01. Juni 2026</li>
               <li><strong>Trauung:</strong> 14:00 Uhr, Strandzeremonie Koh Samui</li>
               <li><strong>Feier:</strong> ab 16:00 Uhr, Beach Resort</li>
               <li><strong>Dresscode:</strong> Festlich, sommerlich</li>
@@ -331,11 +304,11 @@
       </div>
     </section>
 
-    <section id="infos" class="thai">
+    <section id="infos">
       <div class="wrap grid">
         <div class="col-12">
           <div class="card">
-            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif; color:#4a3a3f;">Weitere Informationen</h2>
+            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif; color:#7a5b2f;">Weitere Informationen</h2>
             <p>Thailand-Flair, Palmen & Sonnenuntergang – wir freuen uns auf einen unvergesslichen Tag mit euch! 🇹🇭🌅</p>
             <ul class="clean">
               <li><strong>Geschenke:</strong> Eure Anwesenheit ist unser Geschenk. Wer mag: <em>Reisekasse</em> 💞</li>
@@ -351,7 +324,7 @@
       <div class="wrap grid">
         <div class="col-12">
           <div class="card">
-            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif; color:#4a3a3f;">Galerie</h2>
+            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif; color:#7a5b2f;">Galerie</h2>
             <div class="gallery" id="gallery">
               <img src="img/pic1.jpg" alt="Strand">
               <img src="img/pic2.jpg" alt="Palmen">
@@ -365,11 +338,11 @@
       <div class="lightbox" id="lightbox"><span class="close" id="lbClose">✕</span><img id="lbImg" alt=""></div>
     </section>
 
-    <section id="chat" class="thai">
+    <section id="chat">
       <div class="wrap grid">
         <div class="col-12">
           <div class="card">
-            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif; color:#4a3a3f;">Gästebuch / Chat 💬</h2>
+            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif; color:#7a5b2f;">Gästebuch / Chat 💬</h2>
             <p class="hint">Hinterlasst uns gern eine liebe Nachricht! (Öffentlich sichtbar)</p>
             <div class="row">
               <input id="chatName" type="text" placeholder="Dein Name">
@@ -384,31 +357,13 @@
     </section>
   </main>
 
-  <footer>
-    Mit Liebe gemacht. © Kim &amp; Partner
-  </footer>
+  <footer>Mit Liebe gemacht. © Kim &amp; Partner</footer>
 
   <script>
-    /* ======== Config beibehalten (gleiche IDs & Endpunkte) ======== */
     const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbxb4kqalumOxwfAQkbOIyI3yUjFNaRo-LJsNOyx6UCHGw2WQ12-rh9sjBgocuDIBbwf/exec";
-    const ADMIN_TOKEN = ""; // optional
+    const ADMIN_TOKEN = "";
 
-    /* Splash Verhalten */
-    const splash = document.getElementById('splash');
-    const hideSplash = () => splash.classList.add('hide');
-    window.addEventListener('load', () => setTimeout(hideSplash, 900));
-    splash.addEventListener('click', hideSplash);
-
-    /* Chips togglen (bleibt kompatibel) */
-    document.querySelectorAll('[data-chip]').forEach(label => {
-      const input = label.querySelector('input[type="radio"]');
-      input.addEventListener('change', () => {
-        label.parentElement.querySelectorAll('[data-chip]').forEach(l => l.dataset.checked = 'false');
-        label.dataset.checked = 'true';
-      });
-    });
-
-    /* Lightbox */
+    /* RSVP/Chat/Lightbox – identisch zu deiner Logik */
     const lb = document.getElementById('lightbox');
     const lbImg = document.getElementById('lbImg');
     document.getElementById('gallery').addEventListener('click', (e) => {
@@ -417,28 +372,32 @@
     document.getElementById('lbClose').addEventListener('click', () => lb.classList.remove('show'));
     lb.addEventListener('click', (e) => { if (e.target === lb) lb.classList.remove('show'); });
 
-    /* RSVP – identische Logik, nur Feedbacktexte leicht angepasst */
     const form = document.getElementById('rsvpForm');
     const statusEl = document.getElementById('status');
     const resetBtn = document.getElementById('resetBtn');
     const submitBtn = document.getElementById('submitBtn');
 
-    resetBtn.addEventListener('click', () => {
+    resetBtn?.addEventListener('click', () => {
       form.reset();
       document.querySelectorAll('[data-chip]').forEach(l => l.dataset.checked = 'false');
-      statusEl.textContent = "";
-      statusEl.className = "";
+      statusEl.textContent = ""; statusEl.className = "";
+    });
+
+    document.querySelectorAll('[data-chip]').forEach(label => {
+      const input = label.querySelector('input[type="radio"]');
+      input.addEventListener('change', () => {
+        label.parentElement.querySelectorAll('[data-chip]').forEach(l => l.dataset.checked = 'false');
+        label.dataset.checked = 'true';
+      });
     });
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      statusEl.textContent = "";
-      statusEl.className = "";
+      statusEl.textContent = ""; statusEl.className = "";
 
       if (!SHEET_ENDPOINT || !SHEET_ENDPOINT.startsWith('https')) {
         statusEl.textContent = "Konfiguration fehlt: SHEET_ENDPOINT ist nicht gesetzt.";
-        statusEl.className = "error";
-        return;
+        statusEl.className = "error"; return;
       }
 
       const fd = new FormData(form);
@@ -451,55 +410,37 @@
 
       if(!name || !attending || !privacy){
         statusEl.textContent = "Bitte fülle Name, Teilnahme & Datenschutz aus.";
-        statusEl.className = "error";
-        return;
+        statusEl.className = "error"; return;
       }
 
       const payload = new URLSearchParams({
-        type: "rsvp",
+        type:"rsvp",
         name, email, message, guests, attending,
-        c1name: (document.getElementById('c1name').value || ""),
-        c1age: (document.getElementById('c1age').value || ""),
-        c2name: (document.getElementById('c2name').value || ""),
-        c2age: (document.getElementById('c2age').value || ""),
-        c3name: (document.getElementById('c3name').value || ""),
-        c3age: (document.getElementById('c3age').value || ""),
-        c4name: (document.getElementById('c4name').value || ""),
-        c4age: (document.getElementById('c4age').value || ""),
-        ua: navigator.userAgent
+        c1name:(document.getElementById('c1name').value || ""), c1age:(document.getElementById('c1age').value || ""),
+        c2name:(document.getElementById('c2name').value || ""), c2age:(document.getElementById('c2age').value || ""),
+        c3name:(document.getElementById('c3name').value || ""), c3age:(document.getElementById('c3age').value || ""),
+        c4name:(document.getElementById('c4name').value || ""), c4age:(document.getElementById('c4age').value || ""),
+        ua:navigator.userAgent
       });
 
-      try {
+      try{
         submitBtn && (submitBtn.disabled = true);
         statusEl.textContent = "Sende …";
-        const res = await fetch(SHEET_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-          body: payload.toString()
-        });
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        let ok = true;
-        try { const j = await res.json(); ok = !!j.ok; if (!ok && j.error) throw new Error(j.error); } catch(_) {}
-        if (ok) {
-          statusEl.textContent = attending === 'ja'
-            ? "Danke für deine Zusage! Wir freuen uns riesig. ✨"
-            : "Schade, aber danke fürs Bescheid sagen! 💌";
+        const res = await fetch(SHEET_ENDPOINT, { method:"POST", headers:{ "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8" }, body: payload.toString() });
+        if(!res.ok) throw new Error("HTTP "+res.status);
+        let ok = true; try{ const j = await res.json(); ok = !!j.ok; if(!ok && j.error) throw new Error(j.error);}catch(_){}
+        if(ok){
+          statusEl.textContent = attending === 'ja' ? "Danke für deine Zusage! ✨" : "Schade, aber danke fürs Bescheid sagen! 💌";
           statusEl.className = "success";
-          form.reset();
-          document.querySelectorAll('[data-chip]').forEach(l => l.dataset.checked = 'false');
-        } else {
-          throw new Error("Antwort nicht bestätigt");
-        }
-      } catch (err) {
+          form.reset(); document.querySelectorAll('[data-chip]').forEach(l => l.dataset.checked = 'false');
+        } else throw new Error("Antwort nicht bestätigt");
+      }catch(err){
         console.error(err);
-        statusEl.textContent = "Speichern fehlgeschlagen. Bitte Apps Script aktualisieren (siehe README: type=rsvp Unterstützung).";
+        statusEl.textContent = "Speichern fehlgeschlagen. Bitte Apps Script aktualisieren (type=rsvp).";
         statusEl.className = "error";
-      } finally {
-        submitBtn && (submitBtn.disabled = false);
-      }
+      }finally{ submitBtn && (submitBtn.disabled = false); }
     });
 
-    /* Chat – kompatibel */
     const chatName = document.getElementById('chatName');
     const chatText = document.getElementById('chatText');
     const chatSend = document.getElementById('chatSend');
@@ -508,45 +449,28 @@
 
     chatSend.addEventListener('click', async () => {
       chatStatus.textContent = "";
-      const n = (chatName.value || "").trim();
-      const t = (chatText.value || "").trim();
-      if (!n || !t) { chatStatus.textContent = "Bitte Name und Nachricht eingeben."; return; }
-      try {
-        const res = await fetch(SHEET_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-          body: new URLSearchParams({ type: "chat", name: n, message: t, ua: navigator.userAgent }).toString()
-        });
-        if (!res.ok) throw new Error();
-        chatText.value = "";
-        chatStatus.textContent = "Gesendet 💬";
-        loadChat();
-      } catch(e) {
-        chatStatus.textContent = "Chat speichern fehlgeschlagen. Bitte Apps Script auf type=chat erweitern (siehe README).";
-      }
+      const n=(chatName.value||"").trim(), t=(chatText.value||"").trim();
+      if(!n||!t){ chatStatus.textContent="Bitte Name und Nachricht eingeben."; return; }
+      try{
+        const res = await fetch(SHEET_ENDPOINT, { method:"POST", headers:{ "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8" }, body:new URLSearchParams({ type:"chat", name:n, message:t, ua:navigator.userAgent }).toString() });
+        if(!res.ok) throw new Error();
+        chatText.value=""; chatStatus.textContent="Gesendet 💬"; loadChat();
+      }catch(e){ chatStatus.textContent="Chat speichern fehlgeschlagen (Apps Script type=chat)."; }
     });
 
-    async function loadChat() {
-      chatList.innerHTML = "";
-      try {
-        const url = new URL(SHEET_ENDPOINT);
-        url.searchParams.set("type", "chat");
-        url.searchParams.set("list", "1");
-        const res = await fetch(url, { method: "GET" });
-        const j = await res.json();
-        if (!j.ok) throw new Error(j.error || "Fehler");
-        (j.rows || []).slice(-40).forEach(r => {
-          const card = document.createElement('div');
-          card.className = "card";
-          card.innerHTML = `<strong>${(r.name || 'Gast')
-            .replace(/[<>&"]/g, s => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[s]))}</strong>
-            <div class="hint" style="margin-top:4px;">${(r.message || '')
-            .replace(/[<>&"]/g, s => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[s]))}</div>`;
+    async function loadChat(){
+      chatList.innerHTML="";
+      try{
+        const url = new URL(SHEET_ENDPOINT); url.searchParams.set("type","chat"); url.searchParams.set("list","1");
+        const res = await fetch(url,{method:"GET"}); const j = await res.json();
+        if(!j.ok) throw new Error(j.error||"Fehler");
+        (j.rows||[]).slice(-40).forEach(r=>{
+          const card=document.createElement('div'); card.className="card";
+          const esc=s=>String(s||'').replace(/[<>&"]/g, s=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[s]));
+          card.innerHTML=`<strong>${esc(r.name)||'Gast'}</strong><div class="hint" style="margin-top:4px;">${esc(r.message)}</div>`;
           chatList.appendChild(card);
         });
-      } catch(e) {
-        chatStatus.textContent = "Chat laden nicht möglich (Apps Script GET nicht aktiv).";
-      }
+      }catch(e){ chatStatus.textContent="Chat laden nicht möglich (GET im Apps Script)."; }
     }
     loadChat();
   </script>
