@@ -3,33 +3,42 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Kim & Partner – Hochzeit in Thailand</title>
-  <meta name="description" content="Hochzeit von Kim & Partner in Thailand – RSVP, Infos, Galerie & Chat" />
+  <title>Maria & Kim – Hochzeit in Thailand</title>
+  <meta name="description" content="Hochzeit von Maria & Kim in Thailand – RSVP, Infos, Galerie & Gästebuch" />
+
+  <!-- Favicon / Web-Icon: Hero-Bild -->
+  <link rel="icon" href="img/hero.jpg" type="image/jpeg" />
+  <link rel="apple-touch-icon" href="img/hero.jpg" />
+
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
   <style>
     :root{
-      /* Helle, reduzierte Palette – abgestimmt aufs Foto */
+      /* Aus dem Hero: Sand/Blush/Gold/Meer */
       --sand-50:#fffdf8; --sand-100:#fbf3e7; --blush-50:#f7eee9;
       --gold:#b48a4a; --gold-soft:#d8c19a; --sea:#78cfd2;
       --ink:#3e2f26; --muted:#7b7169;
-      --paper:#ffffff; --card:rgba(255,255,255,.92);
-      --shadow:0 14px 36px rgba(76,60,46,.10);
-      --radius:16px;
+
+      --bg: var(--sand-50);
+      --card: rgba(255,255,255,.92);
+      --shadow: 0 14px 36px rgba(76,60,46,.10);
+      --radius: 16px;
+
       --ok:#2ea85f; --warn:#d79b00; --error:#e86a6a;
     }
-
     *{box-sizing:border-box}
     html,body{
       margin:0; padding:0; color:var(--ink);
-      font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       background:
-        radial-gradient(1200px 600px at 0% -10%, rgba(244,230,211,.35), transparent 60%),
-        radial-gradient(900px 520px at 110% 10%, rgba(247,238,233,.45), transparent 60%),
-        linear-gradient(180deg, #fffdf8 0%, #fffaf2 100%);
+        radial-gradient(1000px 540px at 0% -10%, rgba(244,230,211,.35), transparent 60%),
+        radial-gradient(800px 460px at 110% 10%, rgba(247,238,233,.45), transparent 60%),
+        linear-gradient(180deg, var(--bg) 0%, #fffaf2 100%);
       min-height:100vh;
     }
-    a{ color:var(--gold); text-decoration:none }
+    a{ color: var(--gold); text-decoration: none;}
+    img{ max-width:100%; display:block; border-radius:14px;}
 
     /* Header */
     header{
@@ -37,105 +46,176 @@
       background:rgba(255,255,255,.8); backdrop-filter: blur(12px);
       border-bottom:1px solid rgba(60,45,32,.10);
     }
-    .wrap{ max-width:1100px; margin:0 auto; padding:20px }
-    nav{ display:flex; align-items:center; justify-content:space-between; gap:14px }
-    .brand{ display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.3px; color:var(--ink); font-family:"Playfair Display", ui-serif, Georgia, serif; }
-    .brand .dot{ width:12px; height:12px; border-radius:999px; background:conic-gradient(from 45deg, var(--gold), var(--sea), var(--gold-soft)); border:1px solid rgba(212,179,116,.55); box-shadow:0 0 16px rgba(212,179,116,.65) }
-    .navlinks a{ padding:8px 12px; border-radius:10px; color:#5b4a3b; font-weight:600 }
-    .navlinks a:hover{ background:rgba(212,179,116,.14) }
+    .wrap{ max-width:1100px; margin:0 auto; padding:20px;}
+    nav{ display:flex; align-items:center; justify-content:space-between; gap:14px;}
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      color:var(--ink); letter-spacing:.3px;
+      font-weight:700; font-size:18px;
+      font-family:"Playfair Display", ui-serif, Georgia, serif;
+    }
+    .brand .mk{
+      font-weight:600; font-size:20px;
+      letter-spacing:.4px;
+    }
+    .brand .dot{
+      width:12px; height:12px; border-radius:999px;
+      background: conic-gradient(from 45deg, var(--gold), var(--sea), var(--gold-soft));
+      box-shadow:0 0 16px rgba(212,179,116,.65);
+      border:1px solid rgba(212,179,116,.55);
+    }
+    .navlinks a{ padding:8px 12px; border-radius:10px; color:#5b4a3b; font-weight:600;}
+    .navlinks a:hover{ background:rgba(212,179,116,.14); }
 
-    /* HERO – echtes IMG, kein Cropping */
-    .hero{ padding:0 20px; margin:18px auto 6px; max-width:1100px }
-    .hero-frame{
-      background:var(--card); border:1px solid rgba(60,45,32,.10);
-      border-radius:22px; box-shadow:var(--shadow);
-      padding:14px; overflow:hidden;
+    /* HERO Banner (Variante 1b – nicht überladen, wenig Beschnitt) */
+    .hero{
+      position:relative; margin:0; padding:0; isolation:isolate;
+      border-bottom:1px solid rgba(60,45,32,.10);
     }
-    .hero-img{
-      width:100%; height:auto; display:block; border-radius:14px;
-      /* Kein Zuschnitt: skaliert proportional */
+    .hero-inner{
+      display:grid; grid-template-columns: 1.1fr .9fr;
+      gap:28px; align-items:center;
+      width:min(1100px, 92vw); margin:0 auto; padding:18px 20px;
+      min-height: clamp(380px, 50vh, 560px);
     }
-    .hero-note{
-      display:flex; gap:14px; align-items:center; justify-content:space-between; flex-wrap:wrap;
-      padding:12px 2px 0; color:var(--muted);
+    @media (max-width:860px){ .hero-inner{ grid-template-columns: 1fr; gap:16px; } }
+
+    .hero .photo{
+      position:relative; overflow:hidden; border-radius:18px;
+      box-shadow: var(--shadow); background:#fff;
+      border:1px solid rgba(60,45,32,.08);
     }
+    .hero .photo img{
+      width:100%; height:100%;
+      display:block; aspect-ratio: 16/10; /* sanfter Banner */
+      object-fit: cover;
+      /* leicht nach oben fokussieren, damit Köpfe Platz haben */
+      object-position: 50% 35%;
+    }
+    /* sanfter Rand-Gradient, damit es sich integriert */
+    .hero .photo::after{
+      content:""; position:absolute; inset:0;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.0) 0%, rgba(255,255,255,.15) 100%),
+        radial-gradient(800px 280px at 100% 0%, rgba(255,255,255,.35), transparent 70%);
+      pointer-events:none;
+    }
+
+    .hero .panel{
+      background:linear-gradient(180deg,#fff, #fff6ee);
+      border:1px solid rgba(212,179,116,.35);
+      border-radius:20px; padding:20px 22px; box-shadow: var(--shadow);
+    }
+    .hero h1{
+      margin:0 0 8px; color:#7a5b2f;
+      font-family:"Playfair Display", ui-serif, Georgia, serif;
+      font-weight:600; letter-spacing:.2px;
+      font-size: clamp(28px, 5.2vw, 42px);
+    }
+    .hero p{ margin:0; color:var(--muted); }
     .pill{
       display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
-      background:linear-gradient(180deg,#fff,#fff7ee);
+      background: linear-gradient(180deg, #fff, #fff7ee);
       border:1px solid rgba(212,179,116,.45); color:#6d5330; font-weight:700;
     }
-    .hero-title{
-      margin:0; font-family:"Playfair Display", ui-serif, Georgia, serif;
-      color:#7a5b2f; font-size:clamp(24px,4.5vw,34px); letter-spacing:.2px;
-    }
 
-    section{ padding:28px 20px 18px }
+    /* Sektionen & Cards */
+    section{ padding:28px 20px 18px; }
     .card{
       background:var(--card); backdrop-filter: blur(6px);
       border:1px solid rgba(60,45,32,.10);
       border-radius:var(--radius); box-shadow:var(--shadow); padding:22px;
     }
-    .grid{ display:grid; gap:18px; grid-template-columns:repeat(12,1fr) }
-    .col-12{ grid-column:span 12 }
-    .col-6{ grid-column:span 12 }
-    @media(min-width:860px){ .col-6{ grid-column:span 6 } }
+    .grid{ display:grid; gap:18px; grid-template-columns:repeat(12, 1fr); }
+    .col-12{ grid-column:span 12; }
+    .col-6{ grid-column:span 12; }
+    @media(min-width:860px){ .col-6{ grid-column:span 6; } }
 
     /* Form */
-    form label{ display:block; font-weight:700; margin:12px 0 6px; color:#4a382a }
-    input[type="text"], input[type="email"], input[type="date"], textarea, select{
+    form label{ display:block; font-weight:700; margin:12px 0 6px; color:#4a382a;}
+    input[type="text"], input[type="email"], textarea, select, input[type="date"], input[type="number"]{
       width:100%; padding:12px 14px; border-radius:12px; background:#fff; color:var(--ink);
       border:1px solid rgba(60,45,32,.16); outline:none; transition:border-color .2s, box-shadow .2s;
     }
-    input:focus, textarea:focus, select:focus{ border-color:rgba(212,179,116,.65); box-shadow:0 0 0 6px rgba(212,179,116,.16) }
-    textarea{ min-height:100px; resize:vertical }
-    .row{ display:flex; gap:12px; flex-wrap:wrap }
-    .row > *{ flex:1; min-width:160px }
-    .radios{ display:flex; gap:12px; flex-wrap:wrap }
-    .chip{ display:inline-flex; align-items:center; gap:10px; padding:10px 14px; cursor:pointer; border-radius:999px; background:#fff; border:1px solid rgba(60,45,32,.16); font-weight:600; color:#4a3f36; transition: transform .12s, box-shadow .2s, border-color .2s }
-    .chip:hover{ transform:translateY(-1px); box-shadow:0 8px 16px rgba(76,60,46,.08) }
-    .chip input{ display:none }
-    .chip[data-checked="true"]{ border-color:rgba(212,179,116,.75); box-shadow:0 0 0 6px rgba(212,179,116,.16); background:linear-gradient(180deg,#fff,#fff7ee) }
+    input:focus, textarea:focus, select:focus{
+      border-color: rgba(212,179,116,.65); box-shadow: 0 0 0 6px rgba(212,179,116,.16);
+    }
+    textarea{ min-height:100px; resize:vertical; }
+    .row{ display:flex; gap:12px; flex-wrap:wrap; }
+    .row > *{ flex:1; min-width:160px; }
+    .radios{ display:flex; gap:12px; flex-wrap:wrap; }
+    .chip{
+      display:inline-flex; align-items:center; gap:10px; padding:10px 14px; cursor:pointer;
+      border-radius:999px; background:#fff; border:1px solid rgba(60,45,32,.16);
+      font-weight:600; color:#4a3f36; transition: transform .12s, box-shadow .2s, border-color .2s;
+    }
+    .chip:hover{ transform:translateY(-1px); box-shadow:0 8px 16px rgba(76,60,46,.08); }
+    .chip input{ display:none; }
+    .chip[data-checked="true"]{
+      border-color: rgba(212,179,116,.75);
+      box-shadow: 0 0 0 6px rgba(212,179,116,.16);
+      background: linear-gradient(180deg, #fff, #fff7ee);
+    }
 
     .btn{
       display:inline-flex; align-items:center; justify-content:center; gap:10px; cursor:pointer;
       padding:12px 16px; border-radius:14px; border:1px solid rgba(212,179,116,.55);
       font-weight:800; color:#5b4527;
-      background:linear-gradient(135deg,#fff2dc,#fee7e4);
+      background:linear-gradient(135deg, #fff2dc, #fee7e4);
       box-shadow:0 8px 20px rgba(212,179,116,.22), 0 6px 18px rgba(120,207,210,.12);
       transition: transform .12s, box-shadow .2s, filter .2s;
     }
-    .btn:hover{ transform:translateY(-1px); box-shadow:0 14px 26px rgba(212,179,116,.22); filter:brightness(1.02) }
-    .btn.ghost{ background:#fff; color:#4a3a30; border:1px solid rgba(60,45,32,.16); box-shadow:none }
+    .btn:hover{ transform:translateY(-1px); box-shadow:0 14px 26px rgba(212,179,116,.22); filter:brightness(1.02); }
+    .btn.ghost{ background:#fff; color:#4a3a30; border:1px solid rgba(60,45,32,.16); box-shadow:none;}
 
-    .success{ color:var(--ok); font-weight:700 }
-    .error{ color:var(--error); font-weight:700 }
-    .hint{ color:var(--muted); font-size:14px }
-    ul.clean{ list-style:none; padding-left:0; margin:0; display:grid; gap:8px }
-    ul.clean li::before{ content:"❖"; margin-right:8px; color:var(--gold) }
+    .success{ color: var(--ok); font-weight:700;}
+    .error{ color: var(--error); font-weight:700;}
+    .hint{ color:var(--muted); font-size:14px; }
 
-    /* Galerie/Lightbox */
-    .gallery{ display:grid; gap:10px; grid-template-columns:repeat(2,1fr) }
-    @media(min-width:700px){ .gallery{ grid-template-columns:repeat(4,1fr) } }
-    .gallery img{ border-radius:14px; aspect-ratio:1/1; object-fit:cover; cursor:pointer; border:1px solid rgba(60,45,32,.10); box-shadow:0 8px 20px rgba(76,60,46,.06); transition:transform .2s, box-shadow .2s, filter .2s }
-    .gallery img:hover{ transform:translateY(-2px) scale(1.01); box-shadow:0 14px 28px rgba(76,60,46,.10); filter:saturate(1.05) }
+    ul.clean{ list-style:none; padding-left:0; margin:0; display:grid; gap:8px;}
+    ul.clean li::before{ content:"❖"; margin-right:8px; color:var(--gold); }
 
-    .lightbox{ position:fixed; inset:0; background:rgba(255,255,255,.92); display:none; align-items:center; justify-content:center; z-index:50; backdrop-filter:blur(4px) }
-    .lightbox.show{ display:flex }
-    .lightbox img{ max-width:90vw; max-height:80vh; border-radius:16px; background:#fff; border:1px solid rgba(60,45,32,.12); box-shadow:0 30px 60px rgba(76,60,46,.18) }
-    .lightbox .close{ position:absolute; top:14px; right:18px; font-size:28px; cursor:pointer; color:#4a3a2f; background:#fff; border-radius:999px; padding:4px 12px; border:1px solid rgba(60,45,32,.12); box-shadow:var(--shadow) }
+    /* Galerie & Lightbox */
+    .gallery{ display:grid; gap:10px; grid-template-columns:repeat(2,1fr); }
+    @media(min-width:700px){ .gallery{ grid-template-columns:repeat(4,1fr); } }
+    .gallery img{
+      border-radius:14px; aspect-ratio:1/1; object-fit:cover; cursor:pointer;
+      border:1px solid rgba(60,45,32,.10); box-shadow:0 8px 20px rgba(76,60,46,.06);
+      transition:transform .2s, box-shadow .2s, filter .2s;
+    }
+    .gallery img:hover{ transform:translateY(-2px) scale(1.01); box-shadow:0 14px 28px rgba(76,60,46,.10); filter:saturate(1.05); }
 
-    footer{ padding:60px 20px; text-align:center; color:var(--muted); font-size:14px }
-    .divider{ height:1px; background:linear-gradient(90deg, transparent, rgba(60,45,32,.12), transparent); margin:22px 0 }
+    .lightbox{
+      position:fixed; inset:0; background:rgba(255,255,255,.92);
+      display:none; align-items:center; justify-content:center; z-index:50; backdrop-filter: blur(4px);
+    }
+    .lightbox.show{ display:flex; }
+    .lightbox img{
+      max-width:90vw; max-height:80vh; border-radius:16px; background:#fff;
+      border:1px solid rgba(60,45,32,.12); box-shadow:0 30px 60px rgba(76,60,46,.18);
+    }
+    .lightbox .close{
+      position:absolute; top:14px; right:18px; font-size:28px; cursor:pointer; color:#4a3a2f;
+      background:#fff; border-radius:999px; padding:4px 12px; border:1px solid rgba(60,45,32,.12); box-shadow: var(--shadow);
+    }
+
+    footer{ padding:60px 20px; text-align:center; color:var(--muted); font-size:14px; }
+    .divider{ height:1px; background:linear-gradient(90deg, transparent, rgba(60,45,32,.12), transparent); margin:22px 0;}
   </style>
 </head>
 <body>
-  <!-- HERO – kein Zuschnitt, clean integriert -->
+
+  <!-- HERO Banner -->
   <section class="hero">
-    <div class="hero-frame">
-      <img class="hero-img" src="img/hero.jpg" alt="Save the Date – Koh Samui">
-      <div class="hero-note">
-        <h2 class="hero-title">SAVE THE DATE • 01. Juni 2026 • Koh Samui</h2>
-        <div class="pill">💌 Dresscode: Festlich & sommerlich</div>
+    <div class="hero-inner">
+      <div class="photo">
+        <!-- Dein Foto (nicht überladen, wenig Beschnitt) -->
+        <img src="img/hero.jpg" alt="Maria & Kim – Save the Date">
+      </div>
+      <div class="panel">
+        <h1>Maria &amp; Kim</h1>
+        <p>Save the Date • 01. Juni 2026 • Koh Samui, Thailand</p>
+        <div class="pill" style="margin-top:10px;">💌 Dresscode: Festlich &amp; sommerlich</div>
       </div>
     </div>
   </section>
@@ -143,7 +223,10 @@
   <header>
     <div class="wrap">
       <nav>
-        <div class="brand"><span class="dot"></span><span>Hochzeit</span></div>
+        <div class="brand">
+          <span class="dot" aria-hidden="true"></span>
+          <span class="mk">Maria &amp; Kim</span>
+        </div>
         <div class="navlinks">
           <a href="#rsvp">Check-in</a>
           <a href="#infos">Infos</a>
@@ -161,16 +244,13 @@
         <div class="col-6">
           <div class="card">
             <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif; color:#7a5b2f;">Check-in / Zusage</h2>
-            <p class="hint">Bitte tragt euren Geburtstag (YYYY-MM-DD) ein. Bei Begleitungen ebenfalls das Geburtsdatum.</p>
+            <p class="hint">Bitte Name & Geburtsdatum eintragen. Begleitpersonen mit Geburtsdatum ergänzen.</p>
 
-            <form id="rsvpForm" name="rsvp" method="post" action="/" data-netlify="true" netlify-honeypot="bot-field" novalidate>
-              <input type="hidden" name="form-name" value="rsvp" />
-              <p style="display:none;"><label>Bitte freilassen: <input name="bot-field" /></label></p>
-
+            <form id="rsvpForm" novalidate>
               <label for="name">Vor- &amp; Nachname *</label>
               <input id="name" name="name" type="text" placeholder="Max Mustermann" required autocomplete="name" autocapitalize="words">
 
-              <label for="birthday">Geburtstag *</label>
+              <label for="birthday">Geburtsdatum *</label>
               <input id="birthday" name="birthday" type="date" required>
 
               <div class="row">
@@ -184,31 +264,29 @@
                 <div>
                   <label for="guests">Anzahl Begleitpersonen</label>
                   <select id="guests" name="guests">
-                    <option value="0" selected>0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
+                    <option value="0" selected>0</option><option value="1">1</option>
+                    <option value="2">2</option><option value="3">3</option><option value="4">4</option>
                   </select>
                 </div>
               </div>
 
+              <!-- Begleitpersonen: Name + Geburtsdatum (in bestehende age-Felder geschrieben) -->
               <div id="companions">
                 <div class="row">
-                  <div><label for="c1name">Begleitung 1 – Name</label><input id="c1name" type="text" placeholder="Vor- & Nachname"></div>
-                  <div><label for="c1dob">Geburtstag</label><input id="c1dob" type="date"></div>
+                  <div><label for="c1name">Begleitung 1 – Name</label><input id="c1name" name="c1name" type="text" placeholder="Vor- & Nachname"></div>
+                  <div><label for="c1dob">Geburtsdatum</label><input id="c1dob" name="c1dob" type="date"></div>
                 </div>
                 <div class="row">
-                  <div><label for="c2name">Begleitung 2 – Name</label><input id="c2name" type="text"></div>
-                  <div><label for="c2dob">Geburtstag</label><input id="c2dob" type="date"></div>
+                  <div><label for="c2name">Begleitung 2 – Name</label><input id="c2name" name="c2name" type="text"></div>
+                  <div><label for="c2dob">Geburtsdatum</label><input id="c2dob" name="c2dob" type="date"></div>
                 </div>
                 <div class="row">
-                  <div><label for="c3name">Begleitung 3 – Name</label><input id="c3name" type="text"></div>
-                  <div><label for="c3dob">Geburtstag</label><input id="c3dob" type="date"></div>
+                  <div><label for="c3name">Begleitung 3 – Name</label><input id="c3name" name="c3name" type="text"></div>
+                  <div><label for="c3dob">Geburtsdatum</label><input id="c3dob" name="c3dob" type="date"></div>
                 </div>
                 <div class="row">
-                  <div><label for="c4name">Begleitung 4 – Name</label><input id="c4name" type="text"></div>
-                  <div><label for="c4dob">Geburtstag</label><input id="c4dob" type="date"></div>
+                  <div><label for="c4name">Begleitung 4 – Name</label><input id="c4name" name="c4name" type="text"></div>
+                  <div><label for="c4dob">Geburtsdatum</label><input id="c4dob" name="c4dob" type="date"></div>
                 </div>
               </div>
 
@@ -241,7 +319,7 @@
               <li><strong>Feier:</strong> ab 16:00 Uhr, Beach Resort</li>
               <li><strong>Dresscode:</strong> Festlich, sommerlich</li>
               <li><strong>Anfahrt:</strong> Shuttle vom Hotel • Taxis verfügbar</li>
-              <li><strong>Übernachtung:</strong> Resort-Kontingent (Stichwort „Hochzeit Kim“)</li>
+              <li><strong>Übernachtung:</strong> Resort-Kontingent (Stichwort „Hochzeit Maria & Kim“)</li>
             </ul>
             <div class="divider"></div>
             <p class="hint">QR-Code: Er führt direkt auf diese Seite – einfach scannen.</p>
@@ -259,7 +337,7 @@
             <ul class="clean">
               <li><strong>Geschenke:</strong> Eure Anwesenheit ist unser Geschenk. Wer mag: <em>Reisekasse</em> 💞</li>
               <li><strong>Kinder:</strong> Sehr gern! Kinderbetreuung am Strand.</li>
-              <li><strong>Fotos:</strong> Nach der Feier füllen wir die Galerie. Hashtag <span class="mono">#KimUndPartnerInThailand</span></li>
+              <li><strong>Fotos:</strong> Nach der Feier füllen wir die Galerie. Hashtag <span class="mono">#MariaUndKimInThailand</span></li>
             </ul>
           </div>
         </div>
@@ -303,19 +381,22 @@
     </section>
   </main>
 
-  <footer>Mit Liebe gemacht. © Kim &amp; Partner</footer>
+  <footer>Mit Liebe gemacht. © Maria &amp; Kim</footer>
 
   <script>
     const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbxb4kqalumOxwfAQkbOIyI3yUjFNaRo-LJsNOyx6UCHGw2WQ12-rh9sjBgocuDIBbwf/exec";
 
-    /* Chips togglen */
-    document.querySelectorAll('[data-chip]').forEach(label => {
-      const input = label.querySelector('input[type="radio"]');
-      input.addEventListener('change', () => {
-        label.parentElement.querySelectorAll('[data-chip]').forEach(l => l.dataset.checked = 'false');
-        label.dataset.checked = 'true';
-      });
-    });
+    /* Utilities */
+    const esc = s => String(s||'').replace(/[<>&"]/g, m=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[m]));
+    const fmtDate = (v) => {
+      if(!v) return "";
+      const d = new Date(v);
+      if (isNaN(d)) return v; // falls Browser den Wert schon als TT.MM.JJJJ liefert
+      const dd = String(d.getDate()).padStart(2,'0');
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const yy = d.getFullYear();
+      return `${dd}.${mm}.${yy}`;
+    };
 
     /* Lightbox */
     const lb = document.getElementById('lightbox');
@@ -325,6 +406,15 @@
     });
     document.getElementById('lbClose').addEventListener('click', () => lb.classList.remove('show'));
     lb.addEventListener('click', (e) => { if (e.target === lb) lb.classList.remove('show'); });
+
+    /* Chips */
+    document.querySelectorAll('[data-chip]').forEach(label => {
+      const input = label.querySelector('input[type="radio"]');
+      input.addEventListener('change', () => {
+        label.parentElement.querySelectorAll('[data-chip]').forEach(l => l.dataset.checked = 'false');
+        label.dataset.checked = 'true';
+      });
+    });
 
     /* RSVP */
     const form = document.getElementById('rsvpForm');
@@ -348,7 +438,7 @@
       }
 
       const name = (document.getElementById('name').value || "").trim();
-      const birthday = (document.getElementById('birthday').value || "").trim(); // YYYY-MM-DD
+      const birthday = (document.getElementById('birthday').value || "").trim(); // yyyy-mm-dd
       const email = (document.getElementById('email').value || "").trim();
       const message = (document.getElementById('message').value || "").trim();
       const guests = document.getElementById('guests').value;
@@ -356,32 +446,29 @@
       const privacy = document.getElementById('privacy').checked;
 
       if(!name || !birthday || !attending || !privacy){
-        statusEl.textContent = "Bitte fülle Name, Geburtstag, Teilnahme & Datenschutz aus.";
+        statusEl.textContent = "Bitte fülle Name, Geburtsdatum, Teilnahme & Datenschutz aus.";
         statusEl.className = "error"; return;
       }
 
-      /* === Mapping für vorhandenes Sheet ===
-         - Name -> "Max Mustermann (YYYY-MM-DD)"
-         - Begleit-Geburtstage in die bisherigen *Age*-Felder (c1age..c4age)
-      */
-      const nameWithDob = `${name} (${birthday})`;
-      const c1name = (document.getElementById('c1name').value || "");
-      const c2name = (document.getElementById('c2name').value || "");
-      const c3name = (document.getElementById('c3name').value || "");
-      const c4name = (document.getElementById('c4name').value || "");
-      const c1dob  = (document.getElementById('c1dob').value  || "");
-      const c2dob  = (document.getElementById('c2dob').value  || "");
-      const c3dob  = (document.getElementById('c3dob').value  || "");
-      const c4dob  = (document.getElementById('c4dob').value  || "");
+      /* Name um Geburtstag erweitern – (TT.MM.JJJJ) */
+      const nameWithBirthday = `${name} (${fmtDate(birthday)})`;
+
+      /* Begleitpersonen: Datum in die bestehenden *age*-Felder schreiben */
+      const c1name = document.getElementById('c1name').value || "";
+      const c2name = document.getElementById('c2name').value || "";
+      const c3name = document.getElementById('c3name').value || "";
+      const c4name = document.getElementById('c4name').value || "";
+      const c1age = fmtDate(document.getElementById('c1dob').value || "");
+      const c2age = fmtDate(document.getElementById('c2dob').value || "");
+      const c3age = fmtDate(document.getElementById('c3dob').value || "");
+      const c4age = fmtDate(document.getElementById('c4dob').value || "");
 
       const payload = new URLSearchParams({
         type:"rsvp",
-        name: nameWithDob, email, message, guests, attending,
-        c1name, c1age: c1dob,
-        c2name, c2age: c2dob,
-        c3name, c3age: c3dob,
-        c4name, c4age: c4dob,
-        ua: navigator.userAgent
+        name: nameWithBirthday,   // <-- wichtig: Geburtstag in Klammern
+        email, message, guests, attending,
+        c1name, c1age, c2name, c2age, c3name, c3age, c4name, c4age,
+        ua:navigator.userAgent
       });
 
       try{
@@ -393,8 +480,7 @@
           body: payload.toString()
         });
         if(!res.ok) throw new Error("HTTP "+res.status);
-        let ok = true;
-        try{ const j = await res.json(); ok = !!j.ok; if(!ok && j.error) throw new Error(j.error); }catch(_){}
+        let ok = true; try{ const j = await res.json(); ok = !!j.ok; if(!ok && j.error) throw new Error(j.error);}catch(_){}
         if(ok){
           statusEl.textContent = attending === 'ja' ? "Danke für deine Zusage! ✨" : "Schade, aber danke fürs Bescheid sagen! 💌";
           statusEl.className = "success";
@@ -402,12 +488,12 @@
         } else throw new Error("Antwort nicht bestätigt");
       }catch(err){
         console.error(err);
-        statusEl.textContent = "Speichern fehlgeschlagen. Bitte Apps Script aktualisieren (type=rsvp).";
+        statusEl.textContent = "Speichern fehlgeschlagen. Bitte Apps Script (type=rsvp) prüfen.";
         statusEl.className = "error";
       }finally{ submitBtn && (submitBtn.disabled = false); }
     });
 
-    /* Chat (unverändert) */
+    /* Chat */
     const chatName = document.getElementById('chatName');
     const chatText = document.getElementById('chatText');
     const chatSend = document.getElementById('chatSend');
@@ -426,7 +512,7 @@
         });
         if(!res.ok) throw new Error();
         chatText.value=""; chatStatus.textContent="Gesendet 💬"; loadChat();
-      }catch(e){ chatStatus.textContent="Chat speichern fehlgeschlagen (Apps Script type=chat)."; }
+      }catch(e){ chatStatus.textContent="Chat speichern fehlgeschlagen (type=chat)."; }
     });
 
     async function loadChat(){
@@ -437,8 +523,7 @@
         if(!j.ok) throw new Error(j.error||"Fehler");
         (j.rows||[]).slice(-40).forEach(r=>{
           const card=document.createElement('div'); card.className="card";
-          const esc=s=>String(s||'').replace(/[<>&"]/g, s=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[s]));
-          card.innerHTML=`<strong>${esc(r.name)||'Gast'}</strong><div class="hint" style="margin-top:4px;">${esc(r.message)}</div>`;
+          card.innerHTML=`<strong>${esc(r.name)||'Gast'}</strong><div class="hint" style="margin-top:4px;">${esc(r.message||'')}</div>`;
           chatList.appendChild(card);
         });
       }catch(e){ chatStatus.textContent="Chat laden nicht möglich (GET im Apps Script)."; }
