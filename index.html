@@ -1,161 +1,105 @@
-
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Kim & Partner – Hochzeit in Thailand</title>
-  <meta name="description" content="Hochzeit von Kim & Partner in Thailand – RSVP, Infos, Galerie & Chat" />
+  <meta name="description" content="RSVP, Infos, Galerie & Gästebuch zur Hochzeit in Thailand">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <style>
     :root{
-      --bg: #0c1016;
-      --card: rgba(255,255,255,0.07);
+      --bg: #0a0f14;
+      --surface: rgba(255,255,255,.06);
+      --surface-2: rgba(255,255,255,.10);
       --fg: #eef2fa;
-      --muted:#aab0c0;
-      --brand:#ff8fb2;
-      --brand2:#78d3ff;
-      --accent:#ffd166;
-      --ok:#39d353;
-      --warn:#ffcc00;
-      --error:#ff6b6b;
-      --shadow: 0 12px 34px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
-      --radius: 16px;
+      --muted:#a8b0c2;
+      --accent:#ff8fb2;
+      --accent2:#7fd4ff;
+      --accent3:#ffd166;
+      --ok:#34d399; --warn:#fbbf24; --err:#ef4444;
+      --radius: 18px; --shadow: 0 18px 40px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05);
     }
-    * { box-sizing: border-box; }
-    html,body { margin:0; padding:0; color:var(--fg);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    *{box-sizing:border-box}
+    html,body{
+      margin:0; color:var(--fg);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       background:
-        radial-gradient(1600px 800px at 10% -10%, rgba(255,143,178,.08), transparent 60%),
-        radial-gradient(1400px 700px at 110% 0%, rgba(120,211,255,.08), transparent 60%),
-        linear-gradient(180deg, #0c1016 0%, #0f1117 60%, #0b0e14 100%) no-repeat;
-      min-height: 100vh;
+        radial-gradient(1400px 900px at 120% -20%, rgba(127,212,255,.10), transparent 60%),
+        radial-gradient(1200px 800px at -20% -10%, rgba(255,143,178,.12), transparent 60%),
+        linear-gradient(180deg, #0b1118, #0a0f14);
+      min-height:100vh;
     }
-    a { color: var(--brand2); text-decoration: none; }
-    img { max-width:100%; display:block; border-radius: 14px; }
+    a{color:var(--accent2); text-decoration:none}
+    .wrap{max-width:1200px; margin:0 auto; padding:22px}
+    header{position:sticky; top:0; z-index:20; background:rgba(10,15,20,.6); backdrop-filter: blur(12px); border-bottom:1px solid rgba(255,255,255,.10)}
+    nav{display:flex; align-items:center; justify-content:space-between; gap:14px}
+    .brand{display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.3px}
+    .brand .dot{width:14px; height:14px; border-radius:50%; background:conic-gradient(from 40deg,var(--accent),var(--accent2),var(--accent3)); box-shadow:0 0 22px rgba(255,143,178,.7)}
+    .navlinks a{padding:10px 12px; border-radius:12px}
+    .navlinks a:hover{background:rgba(255,255,255,.08)}
 
-    .thai {
-      background:
-        url('img/thai_border.svg') center top/280px repeat-x,
-        url('img/thai_border.svg') center bottom/280px repeat-x;
-      padding-top: 24px; padding-bottom: 24px;
-    }
+    .hero{padding:76px 22px 26px; text-align:center}
+    .hero h1{font: 700 clamp(32px,6vw,64px)/1.05 "Playfair Display", serif; margin:0 0 10px}
+    .hero p{color:var(--muted); margin:0; font-size:clamp(14px,2.5vw,18px)}
+    .pill{display:inline-flex; align-items:center; gap:10px; padding:9px 14px; border-radius:999px; border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.08)}
 
-    #splash{
-      position:fixed; inset:0; z-index:1000;
-      background: #000 url('img/hero.jpg') center/cover no-repeat;
-      display:grid; place-items:center;
-      transition: opacity .9s ease;
-    }
-    #splash::after{
-      content:""; position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.55));
-    }
-    #splash .title{
-      position:relative; z-index:2; text-align:center;
-      padding:16px 24px; border-radius:999px;
-      background: rgba(255,255,255,.14); backdrop-filter: blur(8px);
-      box-shadow: var(--shadow);
-      font-weight:800; letter-spacing:.6px;
-    }
-    #splash.hide{ opacity:0; pointer-events:none; }
+    section{padding:30px 22px 16px}
+    .card{background:var(--surface); border:1px solid rgba(255,255,255,.12); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px}
+    .grid{display:grid; gap:18px; grid-template-columns:repeat(12,1fr)}
+    .col-12{grid-column:span 12}
+    .col-6{grid-column:span 12} @media(min-width:900px){.col-6{grid-column:span 6}}
+    form label{display:block; font-weight:700; margin:12px 0 6px}
+    input[type="text"],input[type="email"],input[type="number"],textarea,select{width:100%; padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.08); color:var(--fg)}
+    textarea{min-height:90px; resize:vertical}
+    .row{display:flex; gap:12px; flex-wrap:wrap}
+    .row>*{flex:1; min-width:160px}
+    .radios{display:flex; gap:12px; flex-wrap:wrap}
+    .chip{display:inline-flex; align-items:center; gap:10px; padding:10px 14px; border-radius:999px; border:1px solid rgba(255,255,255,.12); cursor:pointer; background:rgba(255,255,255,.06)}
+    .chip[data-checked="true"]{outline:2px solid rgba(255,255,255,.18); background:rgba(255,255,255,.12)}
+    .btn{display:inline-flex; align-items:center; justify-content:center; gap:10px; border:0; padding:12px 16px; border-radius:12px; cursor:pointer; font-weight:800; color:#0a0f14; background:linear-gradient(135deg,var(--accent),var(--accent2)); box-shadow:0 10px 20px rgba(255,143,178,.25), 0 6px 18px rgba(127,212,255,.18)}
+    .btn.ghost{background:transparent; color:var(--fg); border:1px solid rgba(255,255,255,.18)}
+    .hint{color:var(--muted); font-size:14px}
+    .success{color:var(--ok); font-weight:700}
+    .error{color:var(--err); font-weight:700}
 
-    header{
-      position:sticky; top:0; z-index:20;
-      background:rgba(15,17,21,.55); backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255,255,255,.08);
-    }
-    .wrap{ max-width:1100px; margin:0 auto; padding:20px; }
-    nav{ display:flex; align-items:center; gap:14px; justify-content:space-between; }
-    .brand{ display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.3px; }
-    .brand .dot{ width:12px; height:12px; border-radius:50%;
-      background: conic-gradient(from 45deg, var(--brand), var(--brand2), var(--accent));
-      box-shadow:0 0 22px rgba(255,143,178,.8);
-    }
-    .navlinks a{ padding:8px 12px; border-radius:10px; }
-    .navlinks a:hover{ background:rgba(255,255,255,.07); }
+    #splash{position:fixed; inset:0; z-index:1000; background:#000 url('img/hero.jpg') center/cover no-repeat; display:grid; place-items:center; transition:opacity .9s ease}
+    #splash::after{content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.55))}
+    #splash .title{position:relative; z-index:2; text-align:center; padding:16px 24px; border-radius:999px; background:rgba(255,255,255,.14); backdrop-filter: blur(8px); box-shadow: var(--shadow); font-weight:800; letter-spacing:.6px}
+    #splash.hide{opacity:0; pointer-events:none}
 
-    .hero{ padding:64px 20px 18px; text-align:center; }
-    .hero h1{ font-size: clamp(28px, 6vw, 52px); margin:0 0 8px; }
-    .hero p{ color:var(--muted); margin:0; }
+    .gallery{display:grid; gap:12px; grid-template-columns:repeat(2,1fr)}
+    @media(min-width:720px){.gallery{grid-template-columns:repeat(4,1fr)}}
+    .figure{margin:0; position:relative}
+    .figure img{width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:14px; background:#111}
+    .skeleton{position:relative; overflow:hidden; border-radius:14px; background:rgba(255,255,255,.06); aspect-ratio:1/1}
+    .skeleton::after{content:''; position:absolute; inset:0; background:linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent); animation: shine 1.2s infinite}
+    @keyframes shine{0%{transform:translateX(-100%)} 100%{transform:translateX(100%)}}
+    .thumb-actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px}
 
-    section{ padding:28px 20px 18px; }
-    .card{
-      background: var(--card);
-      border: 1px solid rgba(255,255,255,.10);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 20px;
-    }
-    .grid{ display:grid; gap:18px; grid-template-columns: repeat(12, 1fr); }
-    .col-12{ grid-column: span 12; }
-    .col-6{ grid-column: span 12; }
-    @media(min-width:860px){ .col-6{ grid-column: span 6; } }
+    .lightbox{position:fixed; inset:0; background:rgba(0,0,0,.88); display:none; align-items:center; justify-content:center; z-index:50}
+    .lightbox.show{display:flex}
+    .lightbox img{max-width:92vw; max-height:84vh; border-radius:16px}
+    .lightbox .close{position:absolute; top:14px; right:18px; font-size:28px; cursor:pointer}
 
-    form label{ display:block; font-weight:700; margin:12px 0 6px; }
-    input[type="text"], input[type="email"], textarea, select, input[type="number"]{
-      width:100%; padding:12px 14px; border-radius:12px;
-      border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.07); color:var(--fg);
-      outline:none;
-    }
-    textarea{ min-height:90px; resize:vertical; }
-    .row{ display:flex; gap:12px; flex-wrap:wrap; }
-    .row > *{ flex:1; min-width:160px; }
-    .radios{ display:flex; gap:12px; flex-wrap: wrap; }
-    .chip{
-      display:inline-flex; align-items:center; gap:10px; padding:10px 14px;
-      border-radius:999px; border:1px solid rgba(255,255,255,.12); cursor:pointer;
-      background:rgba(255,255,255,.06);
-    }
-    .chip input{ display:none; }
-    .chip[data-checked="true"]{ outline:2px solid rgba(255,255,255,.2); background:rgba(255,255,255,.12); }
-    .hint{ color:var(--muted); font-size:14px; }
-    .btn{
-      display:inline-flex; align-items:center; justify-content:center; gap:10px;
-      border:0; padding:12px 16px; border-radius:12px; cursor:pointer; font-weight:800;
-      color:#0c0f14; background:linear-gradient(135deg, var(--brand), var(--brand2));
-      box-shadow: 0 10px 20px rgba(255,137,168,.25), 0 6px 18px rgba(138,198,255,.18);
-    }
-    .btn.ghost{ background: transparent; color:var(--fg); border:1px solid rgba(255,255,255,.18); }
-    .success{ color: var(--ok); font-weight:700; }
-    .error{ color: var(--error); font-weight:700; }
-    .warn{ color: var(--warn); font-weight:700; }
-
-    .pill{
-      display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
-      background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12);
-    }
-
-    .gallery{ display:grid; gap:10px; grid-template-columns: repeat(2, 1fr); }
-    @media(min-width:700px){ .gallery{ grid-template-columns: repeat(4, 1fr); } }
-    .gallery img{ border-radius:12px; aspect-ratio: 1/1; object-fit:cover; cursor:pointer; }
-
-    .lightbox{ position:fixed; inset:0; background:rgba(0,0,0,.85); display:none; align-items:center; justify-content:center; z-index:50; }
-    .lightbox.show{ display:flex; }
-    .lightbox img{ max-width:90vw; max-height:80vh; border-radius:14px; }
-    .lightbox .close{ position:absolute; top:14px; right:18px; font-size:28px; cursor:pointer; }
-
-    footer{ padding:60px 20px; text-align:center; color:var(--muted); }
+    footer{padding:60px 22px; text-align:center; color:var(--muted)}
   </style>
-
 </head>
 <body>
-  <div id="splash" aria-hidden="true">
-    <div class="title">Kim &amp; Partner • 20. Juni 2026 • Thailand 🇹🇭</div>
-  </div>
+  <div id="splash" aria-hidden="true"><div class="title">Kim &amp; Partner • 20. Juni 2026 • Thailand 🇹🇭</div></div>
 
-  <header class="thai">
+  <header>
     <div class="wrap">
       <nav>
-        <div class="brand"><span class="dot"></span> <span>Hochzeit</span></div>
+        <div class="brand"><span class="dot"></span><span>Hochzeit</span></div>
         <div class="navlinks">
           <a href="#rsvp">Check-in</a>
           <a href="#infos">Infos</a>
           <a href="#galerie">Galerie</a>
           <a href="#chat">Gästebuch</a>
-          <a href="admin.html">Admin</a>
+          <a href="admin.html#hidden" aria-hidden="true"> </a>
         </div>
       </nav>
     </div>
@@ -163,9 +107,9 @@
 
   <main>
     <div class="wrap hero">
-      <h1>Willkommen zu unserer Hochzeit in Thailand 🌺🏝️</h1>
-      <p>Wir freuen uns riesig, dass ihr dabei seid. Bitte nutzt den Check-in und stöbert durch Infos, Galerie & Gästebuch.</p>
-      <div class="pill" style="margin-top:10px;">💌 Dresscode: Festlich & sommerlich • 📍 Koh Samui</div>
+      <h1 id="heroTitle">Willkommen zu unserer Hochzeit in Thailand</h1>
+      <p id="heroSubtitle">Check-in, Infos, Galerie und Gästebuch – alles an einem Ort 💞</p>
+      <div class="pill" id="heroBadge">📍 Koh Samui • Festlich & sommerlich</div>
     </div>
 
     <section id="rsvp">
@@ -173,12 +117,9 @@
         <div class="col-6">
           <div class="card">
             <h2 style="margin-top:0">Check-in / Zusage</h2>
-            <p class="hint">Bitte füllt die Felder aus. Ihr könnt Begleitpersonen mit Namen & Alter angeben.</p>
+            <p class="hint">Bitte füllt die Felder aus. Begleitpersonen mit Namen & Alter angeben.</p>
 
-            <form id="rsvpForm" name="rsvp" method="post" action="/" data-netlify="true" netlify-honeypot="bot-field" novalidate>
-              <input type="hidden" name="form-name" value="rsvp" />
-              <p style="display:none;"><label>Bitte freilassen: <input name="bot-field" /></label></p>
-
+            <form id="rsvpForm" novalidate>
               <label for="name">Vor- &amp; Nachname *</label>
               <input id="name" name="name" type="text" placeholder="Max Mustermann" required autocomplete="name" autocapitalize="words">
 
@@ -193,17 +134,13 @@
                 <div>
                   <label for="guests">Anzahl Begleitpersonen</label>
                   <select id="guests" name="guests">
-                    <option value="0" selected>0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
+                    <option value="0" selected>0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
                   </select>
                 </div>
               </div>
 
               <div id="companions">
-                <div class="row"><div><label for="c1name">Begleitung 1 – Name</label><input id="c1name" name="c1name" type="text" placeholder="Vor- & Nachname"></div><div><label for="c1age">Alter</label><input id="c1age" name="c1age" type="number" min="0" max="120" placeholder="z. B. 28"></div></div>
+                <div class="row"><div><label for="c1name">Begleitung 1 – Name</label><input id="c1name" name="c1name" type="text"></div><div><label for="c1age">Alter</label><input id="c1age" name="c1age" type="number" min="0" max="120"></div></div>
                 <div class="row"><div><label for="c2name">Begleitung 2 – Name</label><input id="c2name" name="c2name" type="text"></div><div><label for="c2age">Alter</label><input id="c2age" name="c2age" type="number" min="0" max="120"></div></div>
                 <div class="row"><div><label for="c3name">Begleitung 3 – Name</label><input id="c3name" name="c3name" type="text"></div><div><label for="c3age">Alter</label><input id="c3age" name="c3age" type="number" min="0" max="120"></div></div>
                 <div class="row"><div><label for="c4name">Begleitung 4 – Name</label><input id="c4name" name="c4name" type="text"></div><div><label for="c4age">Alter</label><input id="c4age" name="c4age" type="number" min="0" max="120"></div></div>
@@ -232,32 +169,30 @@
         <div class="col-6">
           <div class="card">
             <h2 style="margin-top:0">Ablauf &amp; Ort</h2>
-            <ul class="clean">
-              <li><strong>Datum:</strong> 20. Juni 2026</li>
-              <li><strong>Trauung:</strong> 14:00 Uhr, Strandzeremonie Koh Samui</li>
-              <li><strong>Feier:</strong> ab 16:00 Uhr, Beach Resort</li>
-              <li><strong>Dresscode:</strong> Festlich, sommerlich</li>
-              <li><strong>Anfahrt:</strong> Shuttle vom Hotel • Taxis verfügbar</li>
-              <li><strong>Übernachtung:</strong> Resort-Kontingent (Stichwort „Hochzeit Kim“)</li>
+            <ul class="clean" id="infoList" style="list-style:none; padding:0; display:grid; gap:10px;">
+              <li><strong>Datum:</strong> <span id="infoDate">20. Juni 2026</span></li>
+              <li><strong>Trauung:</strong> <span id="infoCeremony">14:00 Uhr, Strandzeremonie Koh Samui</span></li>
+              <li><strong>Feier:</strong> <span id="infoParty">ab 16:00 Uhr, Beach Resort</span></li>
+              <li><strong>Dresscode:</strong> <span id="infoDress">Festlich, sommerlich</span></li>
+              <li><strong>Anfahrt:</strong> <span id="infoArrival">Shuttle vom Hotel • Taxis verfügbar</span></li>
+              <li><strong>Übernachtung:</strong> <span id="infoHotel">Resort-Kontingent (Stichwort „Hochzeit Kim“)</span></li>
             </ul>
-            <p class="hint" style="margin-top:10px">
-              QR-Code: Er führt direkt auf diese Seite – einfach scannen.
-            </p>
+            <p class="hint" style="margin-top:10px">QR-Code führt direkt auf diese Seite.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="infos" class="thai">
+    <section id="infos">
       <div class="wrap grid">
         <div class="col-12">
           <div class="card">
             <h2 style="margin-top:0">Weitere Informationen</h2>
-            <p>Thailand-Flair, Palmen & Sonnenuntergang – wir freuen uns auf einen unvergesslichen Tag mit euch! 🇹🇭🌅</p>
-            <ul class="clean">
-              <li><strong>Geschenke:</strong> Eure Anwesenheit ist unser Geschenk. Wer mag: <em>Reisekasse</em> 💞</li>
-              <li><strong>Kinder:</strong> Sehr gern! Kinderbetreuung am Strand.</li>
-              <li><strong>Fotos:</strong> Nach der Feier füllen wir die Galerie. Hashtag <span class="mono">#KimUndPartnerInThailand</span></li>
+            <p id="infoMore">Thailand-Flair, Palmen & Sonnenuntergang – wir freuen uns auf einen unvergesslichen Tag mit euch! 🇹🇭🌅</p>
+            <ul class="clean" style="list-style:none; padding:0; display:grid; gap:10px;">
+              <li><strong>Geschenke:</strong> <span id="infoGifts">Eure Anwesenheit ist unser Geschenk. Wer mag: Reisekasse 💞</span></li>
+              <li><strong>Kinder:</strong> <span id="infoKids">Sehr gern! Kinderbetreuung am Strand.</span></li>
+              <li><strong>Fotos:</strong> <span id="infoPhotos">Nach der Feier füllen wir die Galerie. Hashtag #KimUndPartnerInThailand</span></li>
             </ul>
           </div>
         </div>
@@ -269,24 +204,24 @@
         <div class="col-12">
           <div class="card">
             <h2 style="margin-top:0">Galerie</h2>
-            <div class="gallery" id="gallery">
-              <img src="img/pic1.jpg" alt="Strand">
-              <img src="img/pic2.jpg" alt="Palmen">
-              <img src="img/pic3.jpg" alt="Thailand">
-              <img src="img/pic4.jpg" alt="Sonnenuntergang">
+            <div class="row" style="align-items:center;">
+              <button class="btn ghost" id="downloadAll">Alle Bilder (ZIP)</button>
+              <span class="hint">Tippe auf ein Bild zum Vergrößern. Einzel-Download unter dem Bild.</span>
             </div>
-            <p class="hint" style="margin-top:10px">Tipp: Bild antippen – Lightbox öffnet sich.</p>
+            <div class="gallery" id="gallery">
+              <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+            </div>
           </div>
         </div>
       </div>
       <div class="lightbox" id="lightbox"><span class="close" id="lbClose">✕</span><img id="lbImg" alt=""></div>
     </section>
 
-    <section id="chat" class="thai">
+    <section id="chat">
       <div class="wrap grid">
         <div class="col-12">
           <div class="card">
-            <h2 style="margin-top:0">Gästebuch / Chat 💬</h2>
+            <h2 style="margin-top:0">Gästebuch 💬</h2>
             <p class="hint">Hinterlasst uns gern eine liebe Nachricht! (Öffentlich sichtbar)</p>
             <div class="row">
               <input id="chatName" type="text" placeholder="Dein Name">
@@ -301,153 +236,102 @@
     </section>
   </main>
 
-  <footer>
-    Mit Liebe gemacht. © Kim &amp; Partner
-  </footer>
+  <footer>Mit Liebe gemacht. © Kim &amp; Partner</footer>
 
   <script>
-    const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec";
-    const ADMIN_TOKEN = "";
+  const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec";
+  const splash = document.getElementById('splash'); const hideSplash = ()=>splash.classList.add('hide');
+  window.addEventListener('load',()=>setTimeout(hideSplash,1200)); splash.addEventListener('click',hideSplash);
 
-    const splash = document.getElementById('splash');
-    const hideSplash = () => splash.classList.add('hide');
-    window.addEventListener('load', () => setTimeout(hideSplash, 1200));
-    splash.addEventListener('click', hideSplash);
+  document.querySelectorAll('[data-chip]').forEach(label=>{const input=label.querySelector('input[type="radio"]'); input.addEventListener('change',()=>{label.parentElement.querySelectorAll('[data-chip]').forEach(l=>l.dataset.checked='false'); label.dataset.checked='true';});});
 
-    document.querySelectorAll('[data-chip]').forEach(label => {
-      const input = label.querySelector('input[type="radio"]');
-      input.addEventListener('change', () => {
-        label.parentElement.querySelectorAll('[data-chip]').forEach(l => l.dataset.checked = 'false');
-        label.dataset.checked = 'true';
-      });
-    });
+  const form=document.getElementById('rsvpForm'); const statusEl=document.getElementById('status');
+  form.addEventListener('submit',async(e)=>{e.preventDefault(); statusEl.textContent=""; statusEl.className="";
+    const fd=new FormData(form); const name=(document.getElementById('name').value||"").trim();
+    const email=(document.getElementById('email').value||"").trim(); const message=(document.getElementById('message').value||"").trim();
+    const guests=document.getElementById('guests').value; const attending=(fd.get('attending')||"").toString();
+    const privacy=document.getElementById('privacy').checked; if(!name||!attending||!privacy){statusEl.textContent="Bitte fülle Name, Teilnahme & Datenschutz aus."; statusEl.className="error"; return;}
+    const qs=new URLSearchParams({type:"rsvp",name,email,message,guests,attending,
+      c1name:document.getElementById('c1name').value||"", c1age:document.getElementById('c1age').value||"",
+      c2name:document.getElementById('c2name').value||"", c2age:document.getElementById('c2age').value||"",
+      c3name:document.getElementById('c3name').value||"", c3age:document.getElementById('c3age').value||"",
+      c4name:document.getElementById('c4name').value||"", c4age:document.getElementById('c4age').value||"", ua:navigator.userAgent});
+    try{ const res=await fetch(SHEET_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},body:qs.toString()});
+      let ok=res.ok; try{const j=await res.json(); ok=ok&&!!j.ok;}catch(_){}
+      if(ok){statusEl.textContent=attending==='ja'?"Danke für deine Zusage! 🎉":"Schade, aber danke fürs Bescheid sagen!"; statusEl.className="success"; form.reset(); document.querySelectorAll('[data-chip]').forEach(l=>l.dataset.checked='false');}
+      else throw 0;
+    }catch(e){ statusEl.textContent="Speichern fehlgeschlagen."; statusEl.className="error"; }
+  });
 
-    const lb = document.getElementById('lightbox');
-    const lbImg = document.getElementById('lbImg');
-    document.getElementById('gallery').addEventListener('click', (e) => {
-      if (e.target.tagName === 'IMG') { lbImg.src = e.target.src; lb.classList.add('show'); }
-    });
-    document.getElementById('lbClose').addEventListener('click', () => lb.classList.remove('show'));
-    lb.addEventListener('click', (e) => { if (e.target === lb) lb.classList.remove('show'); });
+  async function loadContent(){try{const url=new URL(SHEET_ENDPOINT); url.searchParams.set("type","content"); url.searchParams.set("list","1");
+    const res=await fetch(url); const j=await res.json(); if(!j.ok) return; const c=j.content||{};
+    const set=(id,val)=>{if(document.getElementById(id)&&val) document.getElementById(id).textContent=val;};
+    set("heroTitle",c.heroTitle); set("heroSubtitle",c.heroSubtitle); set("heroBadge",c.heroBadge);
+    set("infoDate",c.infoDate); set("infoCeremony",c.infoCeremony); set("infoParty",c.infoParty); set("infoDress",c.infoDress); set("infoArrival",c.infoArrival); set("infoHotel",c.infoHotel);
+    set("infoMore",c.infoMore); set("infoGifts",c.infoGifts); set("infoKids",c.infoKids); set("infoPhotos",c.infoPhotos);
+  }catch(e){}}
+  loadContent();
 
-    const form = document.getElementById('rsvpForm');
-    const statusEl = document.getElementById('status');
-    const resetBtn = document.getElementById('resetBtn');
-    const submitBtn = document.getElementById('submitBtn');
+  const galleryEl=document.getElementById('gallery');
+  const lb=document.getElementById('lightbox'); const lbImg=document.getElementById('lbImg');
+  document.getElementById('lbClose').addEventListener('click',()=>lb.classList.remove('show')); lb.addEventListener('click',(e)=>{if(e.target===lb) lb.classList.remove('show');});
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      statusEl.textContent = "";
-      statusEl.className = "";
-
-      if (!SHEET_ENDPOINT || !SHEET_ENDPOINT.startsWith('https')) {
-        statusEl.textContent = "Konfiguration fehlt: SHEET_ENDPOINT ist nicht gesetzt.";
-        statusEl.className = "error";
-        return;
-      }
-
-      const fd = new FormData(form);
-      const name = (document.getElementById('name').value || "").trim();
-      const email = (document.getElementById('email').value || "").trim();
-      const message = (document.getElementById('message').value || "").trim();
-      const guests = document.getElementById('guests').value;
-      const attending = (fd.get('attending') || "").toString();
-      const privacy = document.getElementById('privacy').checked;
-
-      if(!name || !attending || !privacy){
-        statusEl.textContent = "Bitte fülle Name, Teilnahme & Datenschutz aus.";
-        statusEl.className = "error";
-        return;
-      }
-
-      const payload = new URLSearchParams({
-        type: "rsvp",
-        name, email, message, guests, attending,
-        c1name: (document.getElementById('c1name').value || ""),
-        c1age: (document.getElementById('c1age').value || ""),
-        c2name: (document.getElementById('c2name').value || ""),
-        c2age: (document.getElementById('c2age').value || ""),
-        c3name: (document.getElementById('c3name').value || ""),
-        c3age: (document.getElementById('c3age').value || ""),
-        c4name: (document.getElementById('c4name').value || ""),
-        c4age: (document.getElementById('c4age').value || ""),
-        ua: navigator.userAgent
-      });
-
-      try {
-        submitBtn && (submitBtn.disabled = true);
-        statusEl.textContent = "Sende …";
-        const res = await fetch(SHEET_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-          body: payload.toString()
-        });
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        let ok = true;
-        try { const j = await res.json(); ok = !!j.ok; if (!ok && j.error) throw new Error(j.error); } catch(_) {}
-        if (ok) {
-          statusEl.textContent = attending === 'ja' ? "Danke für deine Zusage! 🎉" : "Schade, aber danke fürs Bescheid sagen!";
-          statusEl.className = "success";
-          form.reset();
-          document.querySelectorAll('[data-chip]').forEach(l => l.dataset.checked = 'false');
-        } else {
-          throw new Error("Antwort nicht bestätigt");
-        }
-      } catch (err) {
-        console.error(err);
-        statusEl.textContent = "Speichern fehlgeschlagen. Bitte Apps Script aktualisieren (siehe README: type=rsvp Unterstützung).";
-        statusEl.className = "error";
-      } finally {
-        submitBtn && (submitBtn.disabled = false);
-      }
-    });
-
-    const chatName = document.getElementById('chatName');
-    const chatText = document.getElementById('chatText');
-    const chatSend = document.getElementById('chatSend');
-    const chatList = document.getElementById('chatList');
-    const chatStatus = document.getElementById('chatStatus');
-
-    chatSend.addEventListener('click', async () => {
-      chatStatus.textContent = "";
-      const n = (chatName.value || "").trim();
-      const t = (chatText.value || "").trim();
-      if (!n || !t) { chatStatus.textContent = "Bitte Name und Nachricht eingeben."; return; }
-      try {
-        const res = await fetch(SHEET_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-          body: new URLSearchParams({ type: "chat", name: n, message: t, ua: navigator.userAgent }).toString()
-        });
-        if (!res.ok) throw new Error();
-        chatText.value = "";
-        chatStatus.textContent = "Gesendet 💬";
-        loadChat();
-      } catch(e) {
-        chatStatus.textContent = "Chat speichern fehlgeschlagen. Bitte Apps Script auf type=chat erweitern (siehe README).";
-      }
-    });
-
-    async function loadChat() {
-      chatList.innerHTML = "";
-      try {
-        const url = new URL(SHEET_ENDPOINT);
-        url.searchParams.set("type", "chat");
-        url.searchParams.set("list", "1");
-        const res = await fetch(url, { method: "GET" });
-        const j = await res.json();
-        if (!j.ok) throw new Error(j.error || "Fehler");
-        (j.rows || []).slice(-40).forEach(r => {
-          const div = document.createElement('div');
-          div.className = "card";
-          div.innerHTML = `<strong>${r.name || 'Gast'}</strong><div class="hint" style="margin-top:4px;">${r.message || ''}</div>`;
-          chatList.appendChild(div);
-        });
-      } catch(e) {
-        chatStatus.textContent = "Chat laden nicht möglich (Apps Script GET nicht aktiv).";
-      }
+  function driveUrlFromRow(row){
+    let url = row.url || row.webContentLink || "";
+    let thumb = row.thumb || row.thumbnailLink || "";
+    const id = row.id || row.fileId || "";
+    if(!url && id) url = "https://drive.google.com/uc?export=download&id="+id;
+    if(!thumb && id) thumb = "https://drive.google.com/thumbnail?authuser=0&sz=w512&id="+id;
+    if(url && url.includes("https://drive.google.com/file/")){
+      const m = url.match(/\d\/(.*?)\//); if(m && m[1]){ const fid=m[1]; url = "https://drive.google.com/uc?export=download&id="+fid; if(!thumb) thumb = "https://drive.google.com/thumbnail?authuser=0&sz=w512&id="+fid; }
     }
-    loadChat();
+    return {url, thumb};
+  }
+
+  function renderImage(item){
+    const wrap=document.createElement('figure'); wrap.className="figure";
+    const ph=document.createElement('div'); ph.className="skeleton"; wrap.appendChild(ph);
+    const img=new Image(); img.loading="lazy"; img.decoding="async";
+    const urls = driveUrlFromRow(item); const full = urls.url; const t = urls.thumb || full || "img/pic1.jpg";
+    img.src = t; img.alt = item.filename||"Foto";
+    img.addEventListener('load',()=>{ wrap.replaceChildren(img); });
+    img.addEventListener('error',()=>{ img.src="img/pic1.jpg"; wrap.replaceChildren(img); });
+    img.addEventListener('click',()=>{ const show = full || img.src; lbImg.src = show; lb.classList.add('show'); });
+    const actions=document.createElement('div'); actions.className="thumb-actions";
+    const a=document.createElement('a'); a.className="btn ghost"; a.textContent="Download"; a.href=(full||img.src); a.setAttribute("download", item.filename||"bild.jpg"); a.target="_blank";
+    actions.appendChild(a); wrap.appendChild(actions);
+    return wrap;
+  }
+
+  async function loadGallery(){
+    try{ const url=new URL(SHEET_ENDPOINT); url.searchParams.set("type","gallery"); url.searchParams.set("list","1");
+      const res=await fetch(url); const j=await res.json(); if(!j.ok) throw 0;
+      const items=j.rows||[]; galleryEl.innerHTML="";
+      if(items.length===0){galleryEl.innerHTML='<p class="hint">Noch keine Bilder. Der Admin kann welche hochladen.</p>'; return;}
+      const io = new IntersectionObserver((entries)=>{entries.forEach(entry=>{if(entry.isIntersecting){const el=entry.target; const data=JSON.parse(el.dataset.item); const node=renderImage(data); el.replaceWith(node); io.unobserve(el);}});},{rootMargin:"300px"});
+      for(const g of items){ const ph=document.createElement('div'); ph.className="skeleton"; ph.dataset.item = JSON.stringify(g); galleryEl.appendChild(ph); io.observe(ph);}
+    }catch(e){ galleryEl.innerHTML='<p class="error">Galerie konnte nicht geladen werden.</p>'; }
+  } loadGallery();
+
+  document.getElementById('downloadAll').addEventListener('click',async()=>{
+    try{ const url=new URL(SHEET_ENDPOINT); url.searchParams.set("type","gallery"); url.searchParams.set("list","1");
+      const res=await fetch(url); const j=await res.json(); if(!j.ok) return; const items=j.rows||[]; if(items.length===0) return;
+      const zip=new JSZip();
+      for (const it of items){ const u = driveUrlFromRow(it).url; if(!u) continue; const r=await fetch(u); const b=await r.blob(); zip.file((it.filename||('bild_'+Date.now()+'.jpg')), b); }
+      const blob=await zip.generateAsync({type:"blob"}); saveAs(blob, "Hochzeitsfotos.zip");
+    }catch(e){ alert("Zip-Download fehlgeschlagen."); }
+  });
+
+  const chatName=document.getElementById('chatName'); const chatText=document.getElementById('chatText');
+  const chatSend=document.getElementById('chatSend'); const chatList=document.getElementById('chatList'); const chatStatus=document.getElementById('chatStatus');
+  chatSend.addEventListener('click',async()=>{ chatStatus.textContent=""; const n=(chatName.value||"").trim(), t=(chatText.value||"").trim(); if(!n||!t){chatStatus.textContent="Bitte Name und Nachricht eingeben."; return;}
+    try{ await fetch(SHEET_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},body:new URLSearchParams({type:"chat",name:n,message:t,ua:navigator.userAgent}).toString()});
+      chatText.value=""; loadChat(); chatStatus.textContent="Gesendet 💬";
+    }catch(e){ chatStatus.textContent="Chat speichern fehlgeschlagen."; }
+  });
+  async function loadChat(){ chatList.innerHTML=""; try{ const url=new URL(SHEET_ENDPOINT); url.searchParams.set("type","chat"); url.searchParams.set("list","1");
+    const res=await fetch(url); const j=await res.json(); if(!j.ok) return; (j.rows||[]).slice(-80).forEach(r=>{const div=document.createElement('div'); div.className="card"; div.innerHTML=`<strong>${{r.name||'Gast'}}</strong><div class="hint" style="margin-top:4px;">${{r.message||''}}</div>`; chatList.appendChild(div);}); }catch(e){} }
+  loadChat();
   </script>
 </body>
 </html>
