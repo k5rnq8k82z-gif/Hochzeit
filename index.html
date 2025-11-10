@@ -1,78 +1,453 @@
+
 <!doctype html>
 <html lang="de">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Kim & Partner – Hochzeit in Thailand</title>
-  <meta name="description" content="Hochzeit von Kim & Partner in Thailand – RSVP, Galerie & Gästebuch" />
-  <link rel="stylesheet" href="assets/css/style.css">
-  <script defer src="assets/js/main.js"></script>
+  <meta name="description" content="Hochzeit von Kim & Partner in Thailand – RSVP, Infos, Galerie & Chat" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root{
+      --bg: #0c1016;
+      --card: rgba(255,255,255,0.07);
+      --fg: #eef2fa;
+      --muted:#aab0c0;
+      --brand:#ff8fb2;
+      --brand2:#78d3ff;
+      --accent:#ffd166;
+      --ok:#39d353;
+      --warn:#ffcc00;
+      --error:#ff6b6b;
+      --shadow: 0 12px 34px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    html,body { margin:0; padding:0; color:var(--fg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:
+        radial-gradient(1600px 800px at 10% -10%, rgba(255,143,178,.08), transparent 60%),
+        radial-gradient(1400px 700px at 110% 0%, rgba(120,211,255,.08), transparent 60%),
+        linear-gradient(180deg, #0c1016 0%, #0f1117 60%, #0b0e14 100%) no-repeat;
+      min-height: 100vh;
+    }
+    a { color: var(--brand2); text-decoration: none; }
+    img { max-width:100%; display:block; border-radius: 14px; }
+
+    .thai {
+      background:
+        url('img/thai_border.svg') center top/280px repeat-x,
+        url('img/thai_border.svg') center bottom/280px repeat-x;
+      padding-top: 24px; padding-bottom: 24px;
+    }
+
+    #splash{
+      position:fixed; inset:0; z-index:1000;
+      background: #000 url('img/hero.jpg') center/cover no-repeat;
+      display:grid; place-items:center;
+      transition: opacity .9s ease;
+    }
+    #splash::after{
+      content:""; position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.55));
+    }
+    #splash .title{
+      position:relative; z-index:2; text-align:center;
+      padding:16px 24px; border-radius:999px;
+      background: rgba(255,255,255,.14); backdrop-filter: blur(8px);
+      box-shadow: var(--shadow);
+      font-weight:800; letter-spacing:.6px;
+    }
+    #splash.hide{ opacity:0; pointer-events:none; }
+
+    header{
+      position:sticky; top:0; z-index:20;
+      background:rgba(15,17,21,.55); backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .wrap{ max-width:1100px; margin:0 auto; padding:20px; }
+    nav{ display:flex; align-items:center; gap:14px; justify-content:space-between; }
+    .brand{ display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.3px; }
+    .brand .dot{ width:12px; height:12px; border-radius:50%;
+      background: conic-gradient(from 45deg, var(--brand), var(--brand2), var(--accent));
+      box-shadow:0 0 22px rgba(255,143,178,.8);
+    }
+    .navlinks a{ padding:8px 12px; border-radius:10px; }
+    .navlinks a:hover{ background:rgba(255,255,255,.07); }
+
+    .hero{ padding:64px 20px 18px; text-align:center; }
+    .hero h1{ font-size: clamp(28px, 6vw, 52px); margin:0 0 8px; }
+    .hero p{ color:var(--muted); margin:0; }
+
+    section{ padding:28px 20px 18px; }
+    .card{
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+    .grid{ display:grid; gap:18px; grid-template-columns: repeat(12, 1fr); }
+    .col-12{ grid-column: span 12; }
+    .col-6{ grid-column: span 12; }
+    @media(min-width:860px){ .col-6{ grid-column: span 6; } }
+
+    form label{ display:block; font-weight:700; margin:12px 0 6px; }
+    input[type="text"], input[type="email"], textarea, select, input[type="number"]{
+      width:100%; padding:12px 14px; border-radius:12px;
+      border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.07); color:var(--fg);
+      outline:none;
+    }
+    textarea{ min-height:90px; resize:vertical; }
+    .row{ display:flex; gap:12px; flex-wrap:wrap; }
+    .row > *{ flex:1; min-width:160px; }
+    .radios{ display:flex; gap:12px; flex-wrap: wrap; }
+    .chip{
+      display:inline-flex; align-items:center; gap:10px; padding:10px 14px;
+      border-radius:999px; border:1px solid rgba(255,255,255,.12); cursor:pointer;
+      background:rgba(255,255,255,.06);
+    }
+    .chip input{ display:none; }
+    .chip[data-checked="true"]{ outline:2px solid rgba(255,255,255,.2); background:rgba(255,255,255,.12); }
+    .hint{ color:var(--muted); font-size:14px; }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      border:0; padding:12px 16px; border-radius:12px; cursor:pointer; font-weight:800;
+      color:#0c0f14; background:linear-gradient(135deg, var(--brand), var(--brand2));
+      box-shadow: 0 10px 20px rgba(255,137,168,.25), 0 6px 18px rgba(138,198,255,.18);
+    }
+    .btn.ghost{ background: transparent; color:var(--fg); border:1px solid rgba(255,255,255,.18); }
+    .success{ color: var(--ok); font-weight:700; }
+    .error{ color: var(--error); font-weight:700; }
+    .warn{ color: var(--warn); font-weight:700; }
+
+    .pill{
+      display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
+      background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12);
+    }
+
+    .gallery{ display:grid; gap:10px; grid-template-columns: repeat(2, 1fr); }
+    @media(min-width:700px){ .gallery{ grid-template-columns: repeat(4, 1fr); } }
+    .gallery img{ border-radius:12px; aspect-ratio: 1/1; object-fit:cover; cursor:pointer; }
+
+    .lightbox{ position:fixed; inset:0; background:rgba(0,0,0,.85); display:none; align-items:center; justify-content:center; z-index:50; }
+    .lightbox.show{ display:flex; }
+    .lightbox img{ max-width:90vw; max-height:80vh; border-radius:14px; }
+    .lightbox .close{ position:absolute; top:14px; right:18px; font-size:28px; cursor:pointer; }
+
+    footer{ padding:60px 20px; text-align:center; color:var(--muted); }
+  </style>
+
 </head>
 <body>
-  <header class="hero">
-    <div class="overlay">
-      <h1>Kim & Partner</h1>
-      <p>Unsere Hochzeit in Thailand – 20. Juni 2026</p>
-      <button onclick="document.getElementById('rsvp').scrollIntoView({behavior:'smooth'})">Zur Einladung</button>
+  <div id="splash" aria-hidden="true">
+    <div class="title">Kim &amp; Partner • 20. Juni 2026 • Thailand 🇹🇭</div>
+  </div>
+
+  <header class="thai">
+    <div class="wrap">
+      <nav>
+        <div class="brand"><span class="dot"></span> <span>Hochzeit</span></div>
+        <div class="navlinks">
+          <a href="#rsvp">Check-in</a>
+          <a href="#infos">Infos</a>
+          <a href="#galerie">Galerie</a>
+          <a href="#chat">Gästebuch</a>
+          <a href="admin.html">Admin</a>
+        </div>
+      </nav>
     </div>
   </header>
 
   <main>
-    <section id="rsvp" class="section-card">
-      <h2>Check-in</h2>
-      <form id="rsvpForm">
-        <label>Vor- & Nachname *</label>
-        <input name="name" type="text" required>
-        <div class="chips">
-          <label><input type="radio" name="attending" value="ja"> Ich komme</label>
-          <label><input type="radio" name="attending" value="nein"> Leider nicht</label>
+    <div class="wrap hero">
+      <h1>Willkommen zu unserer Hochzeit in Thailand 🌺🏝️</h1>
+      <p>Wir freuen uns riesig, dass ihr dabei seid. Bitte nutzt den Check-in und stöbert durch Infos, Galerie & Gästebuch.</p>
+      <div class="pill" style="margin-top:10px;">💌 Dresscode: Festlich & sommerlich • 📍 Koh Samui</div>
+    </div>
+
+    <section id="rsvp">
+      <div class="wrap grid">
+        <div class="col-6">
+          <div class="card">
+            <h2 style="margin-top:0">Check-in / Zusage</h2>
+            <p class="hint">Bitte füllt die Felder aus. Ihr könnt Begleitpersonen mit Namen & Alter angeben.</p>
+
+            <form id="rsvpForm" name="rsvp" method="post" action="/" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+              <input type="hidden" name="form-name" value="rsvp" />
+              <p style="display:none;"><label>Bitte freilassen: <input name="bot-field" /></label></p>
+
+              <label for="name">Vor- &amp; Nachname *</label>
+              <input id="name" name="name" type="text" placeholder="Max Mustermann" required autocomplete="name" autocapitalize="words">
+
+              <div class="row">
+                <div>
+                  <label>Teilnahme *</label>
+                  <div class="radios" id="attendingRadios" role="radiogroup" aria-label="Teilnahme">
+                    <label class="chip" data-chip><input type="radio" name="attending" value="ja" required><span>Ich komme</span></label>
+                    <label class="chip" data-chip><input type="radio" name="attending" value="nein"><span>Kann leider nicht</span></label>
+                  </div>
+                </div>
+                <div>
+                  <label for="guests">Anzahl Begleitpersonen</label>
+                  <select id="guests" name="guests">
+                    <option value="0" selected>0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                  </select>
+                </div>
+              </div>
+
+              <div id="companions">
+                <div class="row"><div><label for="c1name">Begleitung 1 – Name</label><input id="c1name" name="c1name" type="text" placeholder="Vor- & Nachname"></div><div><label for="c1age">Alter</label><input id="c1age" name="c1age" type="number" min="0" max="120" placeholder="z. B. 28"></div></div>
+                <div class="row"><div><label for="c2name">Begleitung 2 – Name</label><input id="c2name" name="c2name" type="text"></div><div><label for="c2age">Alter</label><input id="c2age" name="c2age" type="number" min="0" max="120"></div></div>
+                <div class="row"><div><label for="c3name">Begleitung 3 – Name</label><input id="c3name" name="c3name" type="text"></div><div><label for="c3age">Alter</label><input id="c3age" name="c3age" type="number" min="0" max="120"></div></div>
+                <div class="row"><div><label for="c4name">Begleitung 4 – Name</label><input id="c4name" name="c4name" type="text"></div><div><label for="c4age">Alter</label><input id="c4age" name="c4age" type="number" min="0" max="120"></div></div>
+              </div>
+
+              <label for="email">E-Mail (optional)</label>
+              <input id="email" name="email" type="email" placeholder="max@example.com" inputmode="email" autocomplete="email">
+
+              <label for="message">Nachricht (optional)</label>
+              <textarea id="message" name="message" placeholder="Allergien, Musikwünsche, Hinweise …"></textarea>
+
+              <label class="hint" style="display:flex; align-items:center; gap:10px; margin-top:12px;">
+                <input type="checkbox" id="privacy" required>
+                <span>Ich stimme zu, dass meine Angaben zur Organisation der Hochzeit verarbeitet werden.</span>
+              </label>
+
+              <div class="row" style="margin-top:14px;">
+                <button class="btn" type="submit" id="submitBtn">Einchecken</button>
+                <button class="btn ghost" type="button" id="resetBtn">Zurücksetzen</button>
+              </div>
+              <p id="status" role="status" style="margin-top:10px;"></p>
+            </form>
+          </div>
         </div>
-        <label>Begleitpersonen</label>
-        <select name="guests" id="guestsSelect">
-          <option value="0">Keine</option>
-          <option value="1">1 Person</option>
-          <option value="2">2 Personen</option>
-          <option value="3">3 Personen</option>
-          <option value="4">4 Personen</option>
-        </select>
-        <div id="guestFields"></div>
-        <label>E-Mail (optional)</label>
-        <input name="email" type="email">
-        <label>Nachricht (optional)</label>
-        <textarea name="message"></textarea>
-        <label><input type="checkbox" name="privacy" required> Ich stimme der Verarbeitung meiner Angaben zu.</label>
-        <button type="submit">Einchecken</button>
-        <p id="status"></p>
-      </form>
+
+        <div class="col-6">
+          <div class="card">
+            <h2 style="margin-top:0">Ablauf &amp; Ort</h2>
+            <ul class="clean">
+              <li><strong>Datum:</strong> 20. Juni 2026</li>
+              <li><strong>Trauung:</strong> 14:00 Uhr, Strandzeremonie Koh Samui</li>
+              <li><strong>Feier:</strong> ab 16:00 Uhr, Beach Resort</li>
+              <li><strong>Dresscode:</strong> Festlich, sommerlich</li>
+              <li><strong>Anfahrt:</strong> Shuttle vom Hotel • Taxis verfügbar</li>
+              <li><strong>Übernachtung:</strong> Resort-Kontingent (Stichwort „Hochzeit Kim“)</li>
+            </ul>
+            <p class="hint" style="margin-top:10px">
+              QR-Code: Er führt direkt auf diese Seite – einfach scannen.
+            </p>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <section id="infos" class="section-card">
-      <h2>Informationen</h2>
-      <ul>
-        <li><strong>Datum:</strong> 20. Juni 2026</li>
-        <li><strong>Ort:</strong> Strandvilla Phuket, Thailand</li>
-        <li><strong>Dresscode:</strong> Elegant, sommerlich</li>
-        <li><strong>Geschenke:</strong> Eure Anwesenheit ist unser Geschenk ❤️</li>
-      </ul>
+    <section id="infos" class="thai">
+      <div class="wrap grid">
+        <div class="col-12">
+          <div class="card">
+            <h2 style="margin-top:0">Weitere Informationen</h2>
+            <p>Thailand-Flair, Palmen & Sonnenuntergang – wir freuen uns auf einen unvergesslichen Tag mit euch! 🇹🇭🌅</p>
+            <ul class="clean">
+              <li><strong>Geschenke:</strong> Eure Anwesenheit ist unser Geschenk. Wer mag: <em>Reisekasse</em> 💞</li>
+              <li><strong>Kinder:</strong> Sehr gern! Kinderbetreuung am Strand.</li>
+              <li><strong>Fotos:</strong> Nach der Feier füllen wir die Galerie. Hashtag <span class="mono">#KimUndPartnerInThailand</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <section id="gallery" class="section-card">
-      <h2>Galerie</h2>
-      <div id="galleryGrid"></div>
-      <button id="downloadAll">Alle Bilder herunterladen</button>
+    <section id="galerie">
+      <div class="wrap grid">
+        <div class="col-12">
+          <div class="card">
+            <h2 style="margin-top:0">Galerie</h2>
+            <div class="gallery" id="gallery">
+              <img src="img/pic1.jpg" alt="Strand">
+              <img src="img/pic2.jpg" alt="Palmen">
+              <img src="img/pic3.jpg" alt="Thailand">
+              <img src="img/pic4.jpg" alt="Sonnenuntergang">
+            </div>
+            <p class="hint" style="margin-top:10px">Tipp: Bild antippen – Lightbox öffnet sich.</p>
+          </div>
+        </div>
+      </div>
+      <div class="lightbox" id="lightbox"><span class="close" id="lbClose">✕</span><img id="lbImg" alt=""></div>
     </section>
 
-    <section id="chat" class="section-card">
-      <h2>Gästebuch</h2>
-      <div id="chatBox"></div>
-      <form id="chatForm">
-        <input name="name" placeholder="Dein Name" required>
-        <textarea name="message" placeholder="Nachricht..." required></textarea>
-        <button>Senden</button>
-      </form>
+    <section id="chat" class="thai">
+      <div class="wrap grid">
+        <div class="col-12">
+          <div class="card">
+            <h2 style="margin-top:0">Gästebuch / Chat 💬</h2>
+            <p class="hint">Hinterlasst uns gern eine liebe Nachricht! (Öffentlich sichtbar)</p>
+            <div class="row">
+              <input id="chatName" type="text" placeholder="Dein Name">
+              <input id="chatText" type="text" placeholder="Deine Nachricht …" />
+              <button class="btn" id="chatSend">Senden</button>
+            </div>
+            <p id="chatStatus" class="hint" style="margin-top:8px;"></p>
+            <div id="chatList" style="margin-top:14px; display:grid; gap:10px;"></div>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 
-  <footer>Mit Liebe gemacht • © Kim & Partner</footer>
+  <footer>
+    Mit Liebe gemacht. © Kim &amp; Partner
+  </footer>
+
+  <script>
+    const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec";
+    const ADMIN_TOKEN = "";
+
+    const splash = document.getElementById('splash');
+    const hideSplash = () => splash.classList.add('hide');
+    window.addEventListener('load', () => setTimeout(hideSplash, 1200));
+    splash.addEventListener('click', hideSplash);
+
+    document.querySelectorAll('[data-chip]').forEach(label => {
+      const input = label.querySelector('input[type="radio"]');
+      input.addEventListener('change', () => {
+        label.parentElement.querySelectorAll('[data-chip]').forEach(l => l.dataset.checked = 'false');
+        label.dataset.checked = 'true';
+      });
+    });
+
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lbImg');
+    document.getElementById('gallery').addEventListener('click', (e) => {
+      if (e.target.tagName === 'IMG') { lbImg.src = e.target.src; lb.classList.add('show'); }
+    });
+    document.getElementById('lbClose').addEventListener('click', () => lb.classList.remove('show'));
+    lb.addEventListener('click', (e) => { if (e.target === lb) lb.classList.remove('show'); });
+
+    const form = document.getElementById('rsvpForm');
+    const statusEl = document.getElementById('status');
+    const resetBtn = document.getElementById('resetBtn');
+    const submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      statusEl.textContent = "";
+      statusEl.className = "";
+
+      if (!SHEET_ENDPOINT || !SHEET_ENDPOINT.startsWith('https')) {
+        statusEl.textContent = "Konfiguration fehlt: SHEET_ENDPOINT ist nicht gesetzt.";
+        statusEl.className = "error";
+        return;
+      }
+
+      const fd = new FormData(form);
+      const name = (document.getElementById('name').value || "").trim();
+      const email = (document.getElementById('email').value || "").trim();
+      const message = (document.getElementById('message').value || "").trim();
+      const guests = document.getElementById('guests').value;
+      const attending = (fd.get('attending') || "").toString();
+      const privacy = document.getElementById('privacy').checked;
+
+      if(!name || !attending || !privacy){
+        statusEl.textContent = "Bitte fülle Name, Teilnahme & Datenschutz aus.";
+        statusEl.className = "error";
+        return;
+      }
+
+      const payload = new URLSearchParams({
+        type: "rsvp",
+        name, email, message, guests, attending,
+        c1name: (document.getElementById('c1name').value || ""),
+        c1age: (document.getElementById('c1age').value || ""),
+        c2name: (document.getElementById('c2name').value || ""),
+        c2age: (document.getElementById('c2age').value || ""),
+        c3name: (document.getElementById('c3name').value || ""),
+        c3age: (document.getElementById('c3age').value || ""),
+        c4name: (document.getElementById('c4name').value || ""),
+        c4age: (document.getElementById('c4age').value || ""),
+        ua: navigator.userAgent
+      });
+
+      try {
+        submitBtn && (submitBtn.disabled = true);
+        statusEl.textContent = "Sende …";
+        const res = await fetch(SHEET_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+          body: payload.toString()
+        });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        let ok = true;
+        try { const j = await res.json(); ok = !!j.ok; if (!ok && j.error) throw new Error(j.error); } catch(_) {}
+        if (ok) {
+          statusEl.textContent = attending === 'ja' ? "Danke für deine Zusage! 🎉" : "Schade, aber danke fürs Bescheid sagen!";
+          statusEl.className = "success";
+          form.reset();
+          document.querySelectorAll('[data-chip]').forEach(l => l.dataset.checked = 'false');
+        } else {
+          throw new Error("Antwort nicht bestätigt");
+        }
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "Speichern fehlgeschlagen. Bitte Apps Script aktualisieren (siehe README: type=rsvp Unterstützung).";
+        statusEl.className = "error";
+      } finally {
+        submitBtn && (submitBtn.disabled = false);
+      }
+    });
+
+    const chatName = document.getElementById('chatName');
+    const chatText = document.getElementById('chatText');
+    const chatSend = document.getElementById('chatSend');
+    const chatList = document.getElementById('chatList');
+    const chatStatus = document.getElementById('chatStatus');
+
+    chatSend.addEventListener('click', async () => {
+      chatStatus.textContent = "";
+      const n = (chatName.value || "").trim();
+      const t = (chatText.value || "").trim();
+      if (!n || !t) { chatStatus.textContent = "Bitte Name und Nachricht eingeben."; return; }
+      try {
+        const res = await fetch(SHEET_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+          body: new URLSearchParams({ type: "chat", name: n, message: t, ua: navigator.userAgent }).toString()
+        });
+        if (!res.ok) throw new Error();
+        chatText.value = "";
+        chatStatus.textContent = "Gesendet 💬";
+        loadChat();
+      } catch(e) {
+        chatStatus.textContent = "Chat speichern fehlgeschlagen. Bitte Apps Script auf type=chat erweitern (siehe README).";
+      }
+    });
+
+    async function loadChat() {
+      chatList.innerHTML = "";
+      try {
+        const url = new URL(SHEET_ENDPOINT);
+        url.searchParams.set("type", "chat");
+        url.searchParams.set("list", "1");
+        const res = await fetch(url, { method: "GET" });
+        const j = await res.json();
+        if (!j.ok) throw new Error(j.error || "Fehler");
+        (j.rows || []).slice(-40).forEach(r => {
+          const div = document.createElement('div');
+          div.className = "card";
+          div.innerHTML = `<strong>${r.name || 'Gast'}</strong><div class="hint" style="margin-top:4px;">${r.message || ''}</div>`;
+          chatList.appendChild(div);
+        });
+      } catch(e) {
+        chatStatus.textContent = "Chat laden nicht möglich (Apps Script GET nicht aktiv).";
+      }
+    }
+    loadChat();
+  </script>
 </body>
 </html>
