@@ -222,9 +222,10 @@
     .gallery img{
       border-radius:14px; aspect-ratio:1/1; object-fit:cover; cursor:pointer;
       border:1px solid rgba(255,255,255,.14); box-shadow:0 8px 20px rgba(0,0,0,.35);
-      transition:transform .2s, box-shadow .2s, filter .2s;
+      transition:transform .2s, box-shadow .2s, filter .2s, opacity .5s ease;
+      opacity: 1;
     }
-    .gallery img:hover{ transform:translateY(-2px) scale(1.01); box-shadow:0 18px 34px rgba(0,0,0,.5); filter:saturate(1.08); }
+    .gallery img[data-fade="out"]{ opacity: 0; }
 
     .lightbox{
       position:fixed; inset:0; background:rgba(5,7,12,.92);
@@ -278,13 +279,6 @@
       </nav>
     </div>
   </header>
-
-  /* Sanfte Überblendung beim Wechsel */
-.gallery img {
-  opacity: 1;
-  transition: opacity .5s ease;
-}
-.gallery img[data-fade="out"] { opacity: 0; }
 
   <main>
     <section id="rsvp">
@@ -398,6 +392,7 @@
           <div class="card">
             <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif;">Galerie</h2>
             <div class="gallery" id="gallery">
+              <!-- Fallback-Platzhalter (werden dynamisch ersetzt, falls Backend liefert) -->
               <img src="img/pic1.jpg" alt="Strand">
               <img src="img/pic2.jpg" alt="Palmen">
               <img src="img/pic3.jpg" alt="Thailand">
@@ -432,103 +427,7 @@
   <footer>Mit Liebe gemacht. © Maria &amp; Kim</footer>
 
   <script>
-  // ===== Galerie: dynamisch 4 Bilder rotieren =====
-  (function setupDynamicGallery(){
-    const SHOW_COUNT = 4;          // immer 4 anzeigen
-    const ROTATE_MS = 5000;        // alle 5s wechseln
-    const galleryEl = document.getElementById('gallery');
-    if (!galleryEl || !window.fetch) return;
-
-    let imgs = [];                 // Array von URLs
-    let cursor = 0;                // Startindex für "Seiten"
-    let timer = null;              // Interval-Handle
-
-    // Preloader (optional)
-    const preload = (urls) => urls.forEach(u => { const i = new Image(); i.src = u; });
-
-    // Hilfsfunktion: 4 URLs ab Index holen (wrap-around)
-    function slice4(list, start){
-      const out = [];
-      for(let i=0;i<SHOW_COUNT;i++){
-        out.push(list[(start+i) % list.length]);
-      }
-      return out;
-    }
-
-    // sanfter Austausch
-    function renderFour(urls){
-      // Wenn noch keine Bilder im DOM: frisch aufbauen
-      if (galleryEl.children.length === 0 || galleryEl.querySelectorAll('img').length !== SHOW_COUNT) {
-        galleryEl.innerHTML = '';
-        urls.forEach(u => {
-          const img = document.createElement('img');
-          img.loading = 'lazy';
-          img.decoding = 'async';
-          img.src = u;
-          img.alt = 'Galerie';
-          galleryEl.appendChild(img);
-        });
-        return;
-      }
-      // Schon Bilder vorhanden: Fade-Out + Austausch + Fade-In
-      const nodes = Array.from(galleryEl.querySelectorAll('img'));
-      nodes.forEach(n => n.setAttribute('data-fade','out'));
-      setTimeout(()=>{
-        nodes.forEach((n,i)=>{
-          n.removeAttribute('data-fade');
-          n.src = urls[i];
-        });
-      }, 220);
-    }
-
-    async function loadFromSheet(){
-      try{
-        const u = new URL(SHEET_ENDPOINT);
-        u.searchParams.set('type','gallery');
-        u.searchParams.set('list','1');
-        const res = await fetch(u.toString());
-        const j = await res.json();
-        if(!j.ok || !Array.isArray(j.items) || j.items.length === 0) return false;
-
-        // URLs einsammeln
-        imgs = j.items
-          .map(it => it && (it.url || it.link || it.src))
-          .filter(Boolean);
-
-        // Wenn weniger als 4 vorhanden, duplizieren, damit der Rotator nicht hängen bleibt
-        while (imgs.length > 0 && imgs.length < SHOW_COUNT) {
-          imgs = imgs.concat(imgs);
-        }
-
-        // Initiales Rendering + Preload der nächsten 4
-        cursor = 0;
-        renderFour(slice4(imgs, cursor));
-        preload(slice4(imgs, (cursor + SHOW_COUNT) % imgs.length));
-
-        // vorhandenen Timer stoppen (falls Seite „hot“ neu lädt)
-        if (timer) clearInterval(timer);
-        if (imgs.length > SHOW_COUNT) {
-          timer = setInterval(()=>{
-            cursor = (cursor + SHOW_COUNT) % imgs.length; // seitenweise weiter
-            renderFour(slice4(imgs, cursor));
-            preload(slice4(imgs, (cursor + SHOW_COUNT) % imgs.length));
-          }, ROTATE_MS);
-        }
-        return true;
-      }catch(e){
-        // bei Fehler: einfach stumm lassen -> Fallback sind deine 4 statischen Bilder
-        return false;
-      }
-    }
-
-    // ausführen
-    loadFromSheet();
-  })();
-</script>
-
-  <script>
     const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec";
-
 
     const esc = s => String(s||'').replace(/[<>&"]/g, m=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[m]));
     const fmtDate = (v) => {
@@ -672,6 +571,107 @@
       }catch(e){ chatStatus.textContent="Chat laden nicht möglich (GET im Apps Script)."; }
     }
     loadChat();
+
+    /* ===== Galerie: dynamisch 4 Bilder rotieren ===== */
+    (function setupDynamicGallery(){
+      const SHOW_COUNT = 4;          // immer 4 anzeigen
+      const ROTATE_MS = 5000;        // alle 5s wechseln
+      const galleryEl = document.getElementById('gallery');
+      if (!galleryEl || !window.fetch) return;
+
+      let imgs = [];                 // Array von URLs
+      let cursor = 0;                // Startindex für "Seiten"
+      let timer = null;              // Interval-Handle
+
+      // Preloader (optional)
+      const preload = (urls) => urls.forEach(u => { const i = new Image(); i.src = u; });
+
+      // Hilfsfunktion: 4 URLs ab Index holen (wrap-around)
+      function slice4(list, start){
+        const out = [];
+        for(let i=0;i<SHOW_COUNT;i++){
+          out.push(list[(start+i) % list.length]);
+        }
+        return out;
+      }
+
+      // sanfter Austausch
+      function renderFour(urls){
+        // Wenn noch keine 4 Bilder im DOM: frisch aufbauen/ersetzen
+        const currentImgs = galleryEl.querySelectorAll('img');
+        if (currentImgs.length !== SHOW_COUNT) {
+          galleryEl.innerHTML = '';
+          urls.forEach(u => {
+            const img = document.createElement('img');
+            img.loading = 'lazy';
+            img.decoding = 'async';
+            img.src = u;
+            img.alt = 'Galerie';
+            galleryEl.appendChild(img);
+          });
+          return;
+        }
+        // Schon 4 vorhanden: Fade-Out + Austausch + Fade-In
+        const nodes = Array.from(currentImgs);
+        nodes.forEach(n => n.setAttribute('data-fade','out'));
+        setTimeout(()=>{
+          nodes.forEach((n,i)=>{
+            n.removeAttribute('data-fade');
+            n.src = urls[i];
+          });
+        }, 220);
+      }
+
+      async function loadFromSheet(){
+        try{
+          const u = new URL(SHEET_ENDPOINT);
+          u.searchParams.set('type','gallery');
+          u.searchParams.set('list','1');
+          const res = await fetch(u.toString());
+          const j = await res.json();
+          if(!j.ok || !Array.isArray(j.items) || j.items.length === 0) return false;
+
+          // URLs einsammeln (unterstützt url/link/src, je nach Backend)
+          imgs = j.items
+            .map(it => it && (it.url || it.link || it.src))
+            .filter(Boolean);
+
+          // Wenn weniger als 4 vorhanden, duplizieren, damit der Rotator nicht hängt
+          while (imgs.length > 0 && imgs.length < SHOW_COUNT) {
+            imgs = imgs.concat(imgs);
+          }
+
+          // Initiales Rendering + Preload der nächsten 4
+          if (imgs.length >= SHOW_COUNT){
+            cursor = 0;
+            renderFour(slice4(imgs, cursor));
+            preload(slice4(imgs, (cursor + SHOW_COUNT) % imgs.length));
+
+            // vorhandenen Timer stoppen (Hot-Reload)
+            if (timer) clearInterval(timer);
+            if (imgs.length > SHOW_COUNT) {
+              timer = setInterval(()=>{
+                // Variante A: seitenweise weiter (4er-Blöcke)
+                cursor = (cursor + SHOW_COUNT) % imgs.length;
+
+                // Variante B (lebendiger): nur 1 weiter
+                // cursor = (cursor + 1) % imgs.length;
+
+                renderFour(slice4(imgs, cursor));
+                preload(slice4(imgs, (cursor + SHOW_COUNT) % imgs.length));
+              }, ROTATE_MS);
+            }
+          }
+          return true;
+        }catch(e){
+          // bei Fehler: Fallback (statische 4) stehen lassen
+          return false;
+        }
+      }
+
+      // ausführen
+      loadFromSheet();
+    })();
   </script>
 </body>
 </html>
