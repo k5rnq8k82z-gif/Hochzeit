@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <title>Kim & Partner – Hochzeit in Thailand</title>
+  <meta name="description" content="Hochzeit von Kim & Partner in Thailand – RSVP, Infos, Galerie & Chat" />
+  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  <style>
+    :root{
+      --bg: #0a0e14;
+      --panel: rgba(255,255,255,0.06);
+      --panel2: rgba(255,255,255,0.10);
+      --fg: #eef2fa;
+      --muted:#a9b0c2;
+      --pink:#ff8fb2;
+      --blue:#7fd4ff;
+      --sand:#ffd166;
+      --ok:#39d353; --warn:#ffcc00; --err:#ff6b6b;
+      --radius: 18px;
+      --shadow: 0 16px 40px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05);
+    }
+    *{box-sizing:border-box}
+    html,body{
+      margin:0; color:var(--fg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:
+        radial-gradient(1600px 800px at -20% -20%, rgba(255,143,178,.10), transparent 60%),
+        radial-gradient(1600px 800px at 120% -10%, rgba(127,212,255,.10), transparent 60%),
+        linear-gradient(180deg, #0b0f16, #0a0e14);
+      min-height:100vh;
+    }
+    a{color:var(--blue);text-decoration:none}
+    .wrap{max-width:1160px;margin:0 auto;padding:22px}
+    header{position:sticky;top:0;z-index:20;background:rgba(10,14,20,.6);backdrop-filter: blur(12px);border-bottom:1px solid rgba(255,255,255,.10)}
+    nav{display:flex;align-items:center;justify-content:space-between;gap:14px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.3px}
+    .brand .dot{width:12px;height:12px;border-radius:50%;background:conic-gradient(from 40deg,var(--pink),var(--blue),var(--sand));box-shadow:0 0 22px rgba(255,143,178,.7)}
+    .navlinks a{padding:10px 12px;border-radius:12px}
+    .navlinks a:hover{background:rgba(255,255,255,.08)}
+    .hero{padding:72px 22px 28px;text-align:center}
+    .hero h1{font-size:clamp(30px,6vw,56px);margin:0 0 10px}
+    .hero p{color:var(--muted);margin:0}
+    section{padding:30px 22px 16px}
+    .card{background:var(--panel);border:1px solid rgba(255,255,255,.12);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
+    .grid{display:grid;gap:18px;grid-template-columns:repeat(12,1fr)}
+    .col-12{grid-column:span 12}
+    .col-6{grid-column:span 12} @media(min-width:900px){.col-6{grid-column:span 6}}
+    form label{display:block;font-weight:700;margin:12px 0 6px}
+    input[type="text"],input[type="email"],input[type="password"],input[type="number"],textarea,select{width:100%;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:var(--fg)}
+    textarea{min-height:90px;resize:vertical}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .row>*{flex:1;min-width:160px}
+    .radios{display:flex;gap:12px;flex-wrap:wrap}
+    .chip{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.12);cursor:pointer;background:rgba(255,255,255,.06)}
+    .chip[data-checked="true"]{outline:2px solid rgba(255,255,255,.18);background:rgba(255,255,255,.12)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;padding:12px 16px;border-radius:12px;cursor:pointer;font-weight:800;color:#0a0e14;background:linear-gradient(135deg,var(--pink),var(--blue));box-shadow:0 10px 20px rgba(255,143,178,.25),0 6px 18px rgba(127,212,255,.18)}
+    .btn.ghost{background:transparent;color:var(--fg);border:1px solid rgba(255,255,255,.18)}
+    .hint{color:var(--muted);font-size:14px}
+    .success{color:#39d353;font-weight:700}
+    .error{color:#ff6b6b;font-weight:700}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}
+    .gallery{display:grid;gap:10px;grid-template-columns:repeat(2,1fr)} @media(min-width:720px){.gallery{grid-template-columns:repeat(4,1fr)}}
+    .gallery img{border-radius:12px;aspect-ratio:1/1;object-fit:cover;cursor:pointer}
+    .dlrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.86);display:none;align-items:center;justify-content:center;z-index:50}
+    .lightbox.show{display:flex}
+    .lightbox img{max-width:92vw;max-height:84vh;border-radius:16px}
+    .lightbox .close{position:absolute;top:14px;right:18px;font-size:28px;cursor:pointer}
+    footer{padding:60px 22px;text-align:center;color:var(--muted)}
+    #splash{position:fixed;inset:0;z-index:1000;background:#000 url('img/hero.jpg') center/cover no-repeat;display:grid;place-items:center;transition:opacity .9s ease}
+    #splash::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.55))}
+    #splash .title{position:relative;z-index:2;text-align:center;padding:16px 24px;border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter: blur(8px);box-shadow: var(--shadow);font-weight:800;letter-spacing:.6px}
+    #splash.hide{opacity:0;pointer-events:none}
+  </style>
+
+</head>
+<body>
+  <div id="splash" aria-hidden="true"><div class="title">Kim &amp; Partner • 20. Juni 2026 • Thailand 🇹🇭</div></div>
+  <header>
+    <div class="wrap">
+      <nav>
+        <div class="brand"><span class="dot"></span><span>Hochzeit</span></div>
+        <div class="navlinks">
+          <a href="#rsvp">Check-in</a>
+          <a href="#infos">Infos</a>
+          <a href="#galerie">Galerie</a>
+          <a href="#chat">Gästebuch</a>
+          <a href="admin.html#hidden"> </a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap hero">
+      <h1 id="heroTitle">Willkommen zu unserer Hochzeit in Thailand 🌺🏝️</h1>
+      <p id="heroSubtitle">Wir freuen uns riesig, dass ihr dabei seid. Bitte nutzt den Check-in und stöbert durch Infos, Galerie & Gästebuch.</p>
+      <div class="pill" style="margin-top:10px;" id="heroBadge">💌 Dresscode: Festlich & sommerlich • 📍 Koh Samui</div>
+    </div>
+
+    <section id="rsvp">
+      <div class="wrap grid">
+        <div class="col-6">
+          <div class="card">
+            <h2 style="margin-top:0">Check-in / Zusage</h2>
+            <p class="hint">Bitte füllt die Felder aus. Ihr könnt Begleitpersonen mit Namen & Alter angeben.</p>
+
+            <form id="rsvpForm" novalidate>
+              <label for="name">Vor- &amp; Nachname *</label>
+              <input id="name" name="name" type="text" placeholder="Max Mustermann" required autocomplete="name" autocapitalize="words">
+
+              <div class="row">
+                <div>
+                  <label>Teilnahme *</label>
+                  <div class="radios" id="attendingRadios" role="radiogroup" aria-label="Teilnahme">
+                    <label class="chip" data-chip><input type="radio" name="attending" value="ja" required><span>Ich komme</span></label>
+                    <label class="chip" data-chip><input type="radio" name="attending" value="nein"><span>Kann leider nicht</span></label>
+                  </div>
+                </div>
+                <div>
+                  <label for="guests">Anzahl Begleitpersonen</label>
+                  <select id="guests" name="guests">
+                    <option value="0" selected>0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+                  </select>
+                </div>
+              </div>
+
+              <div id="companions">
+                <div class="row"><div><label for="c1name">Begleitung 1 – Name</label><input id="c1name" name="c1name" type="text"></div><div><label for="c1age">Alter</label><input id="c1age" name="c1age" type="number" min="0" max="120"></div></div>
+                <div class="row"><div><label for="c2name">Begleitung 2 – Name</label><input id="c2name" name="c2name" type="text"></div><div><label for="c2age">Alter</label><input id="c2age" name="c2age" type="number" min="0" max="120"></div></div>
+                <div class="row"><div><label for="c3name">Begleitung 3 – Name</label><input id="c3name" name="c3name" type="text"></div><div><label for="c3age">Alter</label><input id="c3age" name="c3age" type="number" min="0" max="120"></div></div>
+                <div class="row"><div><label for="c4name">Begleitung 4 – Name</label><input id="c4name" name="c4name" type="text"></div><div><label for="c4age">Alter</label><input id="c4age" name="c4age" type="number" min="0" max="120"></div></div>
+              </div>
+
+              <label for="email">E-Mail (optional)</label>
+              <input id="email" name="email" type="email" placeholder="max@example.com" inputmode="email" autocomplete="email">
+
+              <label for="message">Nachricht (optional)</label>
+              <textarea id="message" name="message" placeholder="Allergien, Musikwünsche, Hinweise …"></textarea>
+
+              <label class="hint" style="display:flex; align-items:center; gap:10px; margin-top:12px;">
+                <input type="checkbox" id="privacy" required>
+                <span>Ich stimme zu, dass meine Angaben zur Organisation der Hochzeit verarbeitet werden.</span>
+              </label>
+
+              <div class="row" style="margin-top:14px;">
+                <button class="btn" type="submit" id="submitBtn">Einchecken</button>
+                <button class="btn ghost" type="button" id="resetBtn">Zurücksetzen</button>
+              </div>
+              <p id="status" role="status" style="margin-top:10px;"></p>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-6">
+          <div class="card">
+            <h2 style="margin-top:0">Ablauf &amp; Ort</h2>
+            <ul class="clean" id="infoList">
+              <li><strong>Datum:</strong> <span id="infoDate">20. Juni 2026</span></li>
+              <li><strong>Trauung:</strong> <span id="infoCeremony">14:00 Uhr, Strandzeremonie Koh Samui</span></li>
+              <li><strong>Feier:</strong> <span id="infoParty">ab 16:00 Uhr, Beach Resort</span></li>
+              <li><strong>Dresscode:</strong> <span id="infoDress">Festlich, sommerlich</span></li>
+              <li><strong>Anfahrt:</strong> <span id="infoArrival">Shuttle vom Hotel • Taxis verfügbar</span></li>
+              <li><strong>Übernachtung:</strong> <span id="infoHotel">Resort-Kontingent (Stichwort „Hochzeit Kim“)</span></li>
+            </ul>
+            <p class="hint" style="margin-top:10px">QR-Code: Er führt direkt auf diese Seite – einfach scannen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="infos">
+      <div class="wrap grid">
+        <div class="col-12">
+          <div class="card">
+            <h2 style="margin-top:0">Weitere Informationen</h2>
+            <p id="infoMore">Thailand-Flair, Palmen & Sonnenuntergang – wir freuen uns auf einen unvergesslichen Tag mit euch! 🇹🇭🌅</p>
+            <ul class="clean">
+              <li><strong>Geschenke:</strong> <span id="infoGifts">Eure Anwesenheit ist unser Geschenk. Wer mag: Reisekasse 💞</span></li>
+              <li><strong>Kinder:</strong> <span id="infoKids">Sehr gern! Kinderbetreuung am Strand.</span></li>
+              <li><strong>Fotos:</strong> <span id="infoPhotos">Nach der Feier füllen wir die Galerie. Hashtag #KimUndPartnerInThailand</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="galerie">
+      <div class="wrap grid">
+        <div class="col-12">
+          <div class="card">
+            <h2 style="margin-top:0">Galerie</h2>
+            <div class="dlrow">
+              <button class="btn ghost" id="downloadAll">Alle Bilder laden (ZIP)</button>
+              <span class="hint" id="galleryHint">Tippe auf ein Bild zum Vergrößern. Download-Button unter jedem Bild.</span>
+            </div>
+            <div class="gallery" id="gallery"></div>
+          </div>
+        </div>
+      </div>
+      <div class="lightbox" id="lightbox"><span class="close" id="lbClose">✕</span><img id="lbImg" alt=""></div>
+    </section>
+
+    <section id="chat">
+      <div class="wrap grid">
+        <div class="col-12">
+          <div class="card">
+            <h2 style="margin-top:0">Gästebuch / Chat 💬</h2>
+            <p class="hint">Hinterlasst uns gern eine liebe Nachricht! (Öffentlich sichtbar)</p>
+            <div class="row">
+              <input id="chatName" type="text" placeholder="Dein Name">
+              <input id="chatText" type="text" placeholder="Deine Nachricht …" />
+              <button class="btn" id="chatSend">Senden</button>
+            </div>
+            <p id="chatStatus" class="hint" style="margin-top:8px;"></p>
+            <div id="chatList" style="margin-top:14px; display:grid; gap:10px;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>Mit Liebe gemacht. © Kim &amp; Partner</footer>
+
+  <script>
+  const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec";
+  const ADMIN_PASSWORD = "030520";
+
+  const splash = document.getElementById('splash'); const hideSplash = ()=>splash.classList.add('hide');
+  window.addEventListener('load',()=>setTimeout(hideSplash,1200)); splash.addEventListener('click',hideSplash);
+
+  document.querySelectorAll('[data-chip]').forEach(label=>{const input=label.querySelector('input[type="radio"]'); input.addEventListener('change',()=>{label.parentElement.querySelectorAll('[data-chip]').forEach(l=>l.dataset.checked='false'); label.dataset.checked='true';});});
+
+  const form=document.getElementById('rsvpForm'); const statusEl=document.getElementById('status');
+  form.addEventListener('submit',async(e)=>{e.preventDefault(); statusEl.textContent=""; statusEl.className="";
+    const fd=new FormData(form); const name=(document.getElementById('name').value||"").trim();
+    const email=(document.getElementById('email').value||"").trim(); const message=(document.getElementById('message').value||"").trim();
+    const guests=document.getElementById('guests').value; const attending=(fd.get('attending')||"").toString();
+    const privacy=document.getElementById('privacy').checked; if(!name||!attending||!privacy){statusEl.textContent="Bitte fülle Name, Teilnahme & Datenschutz aus."; statusEl.className="error"; return;}
+    const qs=new URLSearchParams({type:"rsvp",name,email,message,guests,attending,
+      c1name:document.getElementById('c1name').value||"", c1age:document.getElementById('c1age').value||"",
+      c2name:document.getElementById('c2name').value||"", c2age:document.getElementById('c2age').value||"",
+      c3name:document.getElementById('c3name').value||"", c3age:document.getElementById('c3age').value||"",
+      c4name:document.getElementById('c4name').value||"", c4age:document.getElementById('c4age').value||"", ua:navigator.userAgent});
+    try{ const res=await fetch(SHEET_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},body:qs.toString()});
+      let ok=res.ok; try{const j=await res.json(); ok=ok&&!!j.ok;}catch(_){}
+      if(ok){statusEl.textContent=attending==='ja'?"Danke für deine Zusage! 🎉":"Schade, aber danke fürs Bescheid sagen!"; statusEl.className="success"; form.reset(); document.querySelectorAll('[data-chip]').forEach(l=>l.dataset.checked='false');}
+      else throw 0;
+    }catch(e){ statusEl.textContent="Speichern fehlgeschlagen."; statusEl.className="error"; }
+  });
+
+  async function loadContent(){try{const url=new URL(SHEET_ENDPOINT); url.searchParams.set("type","content"); url.searchParams.set("list","1");
+    const res=await fetch(url); const j=await res.json(); if(!j.ok) return; const c=j.content||{};
+    const set=(id,val)=>{if(document.getElementById(id)&&val) document.getElementById(id).textContent=val;};
+    set("heroTitle",c.heroTitle); set("heroSubtitle",c.heroSubtitle); set("heroBadge",c.heroBadge);
+    set("infoDate",c.infoDate); set("infoCeremony",c.infoCeremony); set("infoParty",c.infoParty); set("infoDress",c.infoDress); set("infoArrival",c.infoArrival); set("infoHotel",c.infoHotel);
+    set("infoMore",c.infoMore); set("infoGifts",c.infoGifts); set("infoKids",c.infoKids); set("infoPhotos",c.infoPhotos);
+  }catch(e){}}
+  loadContent();
+
+  const lb=document.getElementById('lightbox'); const lbImg=document.getElementById('lbImg');
+  document.getElementById('gallery').addEventListener('click',(e)=>{if(e.target.tagName==='IMG'){lbImg.src=e.target.dataset.full||e.target.src; lb.classList.add('show');}});
+  document.getElementById('lbClose').addEventListener('click',()=>lb.classList.remove('show')); lb.addEventListener('click',(e)=>{if(e.target===lb) lb.classList.remove('show');});
+
+  const galleryEl=document.getElementById('gallery');
+  async function loadGallery(){ galleryEl.innerHTML="";
+    try{ const url=new URL(SHEET_ENDPOINT); url.searchParams.set("type","gallery"); url.searchParams.set("list","1");
+      const res=await fetch(url); const j=await res.json(); if(!j.ok) throw 0;
+      const items=j.rows||[]; items.forEach(g=>{const fig=document.createElement('figure'); fig.style.margin=0;
+        const img=document.createElement('img'); img.src=g.thumb||g.url; img.dataset.full=g.url; img.alt=g.filename||"Foto";
+        const dl=document.createElement('div'); dl.className="dlrow";
+        const a1=document.createElement('a'); a1.className="btn ghost"; a1.textContent="Download"; a1.href=g.url; a1.setAttribute("download", g.filename||"bild.jpg"); a1.target="_blank";
+        dl.appendChild(a1); fig.appendChild(img); fig.appendChild(dl); galleryEl.appendChild(fig); });
+    }catch(e){ galleryEl.innerHTML='<p class="hint">Noch keine Bilder. Admin kann welche hochladen.</p>'; }
+  } loadGallery();
+
+  document.getElementById('downloadAll').addEventListener('click',async()=>{
+    try{ const url=new URL(SHEET_ENDPOINT); url.searchParams.set("type","gallery"); url.searchParams.set("list","1");
+      const res=await fetch(url); const j=await res.json(); if(!j.ok) return; const items=j.rows||[]; if(items.length===0) return;
+      const zip=new JSZip(); for (const it of items){ const r=await fetch(it.url); const b=await r.blob(); zip.file(it.filename||('bild_'+Date.now()+'.jpg'), b); }
+      const blob=await zip.generateAsync({type:"blob"}); saveAs(blob, "Hochzeitsfotos.zip");
+    }catch(e){ alert("Zip-Download fehlgeschlagen."); }
+  });
+
+  const chatName=document.getElementById('chatName'); const chatText=document.getElementById('chatText');
+  const chatSend=document.getElementById('chatSend'); const chatList=document.getElementById('chatList'); const chatStatus=document.getElementById('chatStatus');
+  chatSend.addEventListener('click',async()=>{ chatStatus.textContent=""; const n=(chatName.value||"").trim(), t=(chatText.value||"").trim(); if(!n||!t){chatStatus.textContent="Bitte Name und Nachricht eingeben."; return;}
+    try{ await fetch(SHEET_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},body:new URLSearchParams({type:"chat",name:n,message:t,ua:navigator.userAgent}).toString()});
+      chatText.value=""; loadChat(); chatStatus.textContent="Gesendet 💬";
+    }catch(e){ chatStatus.textContent="Chat speichern fehlgeschlagen."; }
+  });
+  async function loadChat(){ chatList.innerHTML=""; try{ const url=new URL(SHEET_ENDPOINT); url.searchParams.set("type","chat"); url.searchParams.set("list","1");
+    const res=await fetch(url); const j=await res.json(); if(!j.ok) return; (j.rows||[]).slice(-60).forEach(r=>{const div=document.createElement('div'); div.className="card"; div.innerHTML=`<strong>${r.name||'Gast'}</strong><div class="hint" style="margin-top:4px;">${r.message||''}</div>`; chatList.appendChild(div);}); }catch(e){} }
+  loadChat();
+  </script>
+</body>
+</html>
