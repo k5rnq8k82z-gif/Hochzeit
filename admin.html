@@ -1,141 +1,175 @@
-<!doctype html>
-<html lang="de">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Admin – Hochzeit Maria & Kim</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
-<style>
-  :root {
-    --bg: #0b0f16; --fg: #eef2fa; --muted: #aab0c0;
-    --accent1:#7ad9ff; --accent2:#ff86c8;
-    --card: rgba(255,255,255,0.06);
-    --edge: rgba(255,255,255,0.12);
-    --radius: 14px; --shadow: 0 16px 38px rgba(0,0,0,.4);
+/* ===== CONFIG ===== */
+const SHEET_RSVP   = 'rsvp';
+const SHEET_CHAT   = 'chat';
+const SHEET_TEXTS  = 'texts';
+const SHEET_GAL    = 'gallery';
+const DRIVE_FOLDER = 'wedding_gallery'; // wird automatisch erstellt
+
+/* ===== Helpers ===== */
+function json_(obj, code){ const out=ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON); if(code) out.setResponseCode(code); return out; }
+function needToken_(params){
+  const want = (params.token||'').trim();
+  const have = (PropertiesService.getScriptProperties().getProperty('TOKEN')||'').trim();
+  if (!have || want !== have) throw new Error('Unauthorized');
+}
+function ensureSheet_(name, header){
+  const ss=SpreadsheetApp.getActive(); let sh=ss.getSheetByName(name); if(!sh) sh=ss.insertSheet(name);
+  if(header && header.length){
+    const rng=sh.getRange(1,1,1,header.length); const cur=rng.getValues()[0]||[];
+    if(header.join('|')!==cur.join('|')) rng.setValues([header]);
   }
-  html,body{margin:0;padding:0;background:linear-gradient(180deg,#080a0f,#0c1119);color:var(--fg);
-    font-family:Inter,ui-sans-serif,system-ui,sans-serif;min-height:100vh;}
-  header{position:sticky;top:0;background:rgba(8,12,20,.7);backdrop-filter:blur(10px);
-    border-bottom:1px solid rgba(255,255,255,.1);padding:12px 24px;font-weight:700;letter-spacing:.4px;
-    display:flex;justify-content:space-between;align-items:center;}
-  header a{color:var(--accent1);text-decoration:none;}
-  main{max-width:1100px;margin:0 auto;padding:24px;}
-  .card{background:var(--card);border:1px solid var(--edge);border-radius:var(--radius);
-    box-shadow:var(--shadow);padding:20px;margin-bottom:24px;}
-  .row{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:12px;}
-  input,button{font:inherit;border-radius:10px;padding:10px 14px;}
-  input[type=text]{flex:1;min-width:200px;background:rgba(255,255,255,.08);border:1px solid var(--edge);color:var(--fg);}
-  button{border:0;font-weight:700;cursor:pointer;}
-  .btn{background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#081019;
-    box-shadow:0 6px 18px rgba(122,217,255,.2);}
-  .btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--edge);}
-  .hint{color:var(--muted);font-size:14px;}
-  table{width:100%;border-collapse:collapse;font-size:14px;}
-  th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left;}
-  th{color:var(--accent1);}
-</style>
-</head>
-<body>
-<header>
-  <div>🌴 Adminpanel – Maria & Kim</div>
-  <a href="index.html">Zurück zur Seite</a>
-</header>
-<main>
+  return sh;
+}
+function getFolder_(){
+  const folders = DriveApp.getFoldersByName(DRIVE_FOLDER);
+  if (folders.hasNext()) return folders.next();
+  return DriveApp.createFolder(DRIVE_FOLDER);
+}
 
-  <section class="card">
-    <h2>RSVP-Übersicht</h2>
-    <div class="row">
-      <input id="admToken" type="text" placeholder="Admin-Token (z. B. 030520)">
-      <button class="btn" id="admLoad">Laden</button>
-      <button class="btn ghost" id="admCsv">CSV exportieren</button>
-    </div>
-    <p class="hint" id="admHint"></p>
-    <div style="overflow:auto;margin-top:12px;">
-      <table id="admTable">
-        <thead><tr>
-          <th>Zeit</th><th>Name</th><th>Zusage</th><th>Begleiter</th>
-          <th>Begleit-Infos</th><th>E-Mail</th><th>Nachricht</th>
-        </tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </section>
-
-  <section class="card">
-    <h2>Gästebuch / Chat</h2>
-    <div class="row">
-      <input id="admTokenChat" type="text" placeholder="Admin-Token">
-      <button class="btn" id="admLoadChat">Laden</button>
-    </div>
-    <p class="hint" id="admChatHint"></p>
-    <div id="admChatList" style="display:grid;gap:10px;margin-top:10px;"></div>
-  </section>
-
-</main>
-<script>
-const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec";
-
-document.getElementById('admLoad').onclick = loadRSVP;
-document.getElementById('admCsv').onclick = exportCsv;
-document.getElementById('admLoadChat').onclick = loadChat;
-
-async function loadRSVP(){
-  const token=document.getElementById('admToken').value.trim();
-  const hint=document.getElementById('admHint');
-  const tbody=document.querySelector('#admTable tbody');
-  hint.textContent="Lade…"; tbody.innerHTML="";
+/* ===== Public endpoints ===== */
+function doPost(e){
   try{
-    const url=new URL(SHEET_ENDPOINT);
-    url.searchParams.set("token",token);
-    url.searchParams.set("type","rsvp");
-    const res=await fetch(url); const j=await res.json();
-    if(!j.ok) throw new Error(j.error||"Fehler");
-    const rows=j.rows||[];
-    for(const r of rows){
-      const tr=document.createElement("tr");
-      tr.innerHTML=`<td>${r.timestamp||''}</td><td>${r.name||''}</td><td>${r.attending||''}</td>
-      <td>${r.guests||''}</td>
-      <td>${[r.c1name,r.c1age,r.c2name,r.c2age,r.c3name,r.c3age,r.c4name,r.c4age].filter(Boolean).join(' • ')}</td>
-      <td>${r.email||''}</td><td>${r.message||''}</td>`;
-      tbody.appendChild(tr);
+    const p = e.parameter || {};
+    const type = (p.type||'').toLowerCase();
+
+    // Visitors: RSVP / CHAT submit (no token)
+    if(type==='rsvp'){
+      const sh = ensureSheet_(SHEET_RSVP, ['timestamp','name','attending','guests','email','message','c1name','c1age','c2name','c2age','c3name','c3age','c4name','c4age','ua']);
+      sh.appendRow([new Date(), p.name||'', p.attending||'', p.guests||'', p.email||'', p.message||'',
+        p.c1name||'', p.c1age||'', p.c2name||'', p.c2age||'', p.c3name||'', p.c3age||'', p.c4name||'', p.c4age||'', p.ua||'']);
+      return json_({ok:true});
     }
-    hint.textContent=`${rows.length} Einträge geladen.`;
-  }catch(e){hint.textContent="Fehler beim Laden – Token korrekt?";console.error(e);}
+    if(type==='chat'){
+      const sh = ensureSheet_(SHEET_CHAT, ['timestamp','name','message','ua']);
+      sh.appendRow([new Date(), p.name||'Gast', p.message||'', p.ua||'']);
+      return json_({ok:true});
+    }
+
+    // Admin actions (token)
+    needToken_(p);
+
+    if(type==='texts_set'){
+      const sh = ensureSheet_(SHEET_TEXTS, ['key','value']);
+      const map = {
+        hero_subtitle: p.hero_subtitle||'',
+        info_dresscode: p.info_dresscode||'',
+        info_gifts: p.info_gifts||'',
+        info_kids: p.info_kids||'',
+        info_hashtag: p.info_hashtag||''
+      };
+      const keys = Object.keys(map);
+      // simple upsert
+      const data = sh.getDataRange().getValues(); // header + rows
+      const idx = {}; for(let i=1;i<data.length;i++){ idx[data[i][0]]=i+1; }
+      keys.forEach(k=>{
+        if(idx[k]){ sh.getRange(idx[k],2).setValue(map[k]); }
+        else{ sh.appendRow([k, map[k]]); }
+      });
+      return json_({ok:true});
+    }
+
+    if(type==='gallery_upload'){
+      const folder = getFolder_();
+      const filename = p.filename || ('bild_'+Date.now()+'.jpg');
+      const contentType = p.mime || 'image/jpeg';
+      const bytes = Utilities.base64Decode(p.data||'');
+      const blob = Utilities.newBlob(bytes, contentType, filename);
+      const file = folder.createFile(blob);
+      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      const url = 'https://drive.google.com/uc?export=view&id=' + file.getId();
+
+      const sh = ensureSheet_(SHEET_GAL, ['id','timestamp','filename','url']);
+      sh.appendRow([file.getId(), new Date(), filename, url]);
+      return json_({ok:true, id:file.getId(), url});
+    }
+
+    if(type==='gallery_delete'){
+      const id = (p.id||'').trim();
+      if(id){
+        try{ DriveApp.getFileById(id).setTrashed(true); }catch(_){} // ignore if not found
+        const sh = ensureSheet_(SHEET_GAL, ['id','timestamp','filename','url']);
+        const rng = sh.getDataRange().getValues();
+        for(let i=1;i<rng.length;i++){
+          if(String(rng[i][0])===id){ sh.deleteRow(i+1); break; }
+        }
+      }
+      return json_({ok:true});
+    }
+
+    if(type==='chat_delete'){
+      const row = parseInt(p.row,10); // absolute row in sheet (1-based)
+      const sh = ensureSheet_(SHEET_CHAT, ['timestamp','name','message','ua']);
+      if(row && row>=2 && row<=sh.getLastRow()) sh.deleteRow(row);
+      return json_({ok:true});
+    }
+
+    return json_({ok:false, error:'Unknown admin type'},400);
+  }catch(err){ return json_({ok:false,error:String(err)}, 500); }
 }
 
-function exportCsv(){
-  const rows=[["timestamp","name","attending","guests","companions","email","message"]];
-  document.querySelectorAll('#admTable tbody tr').forEach(tr=>{
-    const cells=[...tr.children].map(td=>td.textContent);
-    rows.push(cells);
-  });
-  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
-  const url=URL.createObjectURL(blob);
-  const a=Object.assign(document.createElement('a'),{href:url,download:'rsvps.csv'});
-  document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
-}
-
-async function loadChat(){
-  const token=document.getElementById('admTokenChat').value.trim();
-  const hint=document.getElementById('admChatHint');
-  const list=document.getElementById('admChatList');
-  hint.textContent="Lade…"; list.innerHTML="";
+function doGet(e){
   try{
-    const url=new URL(SHEET_ENDPOINT);
-    url.searchParams.set("token",token);
-    url.searchParams.set("type","chat");
-    const res=await fetch(url); const j=await res.json();
-    if(!j.ok) throw new Error(j.error||"Fehler");
-    (j.rows||[]).slice(-100).reverse().forEach(r=>{
-      const div=document.createElement('div');
-      div.className='card';
-      div.innerHTML=`<strong>${r.name||'Gast'}</strong><div class="hint">${r.message||''}</div>`;
-      list.appendChild(div);
-    });
-    hint.textContent=`${(j.rows||[]).length} Nachrichten geladen.`;
-  }catch(e){hint.textContent="Chat laden fehlgeschlagen – Token prüfen.";console.error(e);}
+    const p = e.parameter || {};
+    const type = (p.type||'').toLowerCase();
+
+    // Public GET for chat preview on index (no token)
+    if(type==='chat' && p.list && !p.token){
+      const sh = ensureSheet_(SHEET_CHAT, ['timestamp','name','message','ua']);
+      const last = sh.getLastRow();
+      if(last<2) return json_({ok:true, rows:[]});
+      const values = sh.getRange(2,1,last-1,4).getValues();
+      const rows = values.map(r=>({timestamp:r[0], name:r[1], message:r[2]}));
+      return json_({ok:true, rows});
+    }
+
+    // Admin GET (needs token)
+    needToken_(p);
+
+    if(type==='rsvp'){
+      const sh = ensureSheet_(SHEET_RSVP, ['timestamp','name','attending','guests','email','message','c1name','c1age','c2name','c2age','c3name','c3age','c4name','c4age','ua']);
+      const last = sh.getLastRow();
+      if(last<2) return json_({ok:true, rows:[]});
+      const vals = sh.getRange(1,1,last,15).getValues();
+      const header = vals.shift();
+      const rows = vals.map((r,i)=>{
+        const o={}; header.forEach((h,idx)=>o[h]=r[idx]); o._row = i+2; return o;
+      });
+      return json_({ok:true, rows});
+    }
+
+    if(type==='chat' && p.list){
+      const sh = ensureSheet_(SHEET_CHAT, ['timestamp','name','message','ua']);
+      const last = sh.getLastRow();
+      if(last<2) return json_({ok:true, rows:[]});
+      const vals = sh.getRange(1,1,last,4).getValues();
+      const header = vals.shift();
+      const rows = vals.map((r,i)=>{
+        const o={}; header.forEach((h,idx)=>o[h]=r[idx]); o._row = i+2; return o;
+      });
+      return json_({ok:true, rows});
+    }
+
+    if(type==='texts' && p.list){
+      const sh = ensureSheet_(SHEET_TEXTS, ['key','value']);
+      const last = sh.getLastRow();
+      if(last<2) return json_({ok:true, items:{}});
+      const vals = sh.getRange(2,1,last-1,2).getValues();
+      const items = {}; vals.forEach(r=>{ items[r[0]] = r[1]; });
+      return json_({ok:true, items});
+    }
+
+    if(type==='gallery' && p.list){
+      const sh = ensureSheet_(SHEET_GAL, ['id','timestamp','filename','url']);
+      const last = sh.getLastRow();
+      if(last<2) return json_({ok:true, rows:[]});
+      const vals = sh.getRange(2,1,last-1,4).getValues();
+      const rows = vals.map(r=>({id:String(r[0]), timestamp:r[1], filename:r[2], url:r[3]}));
+      return json_({ok:true, rows});
+    }
+
+    return json_({ok:false, error:'Unsupported GET'}, 400);
+  }catch(err){ return json_({ok:false,error:String(err)}, 500); }
 }
-</script>
-</body>
-</html>
+
+/* einmalig ausführen, um den Token zu setzen */
+function setToken(){ PropertiesService.getScriptProperties().setProperty('TOKEN','030520'); }
