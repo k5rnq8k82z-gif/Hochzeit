@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="de">
 <head>
@@ -7,141 +6,229 @@
   <title>Kim & Partner – Hochzeit in Thailand</title>
   <meta name="description" content="Hochzeit von Kim & Partner in Thailand – RSVP, Infos, Galerie & Chat" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
   <style>
     :root{
-      --bg: #0c1016;
-      --card: rgba(255,255,255,0.07);
-      --fg: #eef2fa;
-      --muted:#aab0c0;
-      --brand:#ff8fb2;
-      --brand2:#78d3ff;
-      --accent:#ffd166;
-      --ok:#39d353;
-      --warn:#ffcc00;
-      --error:#ff6b6b;
-      --shadow: 0 12px 34px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+      /* Helle, romantische Palette */
+      --bg: #fffdf9;
+      --paper: #ffffff;
+      --ink: #2a2a2a;
+      --muted:#6f7783;
+      --brand:#e99ab1;      /* Rosé */
+      --brand2:#95d6ea;     /* Pastellblau */
+      --accent:#d9b45f;     /* Warmes Gold */
+      --ok:#2ea85f;
+      --warn:#d79b00;
+      --error:#e86a6a;
+      --card: rgba(255,255,255,0.85);
+      --shadow: 0 12px 36px rgba(36, 42, 58, .10);
       --radius: 16px;
     }
+
     * { box-sizing: border-box; }
-    html,body { margin:0; padding:0; color:var(--fg);
+    html,body{
+      margin:0; padding:0; color:var(--ink);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       background:
-        radial-gradient(1600px 800px at 10% -10%, rgba(255,143,178,.08), transparent 60%),
-        radial-gradient(1400px 700px at 110% 0%, rgba(120,211,255,.08), transparent 60%),
-        linear-gradient(180deg, #0c1016 0%, #0f1117 60%, #0b0e14 100%) no-repeat;
-      min-height: 100vh;
+        radial-gradient(1200px 600px at 0% -10%, rgba(233,154,177,.18), transparent 60%),
+        radial-gradient(1000px 520px at 110% 10%, rgba(149,214,234,.16), transparent 60%),
+        radial-gradient(900px 480px at 50% 120%, rgba(217,180,95,.10), transparent 60%),
+        linear-gradient(180deg, #fffdf9 0%, #fffaf4 100%);
+      min-height:100vh;
     }
-    a { color: var(--brand2); text-decoration: none; }
+    a { color: var(--brand); text-decoration: none; }
     img { max-width:100%; display:block; border-radius: 14px; }
 
+    /* Zarte Zierlinie (Thai-Flair, aber hell) */
     .thai {
       background:
-        url('img/thai_border.svg') center top/280px repeat-x,
-        url('img/thai_border.svg') center bottom/280px repeat-x;
-      padding-top: 24px; padding-bottom: 24px;
+        url('img/thai_border_light.svg') center top/280px repeat-x,
+        url('img/thai_border_light.svg') center bottom/280px repeat-x;
+      padding-top: 22px; padding-bottom: 22px;
     }
 
+    /* Splash – hell & luftig */
     #splash{
       position:fixed; inset:0; z-index:1000;
-      background: #000 url('img/hero.jpg') center/cover no-repeat;
+      background: #fff url('img/hero.jpg') center/cover no-repeat;
       display:grid; place-items:center;
       transition: opacity .9s ease;
     }
     #splash::after{
       content:""; position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.55));
+      background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,.85));
     }
     #splash .title{
       position:relative; z-index:2; text-align:center;
-      padding:16px 24px; border-radius:999px;
-      background: rgba(255,255,255,.14); backdrop-filter: blur(8px);
+      padding:14px 22px; border-radius:999px;
+      background: rgba(255,255,255,.7); backdrop-filter: blur(8px);
       box-shadow: var(--shadow);
-      font-weight:800; letter-spacing:.6px;
+      font-weight:800; letter-spacing:.4px; color:#5b3e43;
+      border: 1px solid rgba(233,154,177,.35);
     }
     #splash.hide{ opacity:0; pointer-events:none; }
 
+    /* Header – hell, elegant, sticky */
     header{
       position:sticky; top:0; z-index:20;
-      background:rgba(15,17,21,.55); backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.7); backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(36,42,58,.08);
     }
     .wrap{ max-width:1100px; margin:0 auto; padding:20px; }
     nav{ display:flex; align-items:center; gap:14px; justify-content:space-between; }
-    .brand{ display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.3px; }
-    .brand .dot{ width:12px; height:12px; border-radius:50%;
-      background: conic-gradient(from 45deg, var(--brand), var(--brand2), var(--accent));
-      box-shadow:0 0 22px rgba(255,143,178,.8);
+    .brand{
+      display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.3px; color:#5b3e43;
+      font-family: "Playfair Display", ui-serif, Georgia, serif;
     }
-    .navlinks a{ padding:8px 12px; border-radius:10px; }
-    .navlinks a:hover{ background:rgba(255,255,255,.07); }
+    .brand .dot{
+      width:12px; height:12px; border-radius:50%;
+      background: conic-gradient(from 45deg, var(--brand), var(--brand2), var(--accent));
+      box-shadow: 0 0 16px rgba(233,154,177,.8);
+      border: 1px solid rgba(233,154,177,.45);
+    }
+    .navlinks a{
+      padding:8px 12px; border-radius:10px; color:#4b5563; font-weight:600;
+    }
+    .navlinks a:hover{ background:rgba(233,154,177,.12); }
 
+    /* Hero – Serif Headline + Subline */
     .hero{ padding:64px 20px 18px; text-align:center; }
-    .hero h1{ font-size: clamp(28px, 6vw, 52px); margin:0 0 8px; }
-    .hero p{ color:var(--muted); margin:0; }
+    .hero h1{
+      font-family: "Playfair Display", ui-serif, Georgia, serif;
+      font-weight:600; color:#4a3a3f;
+      font-size: clamp(30px, 6vw, 56px); margin:0 0 6px;
+      letter-spacing:.2px;
+    }
+    .hero p{ color:var(--muted); margin:0; font-size: clamp(16px, 2.6vw, 18px); }
 
+    /* Sektionen & Cards */
     section{ padding:28px 20px 18px; }
     .card{
       background: var(--card);
-      border: 1px solid rgba(255,255,255,.10);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(36,42,58,.08);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: 20px;
+      padding: 22px;
     }
     .grid{ display:grid; gap:18px; grid-template-columns: repeat(12, 1fr); }
     .col-12{ grid-column: span 12; }
     .col-6{ grid-column: span 12; }
     @media(min-width:860px){ .col-6{ grid-column: span 6; } }
 
-    form label{ display:block; font-weight:700; margin:12px 0 6px; }
+    /* Formulare – hell & weich */
+    form label{ display:block; font-weight:700; margin:12px 0 6px; color:#3d3941;}
     input[type="text"], input[type="email"], textarea, select, input[type="number"]{
       width:100%; padding:12px 14px; border-radius:12px;
-      border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.07); color:var(--fg);
-      outline:none;
+      border:1px solid rgba(36,42,58,.12);
+      background:#ffffff; color:var(--ink); outline:none;
+      transition: box-shadow .2s ease, border-color .2s ease;
     }
-    textarea{ min-height:90px; resize:vertical; }
+    input:focus, textarea:focus, select:focus{
+      border-color: rgba(233,154,177,.55);
+      box-shadow: 0 0 0 6px rgba(233,154,177,.18);
+    }
+    textarea{ min-height:100px; resize:vertical; }
     .row{ display:flex; gap:12px; flex-wrap:wrap; }
     .row > *{ flex:1; min-width:160px; }
+
     .radios{ display:flex; gap:12px; flex-wrap: wrap; }
     .chip{
       display:inline-flex; align-items:center; gap:10px; padding:10px 14px;
-      border-radius:999px; border:1px solid rgba(255,255,255,.12); cursor:pointer;
-      background:rgba(255,255,255,.06);
+      border-radius:999px; border:1px solid rgba(36,42,58,.12); cursor:pointer;
+      background:#ffffff; font-weight:600; color:#3e3d43;
+      transition: transform .12s ease, border-color .2s ease, box-shadow .2s ease;
     }
+    .chip:hover{ transform: translateY(-1px); box-shadow: 0 8px 16px rgba(36,42,58,.08); }
     .chip input{ display:none; }
-    .chip[data-checked="true"]{ outline:2px solid rgba(255,255,255,.2); background:rgba(255,255,255,.12); }
+    .chip[data-checked="true"]{
+      border-color: rgba(233,154,177,.6);
+      box-shadow: 0 0 0 6px rgba(233,154,177,.16);
+      background: linear-gradient(180deg, #fff, #fff6fa);
+    }
+
     .hint{ color:var(--muted); font-size:14px; }
+
     .btn{
       display:inline-flex; align-items:center; justify-content:center; gap:10px;
-      border:0; padding:12px 16px; border-radius:12px; cursor:pointer; font-weight:800;
-      color:#0c0f14; background:linear-gradient(135deg, var(--brand), var(--brand2));
-      box-shadow: 0 10px 20px rgba(255,137,168,.25), 0 6px 18px rgba(138,198,255,.18);
+      border:0; padding:12px 16px; border-radius:14px; cursor:pointer; font-weight:800;
+      color:#3f2a2f; background:linear-gradient(135deg, #ffe4ec, #fef6d9);
+      box-shadow: 0 8px 20px rgba(233,154,177,.25), 0 6px 18px rgba(149,214,234,.18);
+      border: 1px solid rgba(233,154,177,.35);
+      transition: transform .12s ease, box-shadow .2s ease, filter .2s ease;
     }
-    .btn.ghost{ background: transparent; color:var(--fg); border:1px solid rgba(255,255,255,.18); }
+    .btn:hover{ transform: translateY(-1px); box-shadow: 0 14px 26px rgba(233,154,177,.24); filter: brightness(1.02); }
+    .btn.ghost{
+      background: #fff; color:#4a3a3f; border:1px solid rgba(36,42,58,.16);
+      box-shadow: none;
+    }
+
     .success{ color: var(--ok); font-weight:700; }
     .error{ color: var(--error); font-weight:700; }
     .warn{ color: var(--warn); font-weight:700; }
 
     .pill{
       display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
-      background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, #fff, #fff7fb);
+      border:1px solid rgba(233,154,177,.35);
+      color:#5b3e43; font-weight:700;
     }
 
+    /* Liste hübscher */
+    ul.clean{ list-style: none; padding-left:0; margin:0; display:grid; gap:8px; }
+    ul.clean li::before{
+      content:"❀"; margin-right:8px; color:var(--brand);
+    }
+
+    /* Galerie – helle Kacheln */
     .gallery{ display:grid; gap:10px; grid-template-columns: repeat(2, 1fr); }
     @media(min-width:700px){ .gallery{ grid-template-columns: repeat(4, 1fr); } }
-    .gallery img{ border-radius:12px; aspect-ratio: 1/1; object-fit:cover; cursor:pointer; }
+    .gallery img{
+      border-radius:14px; aspect-ratio: 1/1; object-fit:cover; cursor:pointer;
+      box-shadow: 0 8px 20px rgba(36,42,58,.06); border:1px solid rgba(36,42,58,.08);
+      transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+    }
+    .gallery img:hover{ transform: translateY(-2px) scale(1.01); box-shadow: 0 14px 28px rgba(36,42,58,.10); filter: saturate(1.05); }
 
-    .lightbox{ position:fixed; inset:0; background:rgba(0,0,0,.85); display:none; align-items:center; justify-content:center; z-index:50; }
+    /* Lightbox – hell & neutral */
+    .lightbox{
+      position:fixed; inset:0; background:rgba(255,255,255,.92);
+      display:none; align-items:center; justify-content:center; z-index:50;
+      backdrop-filter: blur(4px);
+    }
     .lightbox.show{ display:flex; }
-    .lightbox img{ max-width:90vw; max-height:80vh; border-radius:14px; }
-    .lightbox .close{ position:absolute; top:14px; right:18px; font-size:28px; cursor:pointer; }
+    .lightbox img{
+      max-width:90vw; max-height:80vh; border-radius:16px;
+      box-shadow: 0 30px 60px rgba(36,42,58,.18);
+      border: 1px solid rgba(36,42,58,.12);
+      background: #fff;
+    }
+    .lightbox .close{
+      position:absolute; top:14px; right:18px; font-size:28px; cursor:pointer; color:#3d3941;
+      background:#fff; border-radius:999px; padding:4px 12px; border:1px solid rgba(36,42,58,.12);
+      box-shadow: var(--shadow);
+    }
 
-    footer{ padding:60px 20px; text-align:center; color:var(--muted); }
+    footer{
+      padding:60px 20px; text-align:center; color:var(--muted);
+      font-size:14px;
+    }
+
+    /* Zarter Divider */
+    .divider{
+      height:1px; background: linear-gradient(90deg, transparent, rgba(36,42,58,.12), transparent);
+      margin: 22px 0;
+    }
+
+    /* Admin-Link subtiler */
+    .navlinks a[href="admin.html"]{
+      opacity:.7;
+    }
   </style>
-
 </head>
 <body>
+  <!-- Splash (tap/klick schließt, Auto-Fade) -->
   <div id="splash" aria-hidden="true">
     <div class="title">Kim &amp; Partner • 20. Juni 2026 • Thailand 🇹🇭</div>
   </div>
@@ -155,7 +242,7 @@
           <a href="#infos">Infos</a>
           <a href="#galerie">Galerie</a>
           <a href="#chat">Gästebuch</a>
-          <a href="admin.html">Admin</a>
+          <a href="admin.html" title="Verwaltung">Admin</a>
         </div>
       </nav>
     </div>
@@ -163,16 +250,16 @@
 
   <main>
     <div class="wrap hero">
-      <h1>Willkommen zu unserer Hochzeit in Thailand 🌺🏝️</h1>
-      <p>Wir freuen uns riesig, dass ihr dabei seid. Bitte nutzt den Check-in und stöbert durch Infos, Galerie & Gästebuch.</p>
-      <div class="pill" style="margin-top:10px;">💌 Dresscode: Festlich & sommerlich • 📍 Koh Samui</div>
+      <h1>Willkommen zu unserer Hochzeit in Thailand</h1>
+      <p>Wir freuen uns riesig, dass ihr dabei seid. Nutzt gern den Check-in und stöbert durch Infos, Galerie & Gästebuch.</p>
+      <div class="pill" style="margin-top:12px;">💌 Dresscode: Festlich & sommerlich • 📍 Koh Samui</div>
     </div>
 
     <section id="rsvp">
       <div class="wrap grid">
         <div class="col-6">
           <div class="card">
-            <h2 style="margin-top:0">Check-in / Zusage</h2>
+            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif; color:#4a3a3f;">Check-in / Zusage</h2>
             <p class="hint">Bitte füllt die Felder aus. Ihr könnt Begleitpersonen mit Namen & Alter angeben.</p>
 
             <form id="rsvpForm" name="rsvp" method="post" action="/" data-netlify="true" netlify-honeypot="bot-field" novalidate>
@@ -193,17 +280,14 @@
                 <div>
                   <label for="guests">Anzahl Begleitpersonen</label>
                   <select id="guests" name="guests">
-                    <option value="0" selected>0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
+                    <option value="0" selected>0</option><option value="1">1</option>
+                    <option value="2">2</option><option value="3">3</option><option value="4">4</option>
                   </select>
                 </div>
               </div>
 
               <div id="companions">
-                <div class="row"><div><label for="c1name">Begleitung 1 – Name</label><input id="c1name" name="c1name" type="text" placeholder="Vor- & Nachname"></div><div><label for="c1age">Alter</label><input id="c1age" name="c1age" type="number" min="0" max="120" placeholder="z. B. 28"></div></div>
+                <div class="row"><div><label for="c1name">Begleitung 1 – Name</label><input id="c1name" name="c1name" type="text" placeholder="Vor- & Nachname"></div><div><label for="c1age">Alter</label><input id="c1age" name="c1age" type="number" min="0" max="120" placeholder="z. B. 28"></div></div>
                 <div class="row"><div><label for="c2name">Begleitung 2 – Name</label><input id="c2name" name="c2name" type="text"></div><div><label for="c2age">Alter</label><input id="c2age" name="c2age" type="number" min="0" max="120"></div></div>
                 <div class="row"><div><label for="c3name">Begleitung 3 – Name</label><input id="c3name" name="c3name" type="text"></div><div><label for="c3age">Alter</label><input id="c3age" name="c3age" type="number" min="0" max="120"></div></div>
                 <div class="row"><div><label for="c4name">Begleitung 4 – Name</label><input id="c4name" name="c4name" type="text"></div><div><label for="c4age">Alter</label><input id="c4age" name="c4age" type="number" min="0" max="120"></div></div>
@@ -231,7 +315,7 @@
 
         <div class="col-6">
           <div class="card">
-            <h2 style="margin-top:0">Ablauf &amp; Ort</h2>
+            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif; color:#4a3a3f;">Ablauf &amp; Ort</h2>
             <ul class="clean">
               <li><strong>Datum:</strong> 20. Juni 2026</li>
               <li><strong>Trauung:</strong> 14:00 Uhr, Strandzeremonie Koh Samui</li>
@@ -240,9 +324,8 @@
               <li><strong>Anfahrt:</strong> Shuttle vom Hotel • Taxis verfügbar</li>
               <li><strong>Übernachtung:</strong> Resort-Kontingent (Stichwort „Hochzeit Kim“)</li>
             </ul>
-            <p class="hint" style="margin-top:10px">
-              QR-Code: Er führt direkt auf diese Seite – einfach scannen.
-            </p>
+            <div class="divider"></div>
+            <p class="hint">QR-Code: Er führt direkt auf diese Seite – einfach scannen.</p>
           </div>
         </div>
       </div>
@@ -252,7 +335,7 @@
       <div class="wrap grid">
         <div class="col-12">
           <div class="card">
-            <h2 style="margin-top:0">Weitere Informationen</h2>
+            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif; color:#4a3a3f;">Weitere Informationen</h2>
             <p>Thailand-Flair, Palmen & Sonnenuntergang – wir freuen uns auf einen unvergesslichen Tag mit euch! 🇹🇭🌅</p>
             <ul class="clean">
               <li><strong>Geschenke:</strong> Eure Anwesenheit ist unser Geschenk. Wer mag: <em>Reisekasse</em> 💞</li>
@@ -268,7 +351,7 @@
       <div class="wrap grid">
         <div class="col-12">
           <div class="card">
-            <h2 style="margin-top:0">Galerie</h2>
+            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif; color:#4a3a3f;">Galerie</h2>
             <div class="gallery" id="gallery">
               <img src="img/pic1.jpg" alt="Strand">
               <img src="img/pic2.jpg" alt="Palmen">
@@ -286,7 +369,7 @@
       <div class="wrap grid">
         <div class="col-12">
           <div class="card">
-            <h2 style="margin-top:0">Gästebuch / Chat 💬</h2>
+            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif; color:#4a3a3f;">Gästebuch / Chat 💬</h2>
             <p class="hint">Hinterlasst uns gern eine liebe Nachricht! (Öffentlich sichtbar)</p>
             <div class="row">
               <input id="chatName" type="text" placeholder="Dein Name">
@@ -306,14 +389,17 @@
   </footer>
 
   <script>
+    /* ======== Config beibehalten (gleiche IDs & Endpunkte) ======== */
     const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbxb4kqalumOxwfAQkbOIyI3yUjFNaRo-LJsNOyx6UCHGw2WQ12-rh9sjBgocuDIBbwf/exec";
-    const ADMIN_TOKEN = "";
+    const ADMIN_TOKEN = ""; // optional
 
+    /* Splash Verhalten */
     const splash = document.getElementById('splash');
     const hideSplash = () => splash.classList.add('hide');
-    window.addEventListener('load', () => setTimeout(hideSplash, 1200));
+    window.addEventListener('load', () => setTimeout(hideSplash, 900));
     splash.addEventListener('click', hideSplash);
 
+    /* Chips togglen (bleibt kompatibel) */
     document.querySelectorAll('[data-chip]').forEach(label => {
       const input = label.querySelector('input[type="radio"]');
       input.addEventListener('change', () => {
@@ -322,6 +408,7 @@
       });
     });
 
+    /* Lightbox */
     const lb = document.getElementById('lightbox');
     const lbImg = document.getElementById('lbImg');
     document.getElementById('gallery').addEventListener('click', (e) => {
@@ -330,10 +417,18 @@
     document.getElementById('lbClose').addEventListener('click', () => lb.classList.remove('show'));
     lb.addEventListener('click', (e) => { if (e.target === lb) lb.classList.remove('show'); });
 
+    /* RSVP – identische Logik, nur Feedbacktexte leicht angepasst */
     const form = document.getElementById('rsvpForm');
     const statusEl = document.getElementById('status');
     const resetBtn = document.getElementById('resetBtn');
     const submitBtn = document.getElementById('submitBtn');
+
+    resetBtn.addEventListener('click', () => {
+      form.reset();
+      document.querySelectorAll('[data-chip]').forEach(l => l.dataset.checked = 'false');
+      statusEl.textContent = "";
+      statusEl.className = "";
+    });
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -386,7 +481,9 @@
         let ok = true;
         try { const j = await res.json(); ok = !!j.ok; if (!ok && j.error) throw new Error(j.error); } catch(_) {}
         if (ok) {
-          statusEl.textContent = attending === 'ja' ? "Danke für deine Zusage! 🎉" : "Schade, aber danke fürs Bescheid sagen!";
+          statusEl.textContent = attending === 'ja'
+            ? "Danke für deine Zusage! Wir freuen uns riesig. ✨"
+            : "Schade, aber danke fürs Bescheid sagen! 💌";
           statusEl.className = "success";
           form.reset();
           document.querySelectorAll('[data-chip]').forEach(l => l.dataset.checked = 'false');
@@ -402,6 +499,7 @@
       }
     });
 
+    /* Chat – kompatibel */
     const chatName = document.getElementById('chatName');
     const chatText = document.getElementById('chatText');
     const chatSend = document.getElementById('chatSend');
@@ -438,10 +536,13 @@
         const j = await res.json();
         if (!j.ok) throw new Error(j.error || "Fehler");
         (j.rows || []).slice(-40).forEach(r => {
-          const div = document.createElement('div');
-          div.className = "card";
-          div.innerHTML = `<strong>${r.name || 'Gast'}</strong><div class="hint" style="margin-top:4px;">${r.message || ''}</div>`;
-          chatList.appendChild(div);
+          const card = document.createElement('div');
+          card.className = "card";
+          card.innerHTML = `<strong>${(r.name || 'Gast')
+            .replace(/[<>&"]/g, s => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[s]))}</strong>
+            <div class="hint" style="margin-top:4px;">${(r.message || '')
+            .replace(/[<>&"]/g, s => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[s]))}</div>`;
+          chatList.appendChild(card);
         });
       } catch(e) {
         chatStatus.textContent = "Chat laden nicht möglich (Apps Script GET nicht aktiv).";
