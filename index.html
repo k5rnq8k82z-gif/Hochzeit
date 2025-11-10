@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Hochzeit von uns ❤</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="inner">
+      <div class="brand">
+        <div class="heart">❤</div>
+        <div class="brand-text">
+          <h1 id="heroTitle">Unsere Hochzeit</h1>
+          <p id="heroSubtitle">Wir freuen uns auf euch!</p>
+        </div>
+      </div>
+      <nav class="top-nav">
+        <a href="#infos">Infos</a>
+        <a href="#rsvp">Zusagen</a>
+        <a href="#gallery">Galerie</a>
+        <a href="#chat">Gästebuch</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="content">
+    <section id="infos" class="card hero">
+      <h2>Willkommen</h2>
+      <p id="welcomeText">Hier findet ihr alle wichtigen Infos rund um unseren Tag – Location, Zeiten und ein paar Worte von uns.</p>
+      <div class="info-grid">
+        <div class="info">
+          <div class="info-title">Datum</div>
+          <div class="info-value" id="dateText">Samstag, 05. Juli 2026</div>
+        </div>
+        <div class="info">
+          <div class="info-title">Ort</div>
+          <div class="info-value" id="locationText">Wird noch bekanntgegeben</div>
+        </div>
+        <div class="info">
+          <div class="info-title">Dresscode</div>
+          <div class="info-value" id="dresscodeText">Festlich</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="rsvp" class="card">
+      <h2>Zusagen / Absagen</h2>
+      <form id="rsvpForm" class="grid-form">
+        <label>
+          Name*
+          <input name="name" required placeholder="Max Mustermann" />
+        </label>
+        <label>
+          E-Mail*
+          <input type="email" name="email" required placeholder="max@example.com" />
+        </label>
+        <label>
+          Kommt ihr?
+          <select name="attending">
+            <option value="ja">Ja</option>
+            <option value="nein">Nein</option>
+          </select>
+        </label>
+        <label>
+          Anzahl zusätzlicher Gäste
+          <input type="number" name="guests" min="0" value="0" />
+        </label>
+        <label class="span-2">
+          Nachricht
+          <textarea name="message" rows="3" placeholder="Allergien, Musik-Wünsche …"></textarea>
+        </label>
+
+        <details class="span-2">
+          <summary>Kinder (optional)</summary>
+          <div class="kids-grid">
+            <label>Kind 1 – Name <input name="c1name" /></label>
+            <label>Kind 1 – Alter <input name="c1age" /></label>
+            <label>Kind 2 – Name <input name="c2name" /></label>
+            <label>Kind 2 – Alter <input name="c2age" /></label>
+            <label>Kind 3 – Name <input name="c3name" /></label>
+            <label>Kind 3 – Alter <input name="c3age" /></label>
+            <label>Kind 4 – Name <input name="c4name" /></label>
+            <label>Kind 4 – Alter <input name="c4age" /></label>
+          </div>
+        </details>
+
+        <button class="primary span-2" type="submit">Senden</button>
+      </form>
+      <p id="rsvpStatus" class="status-line" role="status"></p>
+    </section>
+
+    <section id="gallery" class="card">
+      <div class="card-header">
+        <h2>Galerie</h2>
+        <div class="actions">
+          <a id="downloadAll" class="soft" href="https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec?type=galleryZip" target="_blank" rel="noopener">Alles herunterladen (.zip)</a>
+        </div>
+      </div>
+      <div id="galleryGrid" class="gallery-grid" aria-live="polite"></div>
+    </section>
+
+    <section id="chat" class="card">
+      <h2>Gästebuch</h2>
+      <div id="chatList" class="chat-list" aria-live="polite"></div>
+      <form id="chatForm" class="chat-form">
+        <input name="name" placeholder="Dein Name (optional)" />
+        <input name="message" required maxlength="500" placeholder="Liebe Grüße ..." />
+        <button class="primary" type="submit">Eintrag senden</button>
+      </form>
+      <p id="chatStatus" class="status-line" role="status"></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="subtle" href="admin.html" aria-label="Versteckter Adminbereich">© Hochzeit</a>
+  </footer>
+
+  <script>
+    window.EXEC_URL = "https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec";
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>

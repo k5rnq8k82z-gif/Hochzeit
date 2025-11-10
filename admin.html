@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Admin – Hochzeit</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .lock-screen { display:flex; align-items:center; justify-content:center; min-height:60vh; gap:12px; }
+    .lock-screen input { max-width:220px; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="inner">
+      <div class="brand">
+        <div class="heart">❤</div>
+        <div class="brand-text">
+          <h1>Admin</h1>
+          <p>Inhalte & Galerie verwalten</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="content">
+    <section id="lock" class="card lock-screen">
+      <input id="pw" type="password" placeholder="Passwort" />
+      <button class="primary" id="unlockBtn">Öffnen</button>
+      <p class="muted">Passwort ist: <code>030520</code></p>
+    </section>
+
+    <section id="panel" class="card" style="display:none">
+      <div class="card-header"><h2>Texte & Infos</h2></div>
+      <form id="contentForm" class="grid-form">
+        <label class="span-2">Titel <input name="heroTitle" /></label>
+        <label class="span-2">Untertitel <input name="heroSubtitle" /></label>
+        <label class="span-2">Welcome-Text <textarea name="welcomeText" rows="3"></textarea></label>
+        <label>Datum <input name="dateText" /></label>
+        <label>Location <input name="locationText" /></label>
+        <label>Dresscode <input name="dresscodeText" /></label>
+        <button class="primary span-2" type="submit">Speichern</button>
+        <p id="contentStatus" class="status-line span-2"></p>
+      </form>
+    </section>
+
+    <section id="galleryAdmin" class="card" style="display:none">
+      <div class="card-header"><h2>Galerie</h2></div>
+      <form id="uploadForm" class="grid-form">
+        <label class="span-2">Bilddateien
+          <input id="files" type="file" accept="image/*" multiple />
+        </label>
+        <button class="primary span-2" type="submit">Hochladen</button>
+        <p id="uploadStatus" class="status-line span-2"></p>
+      </form>
+      <div class="muted small">Hinweis: Die Bilder werden in einem Drive-Ordner gespeichert und öffentlich lesbar gemacht.</div>
+    </section>
+  </main>
+
+  <script>
+    const EXEC_URL = "https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec";
+    const ADMIN_TOKEN = "030520";
+
+    const qs = (s) => document.querySelector(s);
+
+    function setVisible(id, on) {{ const el = document.getElementById(id); if (el) el.style.display = on ? "" : "none"; }}
+
+    function unlocked() {{ return localStorage.getItem("w_admin") === ADMIN_TOKEN; }}
+
+    function tryUnlock() {{ const v = document.getElementById("pw").value.trim(); if (v === ADMIN_TOKEN) {{ localStorage.setItem("w_admin", ADMIN_TOKEN); init(); }} else alert("Falsches Passwort"); }}
+
+    document.addEventListener("DOMContentLoaded", () => {{ qs("#unlockBtn").addEventListener("click", tryUnlock); if (unlocked()) init(); }});
+
+    async function init() {{ setVisible("lock", false); setVisible("panel", true); setVisible("galleryAdmin", true); await loadContent(); }}
+
+    async function loadContent() {{ 
+      const res = await fetch(EXEC_URL + "?type=contentGet");
+      const json = await res.json();
+      const f = document.getElementById("contentForm");
+      (json.rows || []).forEach(({key, value}) => {{ const el = f.elements[key]; if (el) el.value = value; }});
+    }}
+
+    document.getElementById("contentForm").addEventListener("submit", async (e) => {{ 
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      fd.append("type", "contentSet");
+      fd.append("adminToken", ADMIN_TOKEN);
+      const res = await fetch(EXEC_URL, {{ method:"POST", body: fd }});
+      const json = await res.json();
+      document.getElementById("contentStatus").textContent = json.ok ? "Gespeichert." : (json.error || "Fehler");
+    }});
+
+    document.getElementById("uploadForm").addEventListener("submit", async (e) => {{ 
+      e.preventDefault();
+      const files = document.getElementById("files").files;
+      if (!files.length) return;
+      let okCount = 0;
+      for (const file of files) {{ 
+        const fd = new FormData();
+        fd.append("type", "galleryUpload");
+        fd.append("adminToken", ADMIN_TOKEN);
+        fd.append("file", file, file.name);
+        const res = await fetch(EXEC_URL, {{ method:"POST", body: fd }});
+        const json = await res.json();
+        if (json.ok) okCount++; else console.warn(json);
+      }}
+      document.getElementById("uploadStatus").textContent = okCount + " / " + files.length + " hochgeladen.";
+    }});
+  </script>
+</body>
+</html>
