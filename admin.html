@@ -1,256 +1,136 @@
+
 <!doctype html>
 <html lang="de">
 <head>
-  <title>Admin – Hochzeit</title>
-  
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0d1016">
+  <title>Admin – Hochzeit</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <style>
     :root{
-      --bg: #0a0e14;
-      --panel: rgba(255,255,255,0.06);
-      --panel2: rgba(255,255,255,0.10);
-      --fg: #eef2fa;
-      --muted:#a9b0c2;
-      --pink:#ff8fb2;
-      --blue:#7fd4ff;
-      --sand:#ffd166;
-      --ok:#39d353; --warn:#ffcc00; --err:#ff6b6b;
-      --radius: 18px;
-      --shadow: 0 16px 40px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05);
+      --bg: #0d1016; --fg:#eef2fa; --muted:#aab0c0; --glass: rgba(255,255,255,.08); --border: rgba(255,255,255,.14);
+      --brand:#ff8fb2; --brand2:#78d3ff; --radius:16px; --shadow: 0 12px 34px rgba(0,0,0,.35);
     }
-    *{box-sizing:border-box}
-    html,body{
-      margin:0; color:var(--fg);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      background:
-        radial-gradient(1600px 800px at -20% -20%, rgba(255,143,178,.10), transparent 60%),
-        radial-gradient(1600px 800px at 120% -10%, rgba(127,212,255,.10), transparent 60%),
-        linear-gradient(180deg, #0b0f16, #0a0e14);
-      min-height:100vh;
-    }
-    a{color:var(--blue);text-decoration:none}
-    .wrap{max-width:1160px;margin:0 auto;padding:22px}
-    header{position:sticky;top:0;z-index:20;background:rgba(10,14,20,.6);backdrop-filter: blur(12px);border-bottom:1px solid rgba(255,255,255,.10)}
-    nav{display:flex;align-items:center;justify-content:space-between;gap:14px}
-    .brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.3px}
-    .brand .dot{width:12px;height:12px;border-radius:50%;background:conic-gradient(from 40deg,var(--pink),var(--blue),var(--sand));box-shadow:0 0 22px rgba(255,143,178,.7)}
-    .navlinks a{padding:10px 12px;border-radius:12px}
-    .navlinks a:hover{background:rgba(255,255,255,.08)}
-    .hero{padding:72px 22px 28px;text-align:center}
-    .hero h1{font-size:clamp(30px,6vw,56px);margin:0 0 10px}
-    .hero p{color:var(--muted);margin:0}
-    section{padding:30px 22px 16px}
-    .card{background:var(--panel);border:1px solid rgba(255,255,255,.12);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
-    .grid{display:grid;gap:18px;grid-template-columns:repeat(12,1fr)}
-    .col-12{grid-column:span 12}
-    .col-6{grid-column:span 12} @media(min-width:900px){.col-6{grid-column:span 6}}
-    form label{display:block;font-weight:700;margin:12px 0 6px}
-    input[type="text"],input[type="email"],input[type="password"],input[type="number"],textarea,select{width:100%;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:var(--fg)}
-    textarea{min-height:90px;resize:vertical}
-    .row{display:flex;gap:12px;flex-wrap:wrap}
-    .row>*{flex:1;min-width:160px}
-    .radios{display:flex;gap:12px;flex-wrap:wrap}
-    .chip{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.12);cursor:pointer;background:rgba(255,255,255,.06)}
-    .chip[data-checked="true"]{outline:2px solid rgba(255,255,255,.18);background:rgba(255,255,255,.12)}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;padding:12px 16px;border-radius:12px;cursor:pointer;font-weight:800;color:#0a0e14;background:linear-gradient(135deg,var(--pink),var(--blue));box-shadow:0 10px 20px rgba(255,143,178,.25),0 6px 18px rgba(127,212,255,.18)}
-    .btn.ghost{background:transparent;color:var(--fg);border:1px solid rgba(255,255,255,.18)}
-    .hint{color:var(--muted);font-size:14px}
-    .success{color:#39d353;font-weight:700}
-    .error{color:#ff6b6b;font-weight:700}
-    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}
-    .gallery{display:grid;gap:10px;grid-template-columns:repeat(2,1fr)} @media(min-width:720px){.gallery{grid-template-columns:repeat(4,1fr)}}
-    .gallery img{border-radius:12px;aspect-ratio:1/1;object-fit:cover;cursor:pointer}
-    .dlrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.86);display:none;align-items:center;justify-content:center;z-index:50}
-    .lightbox.show{display:flex}
-    .lightbox img{max-width:92vw;max-height:84vh;border-radius:16px}
-    .lightbox .close{position:absolute;top:14px;right:18px;font-size:28px;cursor:pointer}
-    footer{padding:60px 22px;text-align:center;color:var(--muted)}
-    #splash{position:fixed;inset:0;z-index:1000;background:#000 url('img/hero.jpg') center/cover no-repeat;display:grid;place-items:center;transition:opacity .9s ease}
-    #splash::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.55))}
-    #splash .title{position:relative;z-index:2;text-align:center;padding:16px 24px;border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter: blur(8px);box-shadow: var(--shadow);font-weight:800;letter-spacing:.6px}
-    #splash.hide{opacity:0;pointer-events:none}
+    html,body{margin:0;padding:0;background:#0b0e14;color:var(--fg);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    .wrap{max-width:1100px;margin:0 auto;padding:20px}
+    header{position:sticky;top:0;background:rgba(13,16,22,.55);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
+    a{color:#78d3ff;text-decoration:none}
+    .card{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    input{padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);color:var(--fg)}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#0c0f14;font-weight:800;border:0}
+    table{width:100%;border-collapse:collapse}
+    th,td{text-align:left;padding:8px;border-bottom:1px solid rgba(255,255,255,.08)}
   </style>
-
 </head>
 <body>
-  <header><div class="wrap"><nav><div class="brand"><span class="dot"></span><span>Admin</span></div><div class="navlinks"><a href="index.html">Zur Website</a></div></nav></div></header>
+  <header><div class="wrap nav"><strong>Admin</strong><a href="index.html">Zur Website</a></div></header>
   <main class="wrap">
     <section class="card">
-      <h2>Login</h2>
-      <div class="row">
-        <input id="pw" type="password" placeholder="Passwort">
-        <button class="btn" id="loginBtn">Anmelden</button>
-        <span class="hint">Admin ist versteckt – Zugang nur mit Passwort.</span>
-      </div>
-      <p id="loginMsg" class="error"></p>
-    </section>
-
-    <section class="card" id="adminPanel" style="display:none; margin-top:18px;">
-      <h2>Inhalte bearbeiten</h2>
-      <p class="hint">Texte werden im Sheet „Content“ gespeichert.</p>
-      <div class="grid">
-        <div class="col-6">
-          <label>Hero Titel</label><input id="c_heroTitle" type="text">
-          <label>Hero Untertitel</label><input id="c_heroSubtitle" type="text">
-          <label>Hero Badge</label><input id="c_heroBadge" type="text">
-          <label>Datum</label><input id="c_infoDate" type="text">
-          <label>Trauung</label><input id="c_infoCeremony" type="text">
-          <label>Feier</label><input id="c_infoParty" type="text">
-        </div>
-        <div class="col-6">
-          <label>Dresscode</label><input id="c_infoDress" type="text">
-          <label>Anfahrt</label><input id="c_infoArrival" type="text">
-          <label>Übernachtung</label><input id="c_infoHotel" type="text">
-          <label>Weitere Infos</label><input id="c_infoMore" type="text">
-          <label>Geschenke</label><input id="c_infoGifts" type="text">
-          <label>Kinder</label><input id="c_infoKids" type="text">
-          <label>Fotos/Hashtag</label><input id="c_infoPhotos" type="text">
-        </div>
-      </div>
-      <div class="row" style="margin-top:12px;"><button class="btn" id="saveContent">Speichern</button><span id="contentMsg" class="hint"></span></div>
-    </section>
-
-    <section class="card" id="galleryPanel" style="display:none; margin-top:18px;">
-      <h2>Galerie verwalten</h2>
-      <div class="row">
-        <input id="galFiles" type="file" accept="image/*" multiple>
-        <button class="btn" id="galUpload">Hochladen</button>
-        <span class="hint">Bilder werden nach Google Drive geladen und öffentlich verlinkt.</span>
-      </div>
-      <p id="galMsg" class="hint"></p>
-      <div id="galAdminList" style="margin-top:12px; display:grid; gap:10px;"></div>
-    </section>
-
-    <section class="card" id="rsvpPanel" style="display:none; margin-top:18px;">
       <h2>RSVP-Übersicht</h2>
       <div class="row">
-        <button class="btn" id="loadRSVP">Laden</button>
-        <button class="btn ghost" id="exportCsv">CSV exportieren</button>
+        <input id="admToken" type="text" placeholder="Admin-Token (Script Property TOKEN)">
+        <button class="btn" id="admLoad">Laden</button>
+        <button class="btn" id="admCsv">CSV exportieren</button>
       </div>
-      <div style="overflow:auto; margin-top:12px;">
-        <table id="admTable" aria-label="RSVP-Tabelle" style="width:100%; border-collapse:collapse;">
-          <thead><tr>
-            <th style="text-align:left;padding:8px;">Zeit</th>
-            <th style="text-align:left;padding:8px;">Name</th>
-            <th style="text-align:left;padding:8px;">Zusage</th>
-            <th style="text-align:left;padding:8px;">Begl. Anzahl</th>
-            <th style="text-align:left;padding:8px;">Begl. Details</th>
-            <th style="text-align:left;padding:8px;">E-Mail</th>
-            <th style="text-align:left;padding:8px;">Nachricht</th>
-          </tr></thead>
-          <tbody></tbody>
-        </table>
+      <p class="row" id="admHint" style="margin-top:8px;"></p>
+      <div style="overflow:auto;margin-top:10px">
+        <table id="admTable"><thead><tr>
+          <th>Zeit</th><th>Name</th><th>Zusage</th><th>Begl. Anzahl</th><th>Begl. Details</th><th>E-Mail</th><th>Nachricht</th>
+        </tr></thead><tbody></tbody></table>
       </div>
+    </section>
+
+    <section class="card" style="margin-top:16px">
+      <h2>Gästebuch / Chat</h2>
+      <div class="row">
+        <input id="admTokenChat" type="text" placeholder="Admin-Token">
+        <button class="btn" id="admLoadChat">Laden</button>
+      </div>
+      <p class="row" id="admChatHint" style="margin-top:8px;"></p>
+      <div id="admChatList" style="margin-top:10px; display:grid; gap:10px;"></div>
     </section>
   </main>
 
   <script>
     const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec";
-    const PW = "030520";
-    let token = null;
-    const $ = (id)=>document.getElementById(id);
 
-    $("loginBtn").addEventListener("click",()=>{
-      const p = $("pw").value.trim();
-      if(p!==PW){ $("loginMsg").textContent="Falsches Passwort."; return; }
-      token = p;
-      $("loginMsg").textContent="";
-      ["adminPanel","galleryPanel","rsvpPanel"].forEach(id=>$(id).style.display="block");
-      loadContent(); loadGalleryAdmin();
-    });
+    document.getElementById('admLoad').addEventListener('click', loadRSVP);
+    document.getElementById('admCsv').addEventListener('click', exportCsv);
+    document.getElementById('admLoadChat').addEventListener('click', loadChat);
 
-    async function loadContent(){
-      try{
-        const url = new URL(SHEET_ENDPOINT); url.searchParams.set("type","content"); url.searchParams.set("list","1");
-        const res = await fetch(url); const j = await res.json(); if(!j.ok) return;
-        const c = j.content || {};
-        const map = {"heroTitle":"c_heroTitle","heroSubtitle":"c_heroSubtitle","heroBadge":"c_heroBadge","infoDate":"c_infoDate","infoCeremony":"c_infoCeremony","infoParty":"c_infoParty","infoDress":"c_infoDress","infoArrival":"c_infoArrival","infoHotel":"c_infoHotel","infoMore":"c_infoMore","infoGifts":"c_infoGifts","infoKids":"c_infoKids","infoPhotos":"c_infoPhotos"};
-        Object.entries(map).forEach(([k,inp])=>{ if($(inp)) $(inp).value = c[k]||""; });
-      }catch(e){}
-    }
-    $("saveContent").addEventListener("click", async ()=>{
-      if(!token) return;
-      const payload = {
-        type:"content", token:token,
-        heroTitle:$("c_heroTitle").value, heroSubtitle:$("c_heroSubtitle").value, heroBadge:$("c_heroBadge").value,
-        infoDate:$("c_infoDate").value, infoCeremony:$("c_infoCeremony").value, infoParty:$("c_infoParty").value,
-        infoDress:$("c_infoDress").value, infoArrival:$("c_infoArrival").value, infoHotel:$("c_infoHotel").value,
-        infoMore:$("c_infoMore").value, infoGifts:$("c_infoGifts").value, infoKids:$("c_infoKids").value, infoPhotos:$("c_infoPhotos").value
-      };
-      try{
-        const res = await fetch(SHEET_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},body:new URLSearchParams(payload).toString()});
-        const j = await res.json(); $("contentMsg").textContent = j.ok ? "Gespeichert." : (j.error||"Fehler");
-      }catch(e){ $("contentMsg").textContent = "Fehler beim Speichern."; }
-    });
-
-    async function loadGalleryAdmin(){
-      if(!token) return;
-      $("galAdminList").innerHTML="";
-      try{
-        const url = new URL(SHEET_ENDPOINT); url.searchParams.set("type","gallery"); url.searchParams.set("token", token);
-        const res = await fetch(url); const j = await res.json(); if(!j.ok) throw 0;
-        (j.rows||[]).forEach(g=>{
-          const d = document.createElement('div'); d.className="card";
-          d.innerHTML = `<strong>${g.filename}</strong><div class="hint">${g.url}</div>`;
-          $("galAdminList").appendChild(d);
-        });
-      }catch(e){ $("galAdminList").innerHTML = '<p class="hint">Noch keine Einträge.</p>'; }
-    }
-
-    $("galUpload").addEventListener("click", async ()=>{
-      if(!token) return;
-      const files = $("galFiles").files; if(!files || !files.length){ $("galMsg").textContent="Bitte Bilder auswählen."; return; }
-      $("galMsg").textContent="Hochladen …";
-      try{
-        for (const f of files){
-          const b64 = await fileToBase64(f);
-          const payload = {type:"gallery", op:"upload", token:token, filename:f.name, filetype:f.type||"image/jpeg", filedata:b64};
-          const res = await fetch(SHEET_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},body:new URLSearchParams(payload).toString()});
-          const j = await res.json(); if(!j.ok) throw new Error(j.error||"Upload fehlgeschlagen");
-        }
-        $("galMsg").textContent="Upload fertig."; loadGalleryAdmin();
-      }catch(e){ $("galMsg").textContent = "Fehler: "+ e.message; }
-    });
-
-    function fileToBase64(file){
-      return new Promise((resolve,reject)=>{ const r=new FileReader(); r.onload=()=>{ const s=String(r.result); const i=s.indexOf(','); resolve(i>=0?s.slice(i+1):s); }; r.onerror=reject; r.readAsDataURL(file); });
-    }
-
-    $("loadRSVP").addEventListener("click", async ()=>{
-      if(!token) return;
-      const tbody = document.querySelector("#admTable tbody"); tbody.innerHTML="";
-      try{
-        const url = new URL(SHEET_ENDPOINT); url.searchParams.set("type","rsvp"); url.searchParams.set("token", token);
-        const res = await fetch(url); const j = await res.json(); if(!j.ok) throw 0;
-        (j.rows||[]).forEach(r=>{
-          const tr=document.createElement('tr');
+    async function loadRSVP() {
+      const token = document.getElementById('admToken').value.trim();
+      const hint = document.getElementById('admHint');
+      const tbody = document.querySelector('#admTable tbody');
+      hint.textContent = "Lade...";
+      tbody.innerHTML = "";
+      try {
+        const url = new URL(SHEET_ENDPOINT);
+        url.searchParams.set('token', token);
+        url.searchParams.set('type', 'rsvp');
+        const res = await fetch(url.toString());
+        const j = await res.json();
+        if (!j.ok) throw new Error(j.error || "Fehler");
+        const rows = j.rows || [];
+        for (const r of rows) {
+          const tr = document.createElement('tr');
           tr.innerHTML = `
-            <td style="padding:8px;">${r.timestamp||''}</td>
-            <td style="padding:8px;">${r.name||''}</td>
-            <td style="padding:8px;">${r.attending||''}</td>
-            <td style="padding:8px;">${r.guests||''}</td>
-            <td style="padding:8px;">${[r.c1name,r.c1age,r.c2name,r.c2age,r.c3name,r.c3age,r.c4name,r.c4age].filter(Boolean).join(' • ')}</td>
-            <td style="padding:8px;">${r.email||''}</td>
-            <td style="padding:8px;">${r.message||''}</td>`;
+            <td>${{r.timestamp||''}}</td>
+            <td>${{r.name||''}}</td>
+            <td>${{r.attending||''}}</td>
+            <td>${{r.guests||''}}</td>
+            <td>${{[r.c1name,r.c1age,r.c2name,r.c2age,r.c3name,r.c3age,r.c4name,r.c4age].filter(Boolean).join(' • ')}}</td>
+            <td>${{r.email||''}}</td>
+            <td>${{r.message||''}}</td>
+          `;
           tbody.appendChild(tr);
-        });
-      }catch(e){ /* ignore */ }
-    });
+        }
+        hint.textContent = `Einträge: ${{rows.length}}`;
+      } catch(e) {
+        hint.textContent = "Laden fehlgeschlagen – ist TOKEN gesetzt & doGet aktiv?";
+      }
+    }
 
-    $("exportCsv").addEventListener("click", ()=>{
-      const rows = Array.from(document.querySelectorAll("#admTable tbody tr")).map(tr => Array.from(tr.children).map(td=>td.textContent));
+    function exportCsv() {
+      const rows = Array.from(document.querySelectorAll('#admTable tbody tr')).map(tr => Array.from(tr.children).map(td => td.textContent));
       const header = ['timestamp','name','attending','guests','companions','email','message'];
-      const esc = v => `"${String(v??'').replace(/"/g,'""')}"`;
-      const lines = [header.join(',')].concat(rows.map(r => r.map(esc).join(',')));
-      const blob = new Blob([lines.join('\n')], {type:'text/csv;charset=utf-8;'});
-      saveAs(blob, "rsvps.csv");
-    });
+      const esc = v => `"$` + `{String(v ?? '').replace(/"/g,'""')}"`;
+      const lines = [header.join(',')].concat(rows.map(r => r.map(v => `"$` + `{String(v ?? '').replace(/"/g,'""')}"`).join(',')));
+      const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = Object.assign(document.createElement('a'), { href: url, download: 'rsvps.csv' });
+      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
+
+    async function loadChat() {
+      const token = document.getElementById('admTokenChat').value.trim();
+      const hint = document.getElementById('admChatHint');
+      const list = document.getElementById('admChatList');
+      hint.textContent = "Lade...";
+      list.innerHTML = "";
+      try {
+        const url = new URL(SHEET_ENDPOINT);
+        url.searchParams.set('token', token);
+        url.searchParams.set('type', 'chat');
+        const res = await fetch(url.toString());
+        const j = await res.json();
+        if (!j.ok) throw new Error(j.error || "Fehler");
+        const rows = j.rows || [];
+        rows.slice(-100).reverse().forEach(r => {
+          const div = document.createElement('div');
+          div.className = 'card';
+          div.innerHTML = `<strong>${{r.name||'Gast'}}</strong><div class="hint" style="margin-top:4px;">${{r.message||''}}</div>`;
+          list.appendChild(div);
+        });
+        hint.textContent = `Chat-Nachrichten: ${{rows.length}}`;
+      } catch(e) {
+        hint.textContent = "Chat laden fehlgeschlagen – Script mit type=chat & TOKEN aktivieren.";
+      }
+    }
   </script>
 </body>
 </html>
