@@ -1,27 +1,16 @@
 (function(){
   'use strict';
-  var CONFIG = (window.APP_CONFIG || {});
-  var SHEET_ENDPOINT = CONFIG.SHEET_ENDPOINT || '';
+  var CFG = (window.APP_CONFIG || {});
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec';
+  var TOKEN = 'kim030520maria';
 
   function qs(id){ return document.getElementById(id); }
-  function token(){ return (qs('admToken').value || '').trim(); }
-  function authParams(){ var t = token(); var p = new URLSearchParams(); p.set('token', t); return p; }
-  function show(el, ok){ el.textContent = ok ? '✔️ OK' : '❌'; el.className = ok ? 'success' : 'error'; }
-
-  // Token check
-  qs('btnCheck').addEventListener('click', function(){
-    var hint = qs('admCheck');
-    hint.textContent = 'prüfe…'; hint.className = '';
-    var url = new URL(SHEET_ENDPOINT); url.searchParams.set('type','ping'); url.searchParams.set('token', token());
-    fetch(url.toString()).then(function(r){return r.json();}).then(function(j){ show(hint, j && j.ok === true); })
-    .catch(function(){ show(hint, false); });
-  });
 
   // RSVP
   qs('admLoad').addEventListener('click', function(){
     var hint = qs('admHint'); var tbody = document.querySelector('#admTable tbody');
     hint.textContent = 'Lade…'; tbody.innerHTML='';
-    var url = new URL(SHEET_ENDPOINT); url.searchParams.set('type','rsvp'); url.searchParams.set('token', token());
+    var url = new URL(ENDPOINT); url.searchParams.set('type','rsvp'); url.searchParams.set('token', TOKEN);
     fetch(url.toString()).then(function(r){return r.json();}).then(function(j){
       if (!j || j.ok!==true) throw new Error();
       (j.rows||[]).forEach(function(r){
@@ -32,9 +21,10 @@
         tbody.appendChild(tr);
       });
       hint.textContent = 'Einträge: ' + (j.rows||[]).length;
-    }).catch(function(){ hint.textContent = 'Fehler beim Laden (TOKEN korrekt?)'; });
+    }).catch(function(){ hint.textContent = 'Fehler beim Laden (TOKEN/Deploy prüfen)'; });
   });
 
+  // CSV
   qs('admCsv').addEventListener('click', function(){
     var rows = Array.from(document.querySelectorAll('#admTable tbody tr')).map(function(tr){
       return Array.from(tr.children).map(function(td){ return td.textContent; });
@@ -47,10 +37,10 @@
     document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
   });
 
-  // Chat load
+  // Chat
   qs('admLoadChat').addEventListener('click', function(){
     var hint = qs('admChatHint'); var list = qs('admChatList'); hint.textContent='Lade…'; list.innerHTML='';
-    var url = new URL(SHEET_ENDPOINT); url.searchParams.set('type','chat'); url.searchParams.set('token', token());
+    var url = new URL(ENDPOINT); url.searchParams.set('type','chat'); url.searchParams.set('token', TOKEN);
     fetch(url.toString()).then(function(r){return r.json();}).then(function(j){
       if (!j || j.ok!==true) throw new Error();
       (j.rows||[]).slice(-200).reverse().forEach(function(r){
@@ -60,7 +50,7 @@
         card.appendChild(title); card.appendChild(msg); list.appendChild(card);
       });
       hint.textContent = 'Chat-Nachrichten: ' + (j.rows||[]).length;
-    }).catch(function(){ hint.textContent = 'Fehler beim Laden (TOKEN korrekt?)'; });
+    }).catch(function(){ hint.textContent = 'Fehler beim Laden (TOKEN/Deploy prüfen)'; });
   });
 
   // Gallery upload & list
@@ -72,20 +62,13 @@
     reader.onload = function(){
       var base64 = reader.result.split(',')[1] || '';
       var payload = new URLSearchParams();
-      payload.set('type', 'upload');
-      payload.set('token', token());
-      payload.set('filename', file.name);
-      payload.set('caption', cap);
-      payload.set('mime', file.type || 'image/jpeg');
-      payload.set('data', base64);
-      fetch(SHEET_ENDPOINT, {
-        method:'POST',
-        headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},
-        body: payload.toString()
-      }).then(function(r){return r.json();}).then(function(j){
+      payload.set('type', 'upload'); payload.set('token', TOKEN);
+      payload.set('filename', file.name); payload.set('caption', cap);
+      payload.set('mime', file.type || 'image/jpeg'); payload.set('data', base64);
+      fetch(ENDPOINT, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'}, body: payload.toString() })
+      .then(function(r){return r.json();}).then(function(j){
         if (!j || j.ok!==true) throw new Error();
-        hint.textContent='Hochgeladen ✔️'; hint.className='success';
-        listGallery();
+        hint.textContent='Hochgeladen ✔️'; hint.className='success'; listGallery();
       }).catch(function(){ hint.textContent='Upload fehlgeschlagen'; hint.className='error'; });
     };
     reader.readAsDataURL(file);
@@ -93,7 +76,7 @@
 
   function listGallery(){
     var list = qs('gList'); var hint = qs('gHint'); list.innerHTML='';
-    var url = new URL(SHEET_ENDPOINT); url.searchParams.set('type','gallery'); url.searchParams.set('token', token());
+    var url = new URL(ENDPOINT); url.searchParams.set('type','gallery'); url.searchParams.set('token', TOKEN);
     fetch(url.toString()).then(function(r){return r.json();}).then(function(j){
       if (!j || j.ok!==true) throw new Error();
       (j.items||[]).forEach(function(it){
@@ -103,8 +86,7 @@
       hint.textContent = 'Bilder: ' + (j.items||[]).length; hint.className='';
     }).catch(function(){ hint.textContent='Galerie laden fehlgeschlagen'; hint.className='error'; });
   }
-  // auto-list on token check
-  qs('btnCheck').addEventListener('click', function(){ setTimeout(listGallery, 400); });
+  document.addEventListener('DOMContentLoaded', function(){ setTimeout(listGallery, 400); });
 
   // Content load/save
   function setVal(id, v){ var el=qs(id); if (el) el.value = v||''; }
@@ -112,7 +94,7 @@
 
   qs('cLoad').addEventListener('click', function(){
     var hint = qs('cHint'); hint.textContent='Lade…';
-    var url = new URL(SHEET_ENDPOINT); url.searchParams.set('type','config'); url.searchParams.set('token', token());
+    var url = new URL(ENDPOINT); url.searchParams.set('type','config'); url.searchParams.set('token', TOKEN);
     fetch(url.toString()).then(function(r){return r.json();}).then(function(j){
       if (!j || j.ok!==true) throw new Error();
       var c = j.config || {};
@@ -123,16 +105,16 @@
       setVal('c_lodging', c.lodging); setVal('c_info_lead', c.info_lead);
       setVal('c_gifts', c.gifts); setVal('c_children', c.children); setVal('c_hashtag', c.hashtag);
       hint.textContent='Geladen ✔️'; hint.className='success';
-    }).catch(function(){ hint.textContent='Fehler beim Laden (TOKEN korrekt?)'; hint.className='error'; });
+    }).catch(function(){ hint.textContent='Fehler beim Laden'; hint.className='error'; });
   });
 
   qs('cSave').addEventListener('click', function(){
     var hint = qs('cHint'); hint.textContent='Speichere…'; hint.className='';
-    var payload = new URLSearchParams(); payload.set('type','config'); payload.set('token', token());
+    var payload = new URLSearchParams(); payload.set('type','config'); payload.set('token', TOKEN);
     ['date','place','hero','hero_sub','ceremony','party','dress','transport','lodging','info_lead','gifts','children','hashtag'].forEach(function(k){
       payload.set(k, getVal('c_'+k));
     });
-    fetch(SHEET_ENDPOINT, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'}, body: payload.toString() })
+    fetch(ENDPOINT, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'}, body: payload.toString() })
      .then(function(r){return r.json();}).then(function(j){
       if (!j || j.ok!==true) throw new Error();
       hint.textContent='Gespeichert ✔️'; hint.className='success';

@@ -1,12 +1,13 @@
 (function(){
   'use strict';
-  var CONFIG = (window.APP_CONFIG || {});
-  var SHEET_ENDPOINT = CONFIG.SHEET_ENDPOINT || '';
+  var CFG = (window.APP_CONFIG || {});
+  var ENDPOINT = CFG.SHEET_ENDPOINT || '';
+  var ADMIN_TOKEN = CFG.ADMIN_TOKEN || '';
 
   // Splash
   var splash = document.getElementById('splash');
   function hideSplash(){ if (splash) splash.classList.add('hide'); }
-  window.addEventListener('load', function(){ setTimeout(hideSplash, 1100); });
+  window.addEventListener('load', function(){ setTimeout(hideSplash, 1200); });
   if (splash) splash.addEventListener('click', hideSplash);
 
   // Chips
@@ -16,10 +17,9 @@
       var input = label.querySelector('input[type="radio"]');
       if (!input) return;
       input.addEventListener('change', function(){
-        var parent = label.parentElement;
-        if (!parent) return;
+        var parent = label.parentElement; if (!parent) return;
         var sibs = parent.querySelectorAll('[data-chip]');
-        for (var j=0; j<sibs.length; j++){ sibs[j].dataset.checked = 'false'; }
+        for (var j=0;j<sibs.length;j++){ sibs[j].dataset.checked = 'false'; }
         label.dataset.checked = 'true';
       });
     })(chips[i]);
@@ -38,6 +38,14 @@
     if (lbClose) lbClose.addEventListener('click', function(){ lb.classList.remove('show'); });
     lb.addEventListener('click', function(e){ if (e.target === lb) lb.classList.remove('show'); });
   }
+
+  // Confetti hearts on success
+  function heartsBurst(){ try{ var c=document.createElement('div'); c.className='hearts'; document.body.appendChild(c);
+    for (var i=0;i<24;i++){ var h=document.createElement('span'); h.className='h'; h.style.left=(Math.random()*100)+'%'; h.style.animationDelay=(Math.random()*0.6)+'s'; c.appendChild(h);}
+    setTimeout(function(){ c.remove(); }, 2200);
+  }catch(_){
+  } }
+  var css=document.createElement('style'); css.textContent='.hearts{position:fixed;inset:0;pointer-events:none;z-index:60}.hearts .h{position:absolute;top:50%;width:12px;height:12px;background:radial-gradient(circle at 30% 30%, #ff8fb2, #ff5f9a);transform:rotate(-45deg);border-radius:4px;animation:fall 1.6s ease forwards}.hearts .h::before,.hearts .h::after{content:\"\";position:absolute;width:12px;height:12px;border-radius:50%;background:inherit}.hearts .h::before{top:-6px;left:0}.hearts .h::after{left:6px;top:0}@keyframes fall{from{transform:translateY(-40vh) rotate(-45deg)}to{transform:translateY(48vh) rotate(-45deg);opacity:0}}'; document.head.appendChild(css);
 
   // Load Config
   function applyConfig(cfg){
@@ -60,14 +68,8 @@
     set('cfg-hashtag', 'hashtag');
   }
   (function loadConfig(){
-    try{
-      var url = new URL(SHEET_ENDPOINT);
-      url.searchParams.set('type', 'config');
-      url.searchParams.set('public', '1');
-      fetch(url.toString()).then(function(r){return r.json();}).then(function(j){
-        if (j && j.ok && j.config){ applyConfig(j.config); }
-      }).catch(function(){});
-    }catch(_){}
+    var url = new URL(ENDPOINT); url.searchParams.set('type','config'); url.searchParams.set('public','1');
+    fetch(url.toString()).then(function(r){return r.json();}).then(function(j){ if (j && j.ok && j.config) applyConfig(j.config); }).catch(function(){});
   })();
 
   // RSVP
@@ -114,7 +116,7 @@
       if (submitBtn) submitBtn.disabled = true;
       if (statusEl){ statusEl.textContent = 'Sende …'; statusEl.className = ''; }
 
-      fetch(SHEET_ENDPOINT, {
+      fetch('https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
         body: payload.toString()
@@ -122,10 +124,8 @@
       .then(function(res){ if (!res.ok) throw new Error('HTTP '+res.status); return res.json().catch(function(){ return {ok:true}; }); })
       .then(function(j){
         if (!j || j.ok !== true) throw new Error('Antwort nicht bestätigt');
-        if (statusEl){
-          statusEl.textContent = (attending === 'ja') ? 'Danke für deine Zusage! 🎉' : 'Schade, aber danke fürs Bescheid sagen!';
-          statusEl.className = 'success';
-        }
+        if (statusEl){ statusEl.textContent = (attending === 'ja') ? 'Danke für deine Zusage! 🎉' : 'Schade, aber danke fürs Bescheid sagen!'; statusEl.className = 'success'; }
+        heartsBurst();
         form.reset();
         var chipLabels = form.querySelectorAll('[data-chip]');
         for (var k=0;k<chipLabels.length;k++){ chipLabels[k].dataset.checked = 'false'; }
@@ -165,7 +165,7 @@
   function loadChat(){
     if (!chatList) return;
     chatList.innerHTML = '';
-    var url = new URL(SHEET_ENDPOINT);
+    var url = new URL('https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec');
     url.searchParams.set('type', 'chat');
     url.searchParams.set('list', '1');
     fetch(url.toString(), { method: 'GET' })
@@ -173,10 +173,7 @@
       .then(function(j){
         if (!j || j.ok !== true) throw new Error('Fehler');
         var rows = (j.rows || []).slice(-50);
-        for (var i=0;i<rows.length;i++){
-          var r = rows[i];
-          chatList.appendChild(renderMsg(r.name || 'Gast', r.message || ''));
-        }
+        for (var i=0;i<rows.length;i++){ var r = rows[i]; chatList.appendChild(renderMsg(r.name || 'Gast', r.message || '')); }
       })
       .catch(function(){ if (chatStatus) chatStatus.textContent = 'Chat laden nicht möglich.'; });
   }
@@ -188,42 +185,23 @@
       var t = (chatText.value || '').trim();
       if (!n || !t){ if (chatStatus) chatStatus.textContent = 'Bitte Name und Nachricht eingeben.'; return; }
       var payload = new URLSearchParams();
-      payload.set('type', 'chat');
-      payload.set('name', n);
-      payload.set('message', t);
-      payload.set('ua', navigator.userAgent);
-      fetch(SHEET_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
-        body: payload.toString()
-      })
+      payload.set('type', 'chat'); payload.set('name', n); payload.set('message', t); payload.set('ua', navigator.userAgent);
+      fetch('https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'}, body: payload.toString() })
       .then(function(res){ if (!res.ok) throw new Error('HTTP '+res.status); return res.json().catch(function(){ return {ok:true}; }); })
-      .then(function(j){
-        chatText.value = '';
-        if (chatStatus) chatStatus.textContent = 'Gesendet 💬';
-        loadChat();
-      })
+      .then(function(j){ chatText.value = ''; if (chatStatus) chatStatus.textContent = 'Gesendet 💬'; loadChat(); })
       .catch(function(){ if (chatStatus) chatStatus.textContent = 'Chat speichern fehlgeschlagen.'; });
     });
     loadChat();
   }
 
-  // Dynamic gallery (from backend)
+  // Dynamic gallery
   (function loadGallery(){
-    try{
-      var url = new URL(SHEET_ENDPOINT);
-      url.searchParams.set('type', 'gallery');
-      url.searchParams.set('list', '1');
-      fetch(url.toString()).then(function(r){return r.json();}).then(function(j){
-        if (!j || !j.ok || !j.items) return;
-        var cont = document.getElementById('gallery'); if (!cont) return;
-        // append after placeholders
-        for (var i=0;i<j.items.length;i++){
-          var it = j.items[i]; if (!it.url) continue;
-          var img = document.createElement('img'); img.src = it.url; img.alt = (it.caption||'Foto');
-          cont.appendChild(img);
-        }
-      }).catch(function(){});
-    }catch(_){}
+    var url = new URL('https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec'); url.searchParams.set('type','gallery'); url.searchParams.set('list','1');
+    fetch(url.toString()).then(function(r){return r.json();}).then(function(j){
+      if (!j || !j.ok || !j.items) return;
+      var cont = document.getElementById('gallery'); if (!cont) return;
+      for (var i=0;i<j.items.length;i++){ var it=j.items[i]; if (!it.url) continue; var img=document.createElement('img'); img.src=it.url; img.alt=(it.caption||'Foto'); cont.appendChild(img); }
+    }).catch(function(){});
   })();
+
 })();
