@@ -1,171 +1,196 @@
 <!doctype html>
 <html lang="de">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>Admin – Maria & Kim</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg0:#080a0f;--bg1:#0c0f16;--fg:#e9eef6;--muted:#a5b0c4;
-  --neon1:#7ad9ff;--neon2:#ff86c8;--edge:rgba(255,255,255,.14);
-  --card:rgba(255,255,255,.06);--shadow:0 18px 40px rgba(0,0,0,.45);--r:16px;
-}
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;background:linear-gradient(180deg,var(--bg0),var(--bg1));color:var(--fg);font-family:Inter,ui-sans-serif,system-ui,sans-serif;min-height:100vh}
-header{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:rgba(8,11,18,.6);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.1)}
-header .brand{display:flex;align-items:center;gap:10px;font-weight:800}
-header .brand .dot{width:12px;height:12px;border-radius:99px;background:conic-gradient(from 45deg,var(--neon1),var(--neon2));box-shadow:0 0 20px rgba(122,217,255,.7)}
-header a{color:var(--neon1);text-decoration:none}
-main{max-width:1100px;margin:0 auto;padding:20px}
-.grid{display:grid;gap:18px;grid-template-columns:repeat(12,1fr)}
-.col-12{grid-column:span 12}.col-6{grid-column:span 12}@media(min-width:900px){.col-6{grid-column:span 6}}
-.card{background:var(--card);border:1px solid var(--edge);border-radius:var(--r);box-shadow:var(--shadow);padding:18px}
-h2{margin:0 0 10px}
-.row{display:flex;flex-wrap:wrap;gap:12px}
-input,textarea{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--edge);background:rgba(255,255,255,.06);color:var(--fg)}
-textarea{min-height:80px}
-.btn{border:0;cursor:pointer;border-radius:12px;padding:10px 14px;font-weight:800;color:#081019;background:linear-gradient(135deg,var(--neon1),var(--neon2));box-shadow:0 8px 20px rgba(122,217,255,.22)}
-.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--edge);box-shadow:none}
-.hint{color:var(--muted);font-size:14px}
-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}
-th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left}
-th{color:var(--neon1)}
-.thumb{width:80px;height:80px;object-fit:cover;border-radius:10px;border:1px solid rgba(255,255,255,.14)}
-#gate{position:fixed;inset:0;background:rgba(6,9,14,.9);backdrop-filter:blur(6px);display:grid;place-items:center;z-index:9999}
-#gate .panel{width:min(420px,92vw);background:var(--card);border:1px solid var(--edge);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Admin – Maria & Kim</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-0:#080a0f; --bg-1:#0c0f16; --bg-2:#0f1420;
+      --fg:#e9eef6; --muted:#a5b0c4; --neon1:#7ad9ff; --neon2:#ff86c8;
+      --card: rgba(255,255,255,.06); --edge: rgba(255,255,255,.12);
+      --blur: 10px; --radius: 16px; --shadow: 0 18px 40px rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box}
+    html,body{ margin:0; padding:0; color:var(--fg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(122,217,255,.09), transparent 60%),
+        radial-gradient(1000px 580px at 110% 0%, rgba(255,134,200,.08), transparent 60%),
+        linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 60%, var(--bg-2) 100%);
+      min-height:100vh;
+    }
+    a{ color: var(--neon1); text-decoration:none; }
+    header{
+      position:sticky; top:0; z-index:20; background:rgba(8,11,18,.6);
+      backdrop-filter: blur(12px); border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .wrap{ max-width:1100px; margin:0 auto; padding:20px;}
+    nav{ display:flex; align-items:center; justify-content:space-between; gap:14px;}
+    .brand{ display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.3px; }
+    .brand svg{ width:28px; height:28px; }
+    .card{
+      position:relative; background: var(--card); backdrop-filter: blur(var(--blur));
+      border:1px solid var(--edge); border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px;
+    }
+    .row{ display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
+    input[type="text"]{
+      width:100%; padding:12px 14px; border-radius:12px; color:var(--fg);
+      background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.16); outline:none;
+    }
+    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px; cursor:pointer;
+      padding:12px 16px; border-radius:14px; border:1px solid rgba(122,217,255,.55); font-weight:800; color:#081019;
+      background:linear-gradient(135deg, #7ad9ff, #ff86c8);
+      box-shadow: 0 10px 24px rgba(122,217,255,.25), 0 10px 28px rgba(255,134,200,.18);
+    }
+    .btn.ghost{ background: transparent; color:var(--fg); border:1px solid rgba(255,255,255,.22); box-shadow:none; }
+    .hint{ color:var(--muted); font-size:14px; margin-top:8px;}
+    table{ width:100%; border-collapse:collapse; font-size:14px;}
+    th, td{ text-align:left; padding:10px; border-bottom:1px solid rgba(255,255,255,.08);}
+    thead th{ position:sticky; top:0; background:rgba(8,11,18,.9); }
+    tbody tr:nth-child(odd){ background: rgba(255,255,255,.02); }
+  </style>
 </head>
 <body>
-<header>
-  <div class="brand"><span class="dot"></span> Admin – Maria &amp; Kim</div>
-  <a href="index.html">Zur Website</a>
-</header>
-
-<main class="grid">
-  <!-- Texte -->
-  <section class="card col-12">
-    <h2>Texte bearbeiten</h2>
-    <p class="hint">Diese Texte erscheinen auf der Startseite.</p>
-    <div class="grid">
-      <div class="col-6"><label>Hero-Unterzeile</label><input id="hero_subtitle"></div>
-      <div class="col-6"><label>Dresscode</label><input id="info_dresscode"></div>
-      <div class="col-6"><label>Geschenke</label><input id="info_gifts"></div>
-      <div class="col-6"><label>Kinder</label><input id="info_kids"></div>
-      <div class="col-6"><label>Hashtag</label><input id="info_hashtag"></div>
-      <div class="col-12 row"><button class="btn" id="saveTexts">Speichern</button><span class="hint" id="textsStatus"></span></div>
+  <header>
+    <div class="wrap">
+      <nav>
+        <div class="brand" aria-label="Admin">
+          <svg viewBox="0 0 64 64" role="img" aria-hidden="true">
+            <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7ad9ff"/><stop offset="1" stop-color="#ff86c8"/></linearGradient></defs>
+            <circle cx="32" cy="32" r="30" fill="url(#g)" opacity=".18"/>
+            <circle cx="32" cy="32" r="29" fill="none" stroke="url(#g)" stroke-width="1.5"/>
+            <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+              font-family="Georgia, serif" font-size="20" fill="#f0cc7a">M♡K</text>
+          </svg>
+          <span>Admin</span>
+        </div>
+        <div><a href="index.html">← Zur Website</a></div>
+      </nav>
     </div>
-  </section>
+  </header>
 
-  <!-- Galerie -->
-  <section class="card col-12">
-    <h2>Galerie</h2>
-    <div class="row"><input type="file" id="files" accept="image/*" multiple><button class="btn" id="uploadBtn">Hochladen</button><span class="hint" id="galleryStatus"></span></div>
-    <table><thead><tr><th>Vorschau</th><th>Datei</th><th>URL</th><th>Aktion</th></tr></thead><tbody id="galleryBody"></tbody></table>
-  </section>
+  <main class="wrap">
+    <section class="card">
+      <h2>RSVP-Übersicht</h2>
+      <div class="row">
+        <input id="admToken" type="text" placeholder="Admin-Token (Script Property TOKEN)">
+        <button class="btn" id="admLoad">Laden</button>
+        <button class="btn ghost" id="admCsv">CSV exportieren</button>
+      </div>
+      <p class="hint" id="admHint"></p>
+      <div style="overflow:auto; margin-top:12px; max-height:60vh;">
+        <table id="admTable" aria-label="RSVP-Tabelle">
+          <thead><tr>
+            <th>Zeit</th><th>Name</th><th>Zusage</th><th>Begl. Anzahl</th>
+            <th>Begl. Details</th><th>E-Mail</th><th>Nachricht</th><th>UA</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
 
-  <!-- Chat -->
-  <section class="card col-12">
-    <h2>Chat / Gästebuch</h2>
-    <div class="row"><button class="btn" id="loadChat">Neu laden</button><span class="hint" id="chatStatus"></span></div>
-    <table><thead><tr><th>Zeit</th><th>Name</th><th>Nachricht</th><th>Aktion</th></tr></thead><tbody id="chatBody"></tbody></table>
-  </section>
-</main>
+    <section class="card" style="margin-top:18px;">
+      <h2>Gästebuch / Chat</h2>
+      <div class="row">
+        <input id="admTokenChat" type="text" placeholder="Admin-Token (Script Property TOKEN)">
+        <button class="btn" id="admLoadChat">Laden</button>
+      </div>
+      <p class="hint" id="admChatHint"></p>
+      <div id="admChatList" style="margin-top:10px; display:grid; gap:10px;"></div>
+    </section>
+  </main>
 
-<!-- Login -->
-<div id="gate"><div class="panel">
-  <h2>Admin-Login</h2>
-  <p class="hint">Bitte Token eingeben.</p>
-  <div class="row"><input id="admToken" placeholder="030520"><button class="btn" id="enterBtn">Login</button></div>
-  <p class="hint" id="gateHint"></p>
-</div></div>
+  <script>
+    const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec";
 
-<script>
-const ENDPOINT="https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec";
-let TOKEN="";
+    const safe = s => String(s ?? '').replace(/[<>&"]/g, m => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[m]));
+    const csvEsc = v => `"${String(v ?? '').replace(/"/g,'""')}"`;
 
-/* Login */
-document.getElementById("enterBtn").addEventListener("click",async()=>{
-  const t=document.getElementById("admToken").value.trim();
-  if(!t){document.getElementById("gateHint").textContent="Token fehlt.";return;}
-  try{
-    const url=new URL(ENDPOINT);url.searchParams.set("type","texts");url.searchParams.set("list","1");url.searchParams.set("token",t);
-    const r=await fetch(url);const j=await r.json();if(!j.ok)throw 0;
-    TOKEN=t;document.getElementById("gate").style.display="none";
-    fillTexts(j.items||{});listGallery();listChat();
-  }catch{document.getElementById("gateHint").textContent="Token ungültig.";}
-});
+    document.getElementById('admLoad').addEventListener('click', loadRSVP);
+    document.getElementById('admCsv').addEventListener('click', exportCsv);
+    document.getElementById('admLoadChat').addEventListener('click', loadChat);
 
-/* Texte */
-function fillTexts(it){["hero_subtitle","info_dresscode","info_gifts","info_kids","info_hashtag"].forEach(k=>{if(it[k])document.getElementById(k).value=it[k];});}
-document.getElementById("saveTexts").addEventListener("click",async()=>{
-  const s=document.getElementById("textsStatus");s.textContent="Speichere…";
-  try{
-    const body=new URLSearchParams({
-      type:"texts_set",token:TOKEN,
-      hero_subtitle:hero_subtitle.value||"",info_dresscode:info_dresscode.value||"",
-      info_gifts:info_gifts.value||"",info_kids:info_kids.value||"",info_hashtag:info_hashtag.value||""
-    });
-    const r=await fetch(ENDPOINT,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body});
-    const j=await r.json();if(!j.ok)throw 0;s.textContent="Gespeichert ✔";
-  }catch{s.textContent="Fehler.";}
-});
+    async function loadRSVP(){
+      const token = document.getElementById('admToken').value.trim();
+      const hint = document.getElementById('admHint');
+      const tbody = document.querySelector('#admTable tbody');
+      hint.textContent = "Lade …";
+      tbody.innerHTML = "";
+      try{
+        const url = new URL(SHEET_ENDPOINT);
+        url.searchParams.set('admin','1');
+        url.searchParams.set('token', token);
+        url.searchParams.set('type','rsvp');
+        const res = await fetch(url.toString(), { method: 'GET' });
+        const text = await res.text();
+        const j = JSON.parse(text);
+        if (!j.ok) throw new Error(j.error || "Fehler");
+        const rows = j.rows || [];
+        for(const r of rows){
+          const comp = [r.c1name,r.c1age,r.c2name,r.c2age,r.c3name,r.c3age,r.c4name,r.c4age]
+                        .filter(Boolean).join(' • ');
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${safe(r.timestamp||'')}</td>
+            <td>${safe(r.name||'')}</td>
+            <td>${safe(r.attending||'')}</td>
+            <td>${safe(r.guests||'')}</td>
+            <td>${safe(comp)}</td>
+            <td>${safe(r.email||'')}</td>
+            <td>${safe(r.message||'')}</td>
+            <td>${safe(r.ua||'')}</td>
+          `;
+          tbody.appendChild(tr);
+        }
+        hint.textContent = `Einträge: ${rows.length}`;
+      }catch(e){
+        console.error(e);
+        hint.textContent = "Laden fehlgeschlagen – TOKEN korrekt? Admin-GET aktiv?";
+      }
+    }
 
-/* Galerie */
-async function listGallery(){
-  const b=document.getElementById("galleryBody");b.innerHTML="";
-  try{
-    const u=new URL(ENDPOINT);u.searchParams.set("type","gallery");u.searchParams.set("list","1");u.searchParams.set("token",TOKEN);
-    const r=await fetch(u);const j=await r.json();if(!j.ok)throw 0;
-    (j.rows||[]).forEach(x=>{
-      const tr=document.createElement("tr");
-      tr.innerHTML=`<td><img class="thumb" src="${x.url}"></td><td>${x.filename}</td><td><a href="${x.url}" target="_blank">${x.url.slice(0,40)}…</a></td><td><button class="btn ghost" data-id="${x.id}">Löschen</button></td>`;
-      b.appendChild(tr);
-    });
-    b.querySelectorAll("[data-id]").forEach(btn=>btn.addEventListener("click",()=>delGallery(btn.dataset.id)));
-  }catch{document.getElementById("galleryStatus").textContent="Laden fehlgeschlagen.";}
-}
-async function delGallery(id){
-  if(!confirm("Bild löschen?"))return;
-  const body=new URLSearchParams({type:"gallery_delete",token:TOKEN,id});
-  await fetch(ENDPOINT,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body});
-  listGallery();
-}
-document.getElementById("uploadBtn").addEventListener("click",async()=>{
-  const f=document.getElementById("files").files;const s=document.getElementById("galleryStatus");
-  if(!f.length){s.textContent="Keine Datei.";return;}
-  s.textContent="Lade hoch…";
-  for(const file of f){
-    const b64=await toB64(file);
-    const body=new URLSearchParams({type:"gallery_upload",token:TOKEN,filename:file.name,mime:file.type,data:b64.split(",")[1]});
-    await fetch(ENDPOINT,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body});
-  }
-  s.textContent="Fertig ✔";listGallery();
-});
-function toB64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file);});}
+    function exportCsv(){
+      const rows = Array.from(document.querySelectorAll('#admTable tbody tr'))
+        .map(tr => Array.from(tr.children).map(td => td.textContent));
+      const header = ['timestamp','name','attending','guests','companions','email','message','ua'];
+      const lines = [header.join(',')].concat(rows.map(r => r.map(csvEsc).join(',')));
+      const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = Object.assign(document.createElement('a'), { href: url, download: 'rsvps.csv' });
+      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
 
-/* Chat */
-document.getElementById("loadChat").addEventListener("click",listChat);
-async function listChat(){
-  const b=document.getElementById("chatBody");b.innerHTML="";
-  const s=document.getElementById("chatStatus");s.textContent="Lade…";
-  try{
-    const u=new URL(ENDPOINT);u.searchParams.set("type","chat");u.searchParams.set("list","1");u.searchParams.set("token",TOKEN);
-    const r=await fetch(u);const j=await r.json();if(!j.ok)throw 0;
-    (j.rows||[]).forEach(row=>{
-      const tr=document.createElement("tr");
-      tr.innerHTML=`<td>${row.timestamp||""}</td><td>${row.name||""}</td><td>${row.message||""}</td><td><button class="btn ghost" data-row="${row._row}">Löschen</button></td>`;
-      b.appendChild(tr);
-    });
-    b.querySelectorAll("[data-row]").forEach(btn=>btn.addEventListener("click",()=>delChat(btn.dataset.row)));
-    s.textContent=j.rows.length+" Nachrichten";
-  }catch{s.textContent="Fehler.";}
-}
-async function delChat(row){
-  const body=new URLSearchParams({type:"chat_delete",token:TOKEN,row});
-  await fetch(ENDPOINT,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body});
-  listChat();
-}
-</script>
+    async function loadChat(){
+      const token = document.getElementById('admTokenChat').value.trim();
+      const hint = document.getElementById('admChatHint');
+      const list = document.getElementById('admChatList');
+      hint.textContent = "Lade …";
+      list.innerHTML = "";
+      try{
+        const url = new URL(SHEET_ENDPOINT);
+        url.searchParams.set('admin','1');
+        url.searchParams.set('token', token);
+        url.searchParams.set('type','chat');
+        const res = await fetch(url.toString(), { method:'GET' });
+        const text = await res.text();
+        const j = JSON.parse(text);
+        if (!j.ok) throw new Error(j.error || "Fehler");
+        (j.rows || []).slice(-100).reverse().forEach(r => {
+          const div = document.createElement('div');
+          div.className = 'card';
+          div.innerHTML = `<strong>${safe(r.name||'Gast')}</strong>
+                           <div class="hint" style="margin-top:4px;">${safe(r.message||'')}</div>`;
+          list.appendChild(div);
+        });
+        hint.textContent = `Chat-Nachrichten: ${(j.rows||[]).length}`;
+      }catch(e){
+        console.error(e);
+        hint.textContent = "Chat laden fehlgeschlagen – TOKEN korrekt? Admin-GET aktiv?";
+      }
+    }
+  </script>
 </body>
 </html>
