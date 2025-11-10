@@ -3,125 +3,572 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Hochzeit von uns ❤</title>
+  <title>Maria & Kim – Hochzeit in Thailand</title>
+  <meta name="description" content="Hochzeit von Maria & Kim in Thailand – RSVP, Infos, Galerie & Gästebuch" />
+
+  <!-- Favicon / Web-Icon: Hero-Bild -->
+  <link rel="icon" href="img/hero.jpg" type="image/jpeg" />
+  <link rel="apple-touch-icon" href="img/hero.jpg" />
+
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      /* Dark-Mode, jung & frisch (Midnight + Neon-Akzente) */
+      --bg-0:#080a0f;
+      --bg-1:#0c0f16;
+      --bg-2:#0f1420;
+      --fg:#e9eef6;
+      --muted:#a5b0c4;
+
+      --neon1:#7ad9ff;   /* türkis */
+      --neon2:#ff86c8;   /* pink */
+      --gold:#f0cc7a;    /* warmes Highlight */
+      --ink:#e9eef6;
+
+      --card: rgba(255,255,255,.06);
+      --card-edge: rgba(255,255,255,.12);
+      --glass-blur: 10px;
+      --radius: 16px;
+      --shadow: 0 18px 40px rgba(0,0,0,.45);
+
+      --ok:#39d353; --warn:#ffcc00; --error:#ff6b6b;
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      margin:0; padding:0; color:var(--fg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(122,217,255,.09), transparent 60%),
+        radial-gradient(1000px 580px at 110% 0%, rgba(255,134,200,.08), transparent 60%),
+        linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 60%, var(--bg-2) 100%);
+      min-height:100vh;
+    }
+    a{ color: var(--neon1); text-decoration: none; }
+    img{ max-width:100%; display:block; border-radius:14px; }
+
+    /* Header */
+    header{
+      position:sticky; top:0; z-index:20;
+      background:rgba(8,11,18,.6);
+      backdrop-filter: blur(12px);
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .wrap{ max-width:1100px; margin:0 auto; padding:20px;}
+    nav{ display:flex; align-items:center; justify-content:space-between; gap:14px;}
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      font-weight:700; letter-spacing:.3px; color:var(--fg);
+      font-family:"Playfair Display", ui-serif, Georgia, serif;
+    }
+    .brand .mk{ font-weight:600; font-size:20px; letter-spacing:.4px; }
+    .brand .dot{
+      width:12px; height:12px; border-radius:999px;
+      background: conic-gradient(from 45deg, var(--neon1), var(--neon2), var(--gold));
+      box-shadow: 0 0 20px rgba(122,217,255,.7), 0 0 28px rgba(255,134,200,.35);
+      border:1px solid rgba(255,255,255,.18);
+    }
+    .navlinks a{
+      padding:8px 12px; border-radius:10px; color:#cfd7e6; font-weight:600;
+    }
+    .navlinks a:hover{ background:rgba(255,255,255,.08); }
+
+    /* HERO – Banner (jung, techy, aber romantisch) */
+    .hero{
+      position:relative; margin:0; padding:0; isolation:isolate;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      background:
+        radial-gradient(800px 300px at 100% 0%, rgba(122,217,255,.08), transparent 70%),
+        radial-gradient(900px 320px at 0% 100%, rgba(255,134,200,.07), transparent 70%);
+    }
+    .hero-inner{
+      display:grid; grid-template-columns: 1.05fr .95fr;
+      gap:28px; align-items:center;
+      width:min(1100px, 92vw); margin:0 auto; padding:20px;
+      min-height: clamp(380px, 50vh, 560px);
+    }
+    @media (max-width:860px){ .hero-inner{ grid-template-columns:1fr; gap:16px; } }
+
+    .hero .photo{
+      position:relative; overflow:hidden; border-radius:18px;
+      box-shadow: var(--shadow);
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .hero .photo img{
+      width:100%; height:100%; display:block;
+      aspect-ratio: 16/10; object-fit: cover;
+      object-position: 50% 35%; /* Köpfe frei */
+      filter: contrast(1.05) saturate(1.02);
+    }
+    .hero .photo::after{
+      content:""; position:absolute; inset:0;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.25) 85%),
+        radial-gradient(900px 320px at 100% 0%, rgba(122,217,255,.14), transparent 70%);
+      pointer-events:none;
+    }
+
+    .hero .panel{
+      position:relative;
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:20px; padding:22px; box-shadow: var(--shadow);
+      backdrop-filter: blur(var(--glass-blur));
+    }
+    .hero .panel::before{
+      /* Neon-Kante oben */
+      content:""; position:absolute; inset:0;
+      border-radius:inherit; padding:1px; mask:linear-gradient(#000 0 0) exclude, linear-gradient(#000 0 0);
+      background: linear-gradient(90deg, var(--neon1), var(--neon2));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude;
+    }
+    .hero h1{
+      margin:0 0 6px; color:#e8f3ff;
+      font-family:"Playfair Display", ui-serif, Georgia, serif;
+      font-weight:600; letter-spacing:.3px;
+      font-size: clamp(28px, 5.2vw, 44px);
+    }
+    .hero p{ margin:0; color:var(--muted); }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.16);
+      color:#dbe6ff; font-weight:700;
+      box-shadow: 0 0 0 3px rgba(122,217,255,.06);
+    }
+
+    /* Sektionen & Cards */
+    section{ padding:28px 20px 18px; }
+    .card{
+      position:relative;
+      background: var(--card);
+      backdrop-filter: blur(var(--glass-blur));
+      border:1px solid var(--card-edge);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+    .card::after{
+      /* dezente Glow-Kante */
+      content:""; position:absolute; inset:-1px; border-radius:inherit; z-index:-1;
+      background: radial-gradient(1200px 300px at 10% 0%, rgba(122,217,255,.09), transparent 70%),
+                  radial-gradient(1200px 300px at 90% 100%, rgba(255,134,200,.08), transparent 70%);
+      filter: blur(12px);
+    }
+    .grid{ display:grid; gap:18px; grid-template-columns:repeat(12, 1fr); }
+    .col-12{ grid-column:span 12; }
+    .col-6{ grid-column:span 12; }
+    @media(min-width:860px){ .col-6{ grid-column:span 6; } }
+
+    /* Form */
+    form label{ display:block; font-weight:700; margin:12px 0 6px; color:#e8f3ff;}
+    input[type="text"], input[type="email"], textarea, select, input[type="date"], input[type="number"]{
+      width:100%; padding:12px 14px; border-radius:12px; color:var(--fg);
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.16); outline:none;
+      transition:border-color .2s, box-shadow .2s, background .2s;
+    }
+    input:focus, textarea:focus, select:focus{
+      border-color: rgba(122,217,255,.55);
+      box-shadow: 0 0 0 6px rgba(122,217,255,.16);
+      background: rgba(255,255,255,.10);
+    }
+    textarea{ min-height:100px; resize:vertical; }
+    .row{ display:flex; gap:12px; flex-wrap:wrap; }
+    .row > *{ flex:1; min-width:160px; }
+    .radios{ display:flex; gap:12px; flex-wrap:wrap; }
+    .chip{
+      display:inline-flex; align-items:center; gap:10px; padding:10px 14px; cursor:pointer;
+      border-radius:999px; background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.16);
+      font-weight:600; color:#e8eefb; transition: transform .12s, box-shadow .2s, border-color .2s, background .2s;
+    }
+    .chip:hover{ transform:translateY(-1px); box-shadow:0 8px 16px rgba(0,0,0,.25); background:rgba(255,255,255,.10); }
+    .chip input{ display:none; }
+    .chip[data-checked="true"]{
+      border-color: rgba(122,217,255,.65);
+      box-shadow: 0 0 0 6px rgba(122,217,255,.16);
+      background: linear-gradient(180deg, rgba(122,217,255,.12), rgba(255,134,200,.10));
+    }
+
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px; cursor:pointer;
+      padding:12px 16px; border-radius:14px; border:1px solid rgba(122,217,255,.55);
+      font-weight:800; color:#081019;
+      background:linear-gradient(135deg, #7ad9ff, #ff86c8);
+      box-shadow: 0 10px 24px rgba(122,217,255,.25), 0 10px 28px rgba(255,134,200,.18);
+      transition: transform .12s, box-shadow .2s, filter .2s;
+    }
+    .btn:hover{ transform:translateY(-1px); box-shadow:0 14px 30px rgba(122,217,255,.25); filter:brightness(1.02); }
+    .btn.ghost{
+      background: transparent; color:var(--fg); border:1px solid rgba(255,255,255,.22);
+      box-shadow:none;
+    }
+
+    .success{ color: var(--ok); font-weight:700;}
+    .error{ color: var(--error); font-weight:700;}
+    .hint{ color:var(--muted); font-size:14px; }
+
+    ul.clean{ list-style:none; padding-left:0; margin:0; display:grid; gap:8px;}
+    ul.clean li::before{ content:"✦"; margin-right:8px; color:var(--neon1); }
+
+    /* Galerie & Lightbox */
+    .gallery{ display:grid; gap:10px; grid-template-columns:repeat(2,1fr); }
+    @media(min-width:700px){ .gallery{ grid-template-columns:repeat(4,1fr); } }
+    .gallery img{
+      border-radius:14px; aspect-ratio:1/1; object-fit:cover; cursor:pointer;
+      border:1px solid rgba(255,255,255,.14); box-shadow:0 8px 20px rgba(0,0,0,.35);
+      transition:transform .2s, box-shadow .2s, filter .2s;
+    }
+    .gallery img:hover{ transform:translateY(-2px) scale(1.01); box-shadow:0 18px 34px rgba(0,0,0,.5); filter:saturate(1.08); }
+
+    .lightbox{
+      position:fixed; inset:0; background:rgba(5,7,12,.92);
+      display:none; align-items:center; justify-content:center; z-index:50; backdrop-filter: blur(4px);
+    }
+    .lightbox.show{ display:flex; }
+    .lightbox img{
+      max-width:90vw; max-height:80vh; border-radius:16px; background:#0b1018;
+      border:1px solid rgba(255,255,255,.16); box-shadow:0 30px 60px rgba(0,0,0,.65);
+    }
+    .lightbox .close{
+      position:absolute; top:14px; right:18px; font-size:28px; cursor:pointer; color:#e3edff;
+      background:rgba(255,255,255,.06); border-radius:999px; padding:4px 12px; border:1px solid rgba(255,255,255,.18);
+      box-shadow: var(--shadow);
+    }
+
+    footer{ padding:60px 20px; text-align:center; color:var(--muted); font-size:14px; }
+    .divider{ height:1px; background:linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent); margin:22px 0;}
+  </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="inner">
-      <div class="brand">
-        <div class="heart">❤</div>
-        <div class="brand-text">
-          <h1 id="heroTitle">Unsere Hochzeit</h1>
-          <p id="heroSubtitle">Wir freuen uns auf euch!</p>
-        </div>
+
+  <!-- HERO Banner -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="photo">
+        <img src="img/hero.jpg" alt="Maria & Kim – Save the Date">
       </div>
-      <nav class="top-nav">
-        <a href="#infos">Infos</a>
-        <a href="#rsvp">Zusagen</a>
-        <a href="#gallery">Galerie</a>
-        <a href="#chat">Gästebuch</a>
+      <div class="panel">
+        <h1>Maria &amp; Kim</h1>
+        <p>Save the Date • 01. Juni 2026 • Koh Samui, Thailand</p>
+        <div class="pill" style="margin-top:10px;">💌 Dresscode: Festlich &amp; sommerlich</div>
+      </div>
+    </div>
+  </section>
+
+  <header>
+    <div class="wrap">
+      <nav>
+        <div class="brand">
+          <span class="dot" aria-hidden="true"></span>
+          <span class="mk">Maria &amp; Kim</span>
+        </div>
+        <div class="navlinks">
+          <a href="#rsvp">Check-in</a>
+          <a href="#infos">Infos</a>
+          <a href="#galerie">Galerie</a>
+          <a href="#chat">Gästebuch</a>
+          <a href="admin.html" title="Verwaltung">Admin</a>
+        </div>
       </nav>
     </div>
   </header>
 
-  <main class="content">
-    <section id="infos" class="card hero">
-      <h2>Willkommen</h2>
-      <p id="welcomeText">Hier findet ihr alle wichtigen Infos rund um unseren Tag – Location, Zeiten und ein paar Worte von uns.</p>
-      <div class="info-grid">
-        <div class="info">
-          <div class="info-title">Datum</div>
-          <div class="info-value" id="dateText">Samstag, 05. Juli 2026</div>
-        </div>
-        <div class="info">
-          <div class="info-title">Ort</div>
-          <div class="info-value" id="locationText">Wird noch bekanntgegeben</div>
-        </div>
-        <div class="info">
-          <div class="info-title">Dresscode</div>
-          <div class="info-value" id="dresscodeText">Festlich</div>
-        </div>
-      </div>
-    </section>
+  <main>
+    <section id="rsvp">
+      <div class="wrap grid">
+        <div class="col-6">
+          <div class="card">
+            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif;">Check-in / Zusage</h2>
+            <p class="hint">Bitte Name & Geburtsdatum eintragen. Begleitpersonen inkl. Geburtsdatum.</p>
 
-    <section id="rsvp" class="card">
-      <h2>Zusagen / Absagen</h2>
-      <form id="rsvpForm" class="grid-form">
-        <label>
-          Name*
-          <input name="name" required placeholder="Max Mustermann" />
-        </label>
-        <label>
-          E-Mail*
-          <input type="email" name="email" required placeholder="max@example.com" />
-        </label>
-        <label>
-          Kommt ihr?
-          <select name="attending">
-            <option value="ja">Ja</option>
-            <option value="nein">Nein</option>
-          </select>
-        </label>
-        <label>
-          Anzahl zusätzlicher Gäste
-          <input type="number" name="guests" min="0" value="0" />
-        </label>
-        <label class="span-2">
-          Nachricht
-          <textarea name="message" rows="3" placeholder="Allergien, Musik-Wünsche …"></textarea>
-        </label>
+            <form id="rsvpForm" novalidate>
+              <label for="name">Vor- &amp; Nachname *</label>
+              <input id="name" name="name" type="text" placeholder="Max Mustermann" required autocomplete="name" autocapitalize="words">
 
-        <details class="span-2">
-          <summary>Kinder (optional)</summary>
-          <div class="kids-grid">
-            <label>Kind 1 – Name <input name="c1name" /></label>
-            <label>Kind 1 – Alter <input name="c1age" /></label>
-            <label>Kind 2 – Name <input name="c2name" /></label>
-            <label>Kind 2 – Alter <input name="c2age" /></label>
-            <label>Kind 3 – Name <input name="c3name" /></label>
-            <label>Kind 3 – Alter <input name="c3age" /></label>
-            <label>Kind 4 – Name <input name="c4name" /></label>
-            <label>Kind 4 – Alter <input name="c4age" /></label>
+              <label for="birthday">Geburtsdatum *</label>
+              <input id="birthday" name="birthday" type="date" required>
+
+              <div class="row">
+                <div>
+                  <label>Teilnahme *</label>
+                  <div class="radios" id="attendingRadios" role="radiogroup" aria-label="Teilnahme">
+                    <label class="chip" data-chip><input type="radio" name="attending" value="ja" required><span>Ich komme</span></label>
+                    <label class="chip" data-chip><input type="radio" name="attending" value="nein"><span>Kann leider nicht</span></label>
+                  </div>
+                </div>
+                <div>
+                  <label for="guests">Anzahl Begleitpersonen</label>
+                  <select id="guests" name="guests">
+                    <option value="0" selected>0</option><option value="1">1</option>
+                    <option value="2">2</option><option value="3">3</option><option value="4">4</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Begleitpersonen -->
+              <div id="companions">
+                <div class="row">
+                  <div><label for="c1name">Begleitung 1 – Name</label><input id="c1name" name="c1name" type="text" placeholder="Vor- & Nachname"></div>
+                  <div><label for="c1dob">Geburtsdatum</label><input id="c1dob" name="c1dob" type="date"></div>
+                </div>
+                <div class="row">
+                  <div><label for="c2name">Begleitung 2 – Name</label><input id="c2name" name="c2name" type="text"></div>
+                  <div><label for="c2dob">Geburtsdatum</label><input id="c2dob" name="c2dob" type="date"></div>
+                </div>
+                <div class="row">
+                  <div><label for="c3name">Begleitung 3 – Name</label><input id="c3name" name="c3name" type="text"></div>
+                  <div><label for="c3dob">Geburtsdatum</label><input id="c3dob" name="c3dob" type="date"></div>
+                </div>
+                <div class="row">
+                  <div><label for="c4name">Begleitung 4 – Name</label><input id="c4name" name="c4name" type="text"></div>
+                  <div><label for="c4dob">Geburtsdatum</label><input id="c4dob" name="c4dob" type="date"></div>
+                </div>
+              </div>
+
+              <label for="email">E-Mail (optional)</label>
+              <input id="email" name="email" type="email" placeholder="max@example.com" inputmode="email" autocomplete="email">
+
+              <label for="message">Nachricht (optional)</label>
+              <textarea id="message" name="message" placeholder="Allergien, Musikwünsche, Hinweise …"></textarea>
+
+              <label class="hint" style="display:flex; align-items:center; gap:10px; margin-top:12px;">
+                <input type="checkbox" id="privacy" required>
+                <span>Ich stimme zu, dass meine Angaben zur Organisation der Hochzeit verarbeitet werden.</span>
+              </label>
+
+              <div class="row" style="margin-top:14px;">
+                <button class="btn" type="submit" id="submitBtn">Einchecken</button>
+                <button class="btn ghost" type="button" id="resetBtn">Zurücksetzen</button>
+              </div>
+              <p id="status" role="status" style="margin-top:10px;"></p>
+            </form>
           </div>
-        </details>
+        </div>
 
-        <button class="primary span-2" type="submit">Senden</button>
-      </form>
-      <p id="rsvpStatus" class="status-line" role="status"></p>
-    </section>
-
-    <section id="gallery" class="card">
-      <div class="card-header">
-        <h2>Galerie</h2>
-        <div class="actions">
-          <a id="downloadAll" class="soft" href="https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec?type=galleryZip" target="_blank" rel="noopener">Alles herunterladen (.zip)</a>
+        <div class="col-6">
+          <div class="card">
+            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif;">Ablauf &amp; Ort</h2>
+            <ul class="clean">
+              <li><strong>Datum:</strong> 01. Juni 2026</li>
+              <li><strong>Trauung:</strong> 14:00 Uhr, Strandzeremonie Koh Samui</li>
+              <li><strong>Feier:</strong> ab 16:00 Uhr, Beach Resort</li>
+              <li><strong>Dresscode:</strong> Festlich, sommerlich</li>
+              <li><strong>Anfahrt:</strong> Shuttle vom Hotel • Taxis verfügbar</li>
+              <li><strong>Übernachtung:</strong> Resort-Kontingent (Stichwort „Hochzeit Maria & Kim“)</li>
+            </ul>
+            <div class="divider"></div>
+            <p class="hint">QR-Code: Er führt direkt auf diese Seite – einfach scannen.</p>
+          </div>
         </div>
       </div>
-      <div id="galleryGrid" class="gallery-grid" aria-live="polite"></div>
     </section>
 
-    <section id="chat" class="card">
-      <h2>Gästebuch</h2>
-      <div id="chatList" class="chat-list" aria-live="polite"></div>
-      <form id="chatForm" class="chat-form">
-        <input name="name" placeholder="Dein Name (optional)" />
-        <input name="message" required maxlength="500" placeholder="Liebe Grüße ..." />
-        <button class="primary" type="submit">Eintrag senden</button>
-      </form>
-      <p id="chatStatus" class="status-line" role="status"></p>
+    <section id="infos">
+      <div class="wrap grid">
+        <div class="col-12">
+          <div class="card">
+            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif;">Weitere Informationen</h2>
+            <p>Meer, Palmen & Neon-Sunset – wir freuen uns auf einen unvergesslichen Tag mit euch! 🌴🌅</p>
+            <ul class="clean">
+              <li><strong>Geschenke:</strong> Eure Anwesenheit ist unser Geschenk. Wer mag: <em>Reisekasse</em> 💞</li>
+              <li><strong>Kinder:</strong> Sehr gern! Kinderbetreuung am Strand.</li>
+              <li><strong>Fotos:</strong> Nach der Feier füllen wir die Galerie. Hashtag <span class="mono">#MariaUndKimInThailand</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="galerie">
+      <div class="wrap grid">
+        <div class="col-12">
+          <div class="card">
+            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif;">Galerie</h2>
+            <div class="gallery" id="gallery">
+              <img src="img/pic1.jpg" alt="Strand">
+              <img src="img/pic2.jpg" alt="Palmen">
+              <img src="img/pic3.jpg" alt="Thailand">
+              <img src="img/pic4.jpg" alt="Sonnenuntergang">
+            </div>
+            <p class="hint" style="margin-top:10px">Tipp: Bild antippen – Lightbox öffnet sich.</p>
+          </div>
+        </div>
+      </div>
+      <div class="lightbox" id="lightbox"><span class="close" id="lbClose">✕</span><img id="lbImg" alt=""></div>
+    </section>
+
+    <section id="chat">
+      <div class="wrap grid">
+        <div class="col-12">
+          <div class="card">
+            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif;">Gästebuch / Chat 💬</h2>
+            <p class="hint">Hinterlasst uns gern eine liebe Nachricht! (Öffentlich sichtbar)</p>
+            <div class="row">
+              <input id="chatName" type="text" placeholder="Dein Name">
+              <input id="chatText" type="text" placeholder="Deine Nachricht …" />
+              <button class="btn" id="chatSend">Senden</button>
+            </div>
+            <p id="chatStatus" class="hint" style="margin-top:8px;"></p>
+            <div id="chatList" style="margin-top:14px; display:grid; gap:10px;"></div>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <a class="subtle" href="admin.html" aria-label="Versteckter Adminbereich">© Hochzeit</a>
-  </footer>
+  <footer>Mit Liebe gemacht. © Maria &amp; Kim</footer>
 
   <script>
-    window.EXEC_URL = "https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec";
+    const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbxb4kqalumOxwfAQkbOIyI3yUjFNaRo-LJsNOyx6UCHGw2WQ12-rh9sjBgocuDIBbwf/exec";
+
+    const esc = s => String(s||'').replace(/[<>&"]/g, m=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[m]));
+    const fmtDate = (v) => {
+      if(!v) return "";
+      const d = new Date(v);
+      if (isNaN(d)) return v;
+      const dd = String(d.getDate()).padStart(2,'0');
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const yy = d.getFullYear();
+      return `${dd}.${mm}.${yy}`;
+    };
+
+    /* Lightbox */
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lbImg');
+    document.getElementById('gallery').addEventListener('click', (e) => {
+      if (e.target.tagName === 'IMG') { lbImg.src = e.target.src; lb.classList.add('show'); }
+    });
+    document.getElementById('lbClose').addEventListener('click', () => lb.classList.remove('show'));
+    lb.addEventListener('click', (e) => { if (e.target === lb) lb.classList.remove('show'); });
+
+    /* Chips */
+    document.querySelectorAll('[data-chip]').forEach(label => {
+      const input = label.querySelector('input[type="radio"]');
+      input.addEventListener('change', () => {
+        label.parentElement.querySelectorAll('[data-chip]').forEach(l => l.dataset.checked = 'false');
+        label.dataset.checked = 'true';
+      });
+    });
+
+    /* RSVP */
+    const form = document.getElementById('rsvpForm');
+    const statusEl = document.getElementById('status');
+    const resetBtn = document.getElementById('resetBtn');
+    const submitBtn = document.getElementById('submitBtn');
+
+    resetBtn?.addEventListener('click', () => {
+      form.reset();
+      document.querySelectorAll('[data-chip]').forEach(l => l.dataset.checked = 'false');
+      statusEl.textContent = ""; statusEl.className = "";
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      statusEl.textContent = ""; statusEl.className = "";
+
+      if (!SHEET_ENDPOINT || !SHEET_ENDPOINT.startsWith('https')) {
+        statusEl.textContent = "Konfiguration fehlt: SHEET_ENDPOINT ist nicht gesetzt.";
+        statusEl.className = "error"; return;
+      }
+
+      const name = (document.getElementById('name').value || "").trim();
+      const birthday = (document.getElementById('birthday').value || "").trim();
+      const email = (document.getElementById('email').value || "").trim();
+      const message = (document.getElementById('message').value || "").trim();
+      const guests = document.getElementById('guests').value;
+      const attending = (new FormData(form).get('attending') || "").toString();
+      const privacy = document.getElementById('privacy').checked;
+
+      if(!name || !birthday || !attending || !privacy){
+        statusEl.textContent = "Bitte fülle Name, Geburtsdatum, Teilnahme & Datenschutz aus.";
+        statusEl.className = "error"; return;
+      }
+
+      /* Name um Geburtstag erweitern – (TT.MM.JJJJ) */
+      const nameWithBirthday = `${name} (${fmtDate(birthday)})`;
+
+      /* Begleitpersonen → Datum in cXage */
+      const c1name = document.getElementById('c1name').value || "";
+      const c2name = document.getElementById('c2name').value || "";
+      const c3name = document.getElementById('c3name').value || "";
+      const c4name = document.getElementById('c4name').value || "";
+      const c1age = fmtDate(document.getElementById('c1dob').value || "");
+      const c2age = fmtDate(document.getElementById('c2dob').value || "");
+      const c3age = fmtDate(document.getElementById('c3dob').value || "");
+      const c4age = fmtDate(document.getElementById('c4dob').value || "");
+
+      const payload = new URLSearchParams({
+        type:"rsvp",
+        name: nameWithBirthday,
+        email, message, guests, attending,
+        c1name, c1age, c2name, c2age, c3name, c3age, c4name, c4age,
+        ua:navigator.userAgent
+      });
+
+      try{
+        submitBtn && (submitBtn.disabled = true);
+        statusEl.textContent = "Sende …";
+        const res = await fetch(SHEET_ENDPOINT, {
+          method:"POST",
+          headers:{ "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8" },
+          body: payload.toString()
+        });
+        if(!res.ok) throw new Error("HTTP "+res.status);
+        let ok = true; try{ const j = await res.json(); ok = !!j.ok; if(!ok && j.error) throw new Error(j.error);}catch(_){}
+        if(ok){
+          statusEl.textContent = attending === 'ja' ? "Danke für deine Zusage! ✨" : "Schade, aber danke fürs Bescheid sagen! 💌";
+          statusEl.className = "success";
+          form.reset(); document.querySelectorAll('[data-chip]').forEach(l => l.dataset.checked = 'false');
+        } else throw new Error("Antwort nicht bestätigt");
+      }catch(err){
+        console.error(err);
+        statusEl.textContent = "Speichern fehlgeschlagen. Bitte Apps Script (type=rsvp) prüfen.";
+        statusEl.className = "error";
+      }finally{ submitBtn && (submitBtn.disabled = false); }
+    });
+
+    /* Chat */
+    const chatName = document.getElementById('chatName');
+    const chatText = document.getElementById('chatText');
+    const chatSend = document.getElementById('chatSend');
+    const chatList = document.getElementById('chatList');
+    const chatStatus = document.getElementById('chatStatus');
+
+    chatSend.addEventListener('click', async () => {
+      chatStatus.textContent = "";
+      const n=(chatName.value||"").trim(), t=(chatText.value||"").trim();
+      if(!n||!t){ chatStatus.textContent="Bitte Name und Nachricht eingeben."; return; }
+      try{
+        const res = await fetch(SHEET_ENDPOINT, {
+          method:"POST",
+          headers:{ "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8" },
+          body:new URLSearchParams({ type:"chat", name:n, message:t, ua:navigator.userAgent }).toString()
+        });
+        if(!res.ok) throw new Error();
+        chatText.value=""; chatStatus.textContent="Gesendet 💬"; loadChat();
+      }catch(e){ chatStatus.textContent="Chat speichern fehlgeschlagen (type=chat)."; }
+    });
+
+    async function loadChat(){
+      chatList.innerHTML="";
+      try{
+        const url = new URL(SHEET_ENDPOINT); url.searchParams.set("type","chat"); url.searchParams.set("list","1");
+        const res = await fetch(url,{method:"GET"}); const j = await res.json();
+        if(!j.ok) throw new Error(j.error||"Fehler");
+        (j.rows||[]).slice(-40).forEach(r=>{
+          const card=document.createElement('div'); card.className="card";
+          card.innerHTML=`<strong>${esc(r.name)||'Gast'}</strong><div class="hint" style="margin-top:4px;">${esc(r.message||'')}</div>`;
+          chatList.appendChild(card);
+        });
+      }catch(e){ chatStatus.textContent="Chat laden nicht möglich (GET im Apps Script)."; }
+    }
+    loadChat();
   </script>
-  <script src="app.js"></script>
 </body>
 </html>
