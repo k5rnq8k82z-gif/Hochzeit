@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Kim & Partner – Hochzeit in Thailand</title>
+  <meta name="description" content="Hochzeit von Kim & Partner in Thailand – RSVP, Infos, Galerie & Gästebuch" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #0b0f15; --card: rgba(255,255,255,0.07); --fg: #eef2fa; --muted:#aab0c0;
+      --brand:#ff8fb2; --brand2:#78d3ff; --accent:#ffd166; --ok:#39d353; --error:#ff6b6b;
+      --shadow: 0 16px 40px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.06);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    html,body {
+      margin:0; padding:0; color:var(--fg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:
+        radial-gradient(1600px 800px at 10% -10%, rgba(255,143,178,.10), transparent 60%),
+        radial-gradient(1200px 700px at 110% 0%, rgba(120,211,255,.10), transparent 60%),
+        linear-gradient(180deg, #0b0f15 0%, #0e1219 60%, #0b0e14 100%) no-repeat;
+      min-height:100vh;
+    }
+    a { color: var(--brand2); text-decoration: none; }
+    img { max-width:100%; display:block; border-radius: 14px; }
+    .thai {
+      background:
+        url('img/thai_border.svg') center top/280px repeat-x,
+        url('img/thai_border.svg') center bottom/280px repeat-x;
+      padding-top: 20px; padding-bottom: 20px;
+    }
+    #splash{ position:fixed; inset:0; z-index:1000; background:#000 url('img/hero.jpg') center/cover no-repeat;
+      display:grid; place-items:center; transition: opacity .9s ease; }
+    #splash::after{ content:""; position:absolute; inset:0; background: linear-gradient(180deg, rgba(0,0,0,.2), rgba(0,0,0,.6)); }
+    #splash .title{ position:relative; z-index:2; text-align:center; padding:16px 24px; border-radius:999px;
+      background: rgba(255,255,255,.14); backdrop-filter: blur(8px); box-shadow: var(--shadow);
+      font-weight:800; letter-spacing:.6px; }
+    #splash.hide{ opacity:0; pointer-events:none; }
+    header{ position:sticky; top:0; z-index:20; background:rgba(10,12,18,.55); backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(255,255,255,.08); }
+    .wrap{ max-width:1160px; margin:0 auto; padding:20px; }
+    nav{ display:flex; align-items:center; gap:14px; justify-content:space-between; }
+    .brand{ display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.3px; }
+    .brand .dot{ width:12px; height:12px; border-radius:50%;
+      background: conic-gradient(from 45deg, var(--brand), var(--brand2), var(--accent));
+      box-shadow:0 0 22px rgba(255,143,178,.8); }
+    .navlinks a{ padding:8px 12px; border-radius:10px; }
+    .navlinks a:hover{ background:rgba(255,255,255,.08); }
+    .hero{ padding:64px 20px 18px; text-align:center; }
+    .hero h1{ font-size: clamp(28px, 6vw, 54px); margin:0 0 8px; }
+    .hero p{ color:var(--muted); margin:0; }
+    .pill{ display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
+      background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); }
+    section{ padding:28px 20px 18px; }
+    .card{ background: var(--card); border:1px solid rgba(255,255,255,.10); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; }
+    .grid{ display:grid; gap:18px; grid-template-columns: repeat(12, 1fr); }
+    .col-12{ grid-column: span 12; }
+    .col-6{ grid-column: span 12; } @media(min-width:860px){ .col-6{ grid-column: span 6; } }
+    form label{ display:block; font-weight:700; margin:12px 0 6px; }
+    input[type="text"], input[type="email"], textarea, select, input[type="number"]{
+      width:100%; padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.07); color:var(--fg); outline:none; }
+    textarea{ min-height:100px; resize:vertical; }
+    .row{ display:flex; gap:12px; flex-wrap:wrap; }
+    .row > *{ flex:1; min-width:160px; }
+
+    .radios{ display:flex; gap:12px; flex-wrap:wrap; }
+    .chip{ display:inline-flex; align-items:center; gap:10px; padding:10px 14px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.12); cursor:pointer; background:rgba(255,255,255,.06); }
+    .chip[data-checked="true"]{ outline:2px solid rgba(255,255,255,.2); background:rgba(255,255,255,.12); }
+    .hint{ color:var(--muted); font-size:14px; }
+    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px; border:0; padding:12px 16px; border-radius:12px; cursor:pointer; font-weight:800;
+      color:#0b0f15; background:linear-gradient(135deg, var(--brand), var(--brand2)); box-shadow: 0 10px 20px rgba(255,137,168,.25), 0 6px 18px rgba(138,198,255,.18); }
+    .btn.ghost{ background: transparent; color:var(--fg); border:1px solid rgba(255,255,255,.18); }
+    .success{ color:#39d353; font-weight:700; } .error{ color:#ff6b6b; font-weight:700; }
+
+    .gallery{
+      display:grid; gap:10px; grid-template-columns: repeat(2, 1fr);
+    }
+    @media(min-width:700px){ .gallery{ grid-template-columns: repeat(4, 1fr); } }
+    .gallery figure{ margin:0; position:relative; }
+    .gallery figcaption{ position:absolute; bottom:6px; left:6px; right:6px; background:rgba(0,0,0,.35); padding:6px 8px; border-radius:10px; font-size:12px; }
+    .gallery img{ aspect-ratio: 1/1; object-fit:cover; cursor:pointer; }
+
+    .lb{ position:fixed; inset:0; background:rgba(0,0,0,.86); display:none; align-items:center; justify-content:center; z-index:60; }
+    .lb.show{ display:flex; }
+    .lb img{ max-width:92vw; max-height:82vh; border-radius:14px; }
+    .lb .close{ position:absolute; top:14px; right:18px; font-size:28px; cursor:pointer; }
+
+    footer{ padding:60px 20px; text-align:center; color:var(--muted); }
+  </style>
+</head>
+<body>
+  <div id="splash" aria-hidden="true">
+    <div class="title" id="heroTitle">Kim &amp; Partner • 20. Juni 2026 • Thailand 🇹🇭</div>
+  </div>
+
+  <header class="thai">
+    <div class="wrap">
+      <nav>
+        <div class="brand"><span class="dot"></span> <span>Hochzeit</span></div>
+        <div class="navlinks">
+          <a href="#rsvp">Check-in</a>
+          <a href="#infos">Infos</a>
+          <a href="#galerie">Galerie</a>
+          <a href="#chat">Gästebuch</a>
+          <a href="admin.html">Admin</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap hero">
+      <h1 id="pageTitle">Willkommen zu unserer Hochzeit in Thailand 🌺🏝️</h1>
+      <p id="pageSubtitle">Wir freuen uns riesig, dass ihr dabei seid. Bitte nutzt den Check-in und stöbert durch Infos, Galerie & Gästebuch.</p>
+      <div class="pill" style="margin-top:10px;" id="pagePill">💌 Dresscode: Festlich & sommerlich • 📍 Koh Samui</div>
+    </div>
+
+    <section id="rsvp">
+      <div class="wrap grid">
+        <div class="col-6">
+          <div class="card">
+            <h2 style="margin-top:0">Check-in / Zusage</h2>
+            <p class="hint">Bitte füllt die Felder aus. Ihr könnt Begleitpersonen mit Namen & Alter angeben.</p>
+
+            <form id="rsvpForm" name="rsvp" method="post" action="/" novalidate>
+              <label for="name">Vor- &amp; Nachname *</label>
+              <input id="name" name="name" type="text" placeholder="Max Mustermann" required autocomplete="name" autocapitalize="words">
+
+              <div class="row">
+                <div>
+                  <label>Teilnahme *</label>
+                  <div class="radios" id="attendingRadios" role="radiogroup" aria-label="Teilnahme">
+                    <label class="chip" data-chip><input type="radio" name="attending" value="ja" required><span>Ich komme</span></label>
+                    <label class="chip" data-chip><input type="radio" name="attending" value="nein"><span>Kann leider nicht</span></label>
+                  </div>
+                </div>
+                <div>
+                  <label for="guests">Anzahl Begleitpersonen</label>
+                  <select id="guests" name="guests">
+                    <option value="0" selected>0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+                  </select>
+                </div>
+              </div>
+
+              <div id="companions">
+                <div class="row"><div><label for="c1name">Begleitung 1 – Name</label><input id="c1name" name="c1name" type="text" placeholder="Vor- & Nachname"></div><div><label for="c1age">Alter</label><input id="c1age" name="c1age" type="number" min="0" max="120" placeholder="z. B. 28"></div></div>
+                <div class="row"><div><label for="c2name">Begleitung 2 – Name</label><input id="c2name" name="c2name" type="text"></div><div><label for="c2age">Alter</label><input id="c2age" name="c2age" type="number" min="0" max="120"></div></div>
+                <div class="row"><div><label for="c3name">Begleitung 3 – Name</label><input id="c3name" name="c3name" type="text"></div><div><label for="c3age">Alter</label><input id="c3age" name="c3age" type="number" min="0" max="120"></div></div>
+                <div class="row"><div><label for="c4name">Begleitung 4 – Name</label><input id="c4name" name="c4name" type="text"></div><div><label for="c4age">Alter</label><input id="c4age" name="c4age" type="number" min="0" max="120"></div></div>
+              </div>
+
+              <label for="email">E-Mail (optional)</label>
+              <input id="email" name="email" type="email" placeholder="max@example.com" inputmode="email" autocomplete="email">
+
+              <label for="message">Nachricht (optional)</label>
+              <textarea id="message" name="message" placeholder="Allergien, Musikwünsche, Hinweise …"></textarea>
+
+              <label class="hint" style="display:flex; align-items:center; gap:10px; margin-top:12px;">
+                <input type="checkbox" id="privacy" required>
+                <span>Ich stimme zu, dass meine Angaben zur Organisation der Hochzeit verarbeitet werden.</span>
+              </label>
+
+              <div class="row" style="margin-top:14px;">
+                <button class="btn" type="submit" id="submitBtn">Einchecken</button>
+                <button class="btn ghost" type="button" id="resetBtn">Zurücksetzen</button>
+              </div>
+              <p id="status" role="status" style="margin-top:10px;"></p>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-6">
+          <div class="card">
+            <h2 style="margin-top:0">Ablauf &amp; Ort</h2>
+            <ul class="clean">
+              <li><strong>Datum:</strong> <span id="infoDate">20. Juni 2026</span></li>
+              <li><strong>Trauung:</strong> <span id="infoCeremony">14:00 Uhr, Strandzeremonie Koh Samui</span></li>
+              <li><strong>Feier:</strong> <span id="infoParty">ab 16:00 Uhr, Beach Resort</span></li>
+              <li><strong>Dresscode:</strong> <span id="infoDress">Festlich, sommerlich</span></li>
+              <li><strong>Anfahrt:</strong> <span id="infoRide">Shuttle vom Hotel • Taxis verfügbar</span></li>
+              <li><strong>Übernachtung:</strong> <span id="infoStay">Resort-Kontingent (Stichwort „Hochzeit Kim“)</span></li>
+            </ul>
+            <p class="hint" style="margin-top:10px">QR-Code: Er führt direkt auf diese Seite – einfach scannen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="infos" class="thai">
+      <div class="wrap grid">
+        <div class="col-12">
+          <div class="card">
+            <h2 style="margin-top:0">Weitere Informationen</h2>
+            <div id="infoContent">
+              Thailand-Flair, Palmen & Sonnenuntergang – wir freuen uns auf einen unvergesslichen Tag mit euch! 🇹🇭🌅
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="galerie">
+      <div class="wrap grid">
+        <div class="col-12">
+          <div class="card">
+            <h2 style="margin-top:0; display:flex; justify-content:space-between; align-items:center;">
+              Galerie
+              <span class="row" style="gap:8px;">
+                <button class="btn ghost" id="dlAll">Alle herunterladen</button>
+              </span>
+            </h2>
+            <div class="gallery" id="gallery"></div>
+            <p class="hint" style="margin-top:10px">Tipp: Bild antippen – Lightbox öffnet sich. Mit Klick auf „Download“ speichert ihr das Bild.</p>
+          </div>
+        </div>
+      </div>
+      <div class="lb" id="lightbox"><span class="close" id="lbClose">✕</span><img id="lbImg" alt=""></div>
+    </section>
+
+    <section id="chat" class="thai">
+      <div class="wrap grid">
+        <div class="col-12">
+          <div class="card">
+            <h2 style="margin-top:0">Gästebuch / Chat 💬</h2>
+            <p class="hint">Hinterlasst uns gern eine liebe Nachricht! (Öffentlich sichtbar)</p>
+            <div class="row">
+              <input id="chatName" type="text" placeholder="Dein Name">
+              <input id="chatText" type="text" placeholder="Deine Nachricht …" />
+              <button class="btn" id="chatSend">Senden</button>
+            </div>
+            <p id="chatStatus" class="hint" style="margin-top:8px;"></p>
+            <div id="chatList" style="margin-top:14px; display:grid; gap:10px;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>Mit Liebe gemacht. © Kim &amp; Partner</footer>
+
+  <script>
+    const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec";
+
+    const splash = document.getElementById('splash');
+    const hideSplash = () => splash.classList.add('hide');
+    window.addEventListener('load', () => setTimeout(hideSplash, 1100));
+    splash.addEventListener('click', hideSplash);
+
+    document.querySelectorAll('[data-chip]').forEach(label => {
+      const input = label.querySelector('input[type="radio"]');
+      input.addEventListener('change', () => {
+        label.parentElement.querySelectorAll('[data-chip]').forEach(l => l.dataset.checked = 'false');
+        label.dataset.checked = 'true';
+      });
+    });
+
+    const lb = document.getElementById('lightbox'); const lbImg = document.getElementById('lbImg');
+    document.addEventListener('click', (e) => {
+      if (e.target.matches('.gimg')) { lbImg.src = e.target.dataset.full || e.target.src; lb.classList.add('show'); }
+    });
+    document.getElementById('lbClose').addEventListener('click', () => lb.classList.remove('show'));
+    lb.addEventListener('click', (e) => { if (e.target === lb) lb.classList.remove('show'); });
+
+    async function loadContent(){
+      try{
+        const url = new URL(SHEET_ENDPOINT);
+        url.searchParams.set("type","content");
+        url.searchParams.set("list","1");
+        const res = await fetch(url); const j = await res.json();
+        if(j.ok && j.items) {
+          const m = Object.fromEntries(j.items.map(i => [i.key, i.value]));
+          if(m.hero_title) document.getElementById('heroTitle').textContent = m.hero_title;
+          if(m.page_title) document.getElementById('pageTitle').textContent = m.page_title;
+          if(m.page_subtitle) document.getElementById('pageSubtitle').textContent = m.page_subtitle;
+          if(m.page_pill) document.getElementById('pagePill').textContent = m.page_pill;
+          if(m.info_html) document.getElementById('infoContent').innerHTML = m.info_html;
+          if(m.info_date) document.getElementById('infoDate').textContent = m.info_date;
+          if(m.info_ceremony) document.getElementById('infoCeremony').textContent = m.info_ceremony;
+          if(m.info_party) document.getElementById('infoParty').textContent = m.info_party;
+          if(m.info_dress) document.getElementById('infoDress').textContent = m.info_dress;
+          if(m.info_ride) document.getElementById('infoRide').textContent = m.info_ride;
+          if(m.info_stay) document.getElementById('infoStay').textContent = m.info_stay;
+        }
+      }catch(e){ console.warn('content load fail', e); }
+    }
+
+    async function loadGallery(){
+      const grid = document.getElementById('gallery'); grid.innerHTML = "";
+      try{
+        const url = new URL(SHEET_ENDPOINT);
+        url.searchParams.set("type","gallery");
+        url.searchParams.set("list","1");
+        const res = await fetch(url); const j = await res.json();
+        if(j.ok && j.rows) {
+          j.rows.forEach(r => {
+            const fig = document.createElement('figure');
+            fig.innerHTML = `<img class="gimg" src="${r.thumb || r.url}" data-full="${r.url}" alt="${r.name || 'Foto'}">
+                             <figcaption>${r.name || ''} <a href="${r.url}" download style="float:right;">Download</a></figcaption>`;
+            grid.appendChild(fig);
+          });
+        }
+      }catch(e){ console.warn('gallery fail', e); }
+    }
+
+    document.getElementById('dlAll').addEventListener('click', async () => {
+      try{
+        const url = new URL(SHEET_ENDPOINT);
+        url.searchParams.set("type","gallery");
+        url.searchParams.set("mode","zip");
+        const res = await fetch(url); const j = await res.json();
+        if(j.ok && j.zip){ window.location.href = j.zip; } else alert('Konnte ZIP nicht erstellen.');
+      }catch(e){ alert('Fehler beim Erstellen des ZIP.'); }
+    });
+
+    const form = document.getElementById('rsvpForm');
+    const statusEl = document.getElementById('status');
+    const submitBtn = document.getElementById('submitBtn');
+    document.getElementById('resetBtn').addEventListener('click', () => { form.reset(); statusEl.textContent = ''; statusEl.className=''; });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault(); statusEl.textContent = ""; statusEl.className = "";
+      const fd = new FormData(form);
+      const name = (document.getElementById('name').value || "").trim();
+      const attending = (fd.get('attending') || "").toString();
+      const privacy = document.getElementById('privacy').checked;
+      if(!name || !attending || !privacy){
+        statusEl.textContent = "Bitte fülle Name, Teilnahme & Datenschutz aus."; statusEl.className = "error"; return;
+      }
+      const payload = new URLSearchParams({
+        type:"rsvp",
+        name, email:(document.getElementById('email').value||""),
+        message:(document.getElementById('message').value||""),
+        guests: document.getElementById('guests').value,
+        attending,
+        c1name:(document.getElementById('c1name').value||""), c1age:(document.getElementById('c1age').value||""),
+        c2name:(document.getElementById('c2name').value||""), c2age:(document.getElementById('c2age').value||""),
+        c3name:(document.getElementById('c3name').value||""), c3age:(document.getElementById('c3age').value||""),
+        c4name:(document.getElementById('c4name').value||""), c4age:(document.getElementById('c4age').value||""),
+        ua: navigator.userAgent
+      });
+      try{ submitBtn.disabled = true; }catch(_ ){}
+      try{
+        const res = await fetch(SHEET_ENDPOINT, { method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"}, body: payload.toString() });
+        if(!res.ok) throw new Error("HTTP "+res.status);
+        let ok=true; try{ const j=await res.json(); ok=!!j.ok; }catch(_ ){}
+        if(ok){ statusEl.textContent = attending==='ja' ? "Danke für deine Zusage! 🎉" : "Schade, aber danke fürs Bescheid sagen!"; statusEl.className='success'; form.reset(); }
+        else { throw new Error(); }
+      }catch(err){ statusEl.textContent = "Speichern fehlgeschlagen."; statusEl.className='error'; }
+      finally{ try{ submitBtn.disabled = false; }catch(_ ){} }
+    });
+
+    const chatName = document.getElementById('chatName'); const chatText = document.getElementById('chatText');
+    const chatSend = document.getElementById('chatSend'); const chatList = document.getElementById('chatList'); const chatStatus = document.getElementById('chatStatus');
+
+    chatSend.addEventListener('click', async () => {
+      chatStatus.textContent = "";
+      const n = (chatName.value||"").trim(); const t = (chatText.value||"").trim();
+      if(!n || !t) { chatStatus.textContent = "Bitte Name und Nachricht eingeben."; return; }
+      try{
+        const res = await fetch(SHEET_ENDPOINT, { method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},
+          body: new URLSearchParams({ type:"chat", name:n, message:t, ua:navigator.userAgent }).toString() });
+        if(!res.ok) throw new Error();
+        chatText.value = ""; chatStatus.textContent = "Gesendet 💬"; loadChat();
+      }catch(e){ chatStatus.textContent = "Chat speichern fehlgeschlagen."; }
+    });
+
+    async function loadChat(){
+      chatList.innerHTML = "";
+      try {
+        const url = new URL(SHEET_ENDPOINT); url.searchParams.set("type","chat"); url.searchParams.set("list","1");
+        const res = await fetch(url); const j = await res.json();
+        if(j.ok && j.rows) j.rows.slice(-80).forEach(r => {
+          const div = document.createElement('div'); div.className="card";
+          div.innerHTML = `<strong>${r.name||'Gast'}</strong><div class="hint" style="margin-top:4px;">${r.message||''}</div>`;
+          chatList.appendChild(div);
+        });
+      }catch(e){ chatStatus.textContent = "Chat laden nicht möglich."; }
+    }
+
+    loadContent(); loadGallery(); loadChat();
+  </script>
+</body>
+</html>
