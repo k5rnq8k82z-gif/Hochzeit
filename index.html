@@ -5,216 +5,154 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Maria & Kim – Hochzeit in Thailand</title>
   <meta name="description" content="Hochzeit von Maria & Kim in Thailand – RSVP, Infos, Galerie & Gästebuch" />
-
-  <!-- Favicon / Web-Icon: Hero-Bild -->
   <link rel="icon" href="img/hero.jpg" type="image/jpeg" />
   <link rel="apple-touch-icon" href="img/hero.jpg" />
-
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      /* Aus dem Hero: Sand/Blush/Gold/Meer */
-      --sand-50:#fffdf8; --sand-100:#fbf3e7; --blush-50:#f7eee9;
-      --gold:#b48a4a; --gold-soft:#d8c19a; --sea:#78cfd2;
-      --ink:#3e2f26; --muted:#7b7169;
-
-      --bg: var(--sand-50);
-      --card: rgba(255,255,255,.92);
-      --shadow: 0 14px 36px rgba(76,60,46,.10);
-      --radius: 16px;
-
-      --ok:#2ea85f; --warn:#d79b00; --error:#e86a6a;
+      --bg-0:#080a0f; --bg-1:#0c0f16; --bg-2:#0f1420;
+      --fg:#e9eef6; --muted:#a5b0c4;
+      --neon1:#7ad9ff; --neon2:#ff86c8; --gold:#f0cc7a;
+      --card: rgba(255,255,255,.06); --edge: rgba(255,255,255,.12);
+      --blur: 10px; --radius: 16px; --shadow: 0 18px 40px rgba(0,0,0,.45);
+      --ok:#39d353; --warn:#ffcc00; --error:#ff6b6b;
     }
     *{box-sizing:border-box}
     html,body{
-      margin:0; padding:0; color:var(--ink);
+      margin:0; padding:0; color:var(--fg);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       background:
-        radial-gradient(1000px 540px at 0% -10%, rgba(244,230,211,.35), transparent 60%),
-        radial-gradient(800px 460px at 110% 10%, rgba(247,238,233,.45), transparent 60%),
-        linear-gradient(180deg, var(--bg) 0%, #fffaf2 100%);
+        radial-gradient(1200px 600px at 10% -10%, rgba(122,217,255,.09), transparent 60%),
+        radial-gradient(1000px 580px at 110% 0%, rgba(255,134,200,.08), transparent 60%),
+        linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 60%, var(--bg-2) 100%);
       min-height:100vh;
     }
-    a{ color: var(--gold); text-decoration: none;}
-    img{ max-width:100%; display:block; border-radius:14px;}
+    a{ color: var(--neon1); text-decoration:none; }
+    img{ max-width:100%; display:block; border-radius:14px; }
 
-    /* Header */
     header{
       position:sticky; top:0; z-index:20;
-      background:rgba(255,255,255,.8); backdrop-filter: blur(12px);
-      border-bottom:1px solid rgba(60,45,32,.10);
+      background:rgba(8,11,18,.6); backdrop-filter: blur(12px);
+      border-bottom:1px solid rgba(255,255,255,.08);
     }
     .wrap{ max-width:1100px; margin:0 auto; padding:20px;}
     nav{ display:flex; align-items:center; justify-content:space-between; gap:14px;}
-    .brand{
-      display:flex; align-items:center; gap:12px;
-      color:var(--ink); letter-spacing:.3px;
-      font-weight:700; font-size:18px;
-      font-family:"Playfair Display", ui-serif, Georgia, serif;
-    }
-    .brand .mk{
-      font-weight:600; font-size:20px;
-      letter-spacing:.4px;
-    }
-    .brand .dot{
-      width:12px; height:12px; border-radius:999px;
-      background: conic-gradient(from 45deg, var(--gold), var(--sea), var(--gold-soft));
-      box-shadow:0 0 16px rgba(212,179,116,.65);
-      border:1px solid rgba(212,179,116,.55);
-    }
-    .navlinks a{ padding:8px 12px; border-radius:10px; color:#5b4a3b; font-weight:600;}
-    .navlinks a:hover{ background:rgba(212,179,116,.14); }
+    .brand{ display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.3px; }
+    .brand svg{ width:28px; height:28px; }
+    .navlinks a{ padding:8px 12px; border-radius:10px; color:#cfd7e6; font-weight:600; }
+    .navlinks a:hover{ background:rgba(255,255,255,.08); }
 
-    /* HERO Banner (Variante 1b – nicht überladen, wenig Beschnitt) */
-    .hero{
-      position:relative; margin:0; padding:0; isolation:isolate;
-      border-bottom:1px solid rgba(60,45,32,.10);
-    }
+    /* Hero Banner (jünger, nicht überladen, wenig Beschnitt) */
+    .hero{ border-bottom:1px solid rgba(255,255,255,.08); }
     .hero-inner{
-      display:grid; grid-template-columns: 1.1fr .9fr;
-      gap:28px; align-items:center;
-      width:min(1100px, 92vw); margin:0 auto; padding:18px 20px;
-      min-height: clamp(380px, 50vh, 560px);
+      display:grid; grid-template-columns: 1.05fr .95fr; gap:28px; align-items:center;
+      width:min(1100px, 92vw); margin:0 auto; padding:20px; min-height: clamp(380px, 50vh, 560px);
     }
-    @media (max-width:860px){ .hero-inner{ grid-template-columns: 1fr; gap:16px; } }
+    @media (max-width:860px){ .hero-inner{ grid-template-columns:1fr; gap:16px; } }
 
-    .hero .photo{
-      position:relative; overflow:hidden; border-radius:18px;
-      box-shadow: var(--shadow); background:#fff;
-      border:1px solid rgba(60,45,32,.08);
+    .photo{ position:relative; overflow:hidden; border-radius:18px; box-shadow: var(--shadow);
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid var(--edge);
     }
-    .hero .photo img{
-      width:100%; height:100%;
-      display:block; aspect-ratio: 16/10; /* sanfter Banner */
-      object-fit: cover;
-      /* leicht nach oben fokussieren, damit Köpfe Platz haben */
-      object-position: 50% 35%;
-    }
-    /* sanfter Rand-Gradient, damit es sich integriert */
-    .hero .photo::after{
-      content:""; position:absolute; inset:0;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.0) 0%, rgba(255,255,255,.15) 100%),
-        radial-gradient(800px 280px at 100% 0%, rgba(255,255,255,.35), transparent 70%);
-      pointer-events:none;
-    }
+    .photo img{ width:100%; height:100%; aspect-ratio: 16/10; object-fit: cover; object-position: 50% 35%;
+      filter: contrast(1.05) saturate(1.02); }
+    .photo::after{ content:""; position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.25) 85%),
+                  radial-gradient(900px 320px at 100% 0%, rgba(122,217,255,.14), transparent 70%); }
 
-    .hero .panel{
-      background:linear-gradient(180deg,#fff, #fff6ee);
-      border:1px solid rgba(212,179,116,.35);
-      border-radius:20px; padding:20px 22px; box-shadow: var(--shadow);
+    .panel{
+      position:relative; background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.14); border-radius:20px; padding:22px; box-shadow: var(--shadow);
+      backdrop-filter: blur(var(--blur));
     }
-    .hero h1{
-      margin:0 0 8px; color:#7a5b2f;
-      font-family:"Playfair Display", ui-serif, Georgia, serif;
-      font-weight:600; letter-spacing:.2px;
-      font-size: clamp(28px, 5.2vw, 42px);
+    .panel::before{
+      content:""; position:absolute; inset:0; border-radius:inherit; padding:1px;
+      background: linear-gradient(90deg, var(--neon1), var(--neon2));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude;
     }
-    .hero p{ margin:0; color:var(--muted); }
+    h1{ margin:0 0 6px; color:#e8f3ff; font-family:"Playfair Display", ui-serif, Georgia, serif;
+        font-weight:600; letter-spacing:.3px; font-size: clamp(28px, 5.2vw, 44px); }
+    .muted{ color:var(--muted); }
     .pill{
       display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
-      background: linear-gradient(180deg, #fff, #fff7ee);
-      border:1px solid rgba(212,179,116,.45); color:#6d5330; font-weight:700;
+      background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.16); color:#dbe6ff; font-weight:700;
+      box-shadow: 0 0 0 3px rgba(122,217,255,.06);
     }
 
-    /* Sektionen & Cards */
     section{ padding:28px 20px 18px; }
     .card{
-      background:var(--card); backdrop-filter: blur(6px);
-      border:1px solid rgba(60,45,32,.10);
-      border-radius:var(--radius); box-shadow:var(--shadow); padding:22px;
+      background: var(--card); backdrop-filter: blur(var(--blur));
+      border:1px solid var(--edge); border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px;
     }
     .grid{ display:grid; gap:18px; grid-template-columns:repeat(12, 1fr); }
-    .col-12{ grid-column:span 12; }
-    .col-6{ grid-column:span 12; }
+    .col-12{ grid-column:span 12; } .col-6{ grid-column:span 12; }
     @media(min-width:860px){ .col-6{ grid-column:span 6; } }
 
-    /* Form */
-    form label{ display:block; font-weight:700; margin:12px 0 6px; color:#4a382a;}
-    input[type="text"], input[type="email"], textarea, select, input[type="date"], input[type="number"]{
-      width:100%; padding:12px 14px; border-radius:12px; background:#fff; color:var(--ink);
-      border:1px solid rgba(60,45,32,.16); outline:none; transition:border-color .2s, box-shadow .2s;
+    form label{ display:block; font-weight:700; margin:12px 0 6px; color:#e8f3ff;}
+    input[type="text"], input[type="email"], textarea, select, input[type="date"]{
+      width:100%; padding:12px 14px; border-radius:12px; color:var(--fg);
+      background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.16); outline:none;
+      transition:border-color .2s, box-shadow .2s, background .2s;
     }
     input:focus, textarea:focus, select:focus{
-      border-color: rgba(212,179,116,.65); box-shadow: 0 0 0 6px rgba(212,179,116,.16);
+      border-color: rgba(122,217,255,.55); box-shadow: 0 0 0 6px rgba(122,217,255,.16); background: rgba(255,255,255,.10);
     }
     textarea{ min-height:100px; resize:vertical; }
     .row{ display:flex; gap:12px; flex-wrap:wrap; }
     .row > *{ flex:1; min-width:160px; }
     .radios{ display:flex; gap:12px; flex-wrap:wrap; }
-    .chip{
-      display:inline-flex; align-items:center; gap:10px; padding:10px 14px; cursor:pointer;
-      border-radius:999px; background:#fff; border:1px solid rgba(60,45,32,.16);
-      font-weight:600; color:#4a3f36; transition: transform .12s, box-shadow .2s, border-color .2s;
-    }
-    .chip:hover{ transform:translateY(-1px); box-shadow:0 8px 16px rgba(76,60,46,.08); }
+    .chip{ display:inline-flex; align-items:center; gap:10px; padding:10px 14px; cursor:pointer; border-radius:999px;
+      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.16); font-weight:600; color:#e8eefb;
+      transition: transform .12s, box-shadow .2s, border-color .2s, background .2s; }
+    .chip:hover{ transform:translateY(-1px); box-shadow:0 8px 16px rgba(0,0,0,.25); background:rgba(255,255,255,.10); }
     .chip input{ display:none; }
-    .chip[data-checked="true"]{
-      border-color: rgba(212,179,116,.75);
-      box-shadow: 0 0 0 6px rgba(212,179,116,.16);
-      background: linear-gradient(180deg, #fff, #fff7ee);
-    }
+    .chip[data-checked="true"]{ border-color: rgba(122,217,255,.65); box-shadow: 0 0 0 6px rgba(122,217,255,.16);
+      background: linear-gradient(180deg, rgba(122,217,255,.12), rgba(255,134,200,.10)); }
 
-    .btn{
-      display:inline-flex; align-items:center; justify-content:center; gap:10px; cursor:pointer;
-      padding:12px 16px; border-radius:14px; border:1px solid rgba(212,179,116,.55);
-      font-weight:800; color:#5b4527;
-      background:linear-gradient(135deg, #fff2dc, #fee7e4);
-      box-shadow:0 8px 20px rgba(212,179,116,.22), 0 6px 18px rgba(120,207,210,.12);
-      transition: transform .12s, box-shadow .2s, filter .2s;
-    }
-    .btn:hover{ transform:translateY(-1px); box-shadow:0 14px 26px rgba(212,179,116,.22); filter:brightness(1.02); }
-    .btn.ghost{ background:#fff; color:#4a3a30; border:1px solid rgba(60,45,32,.16); box-shadow:none;}
+    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px; cursor:pointer;
+      padding:12px 16px; border-radius:14px; border:1px solid rgba(122,217,255,.55); font-weight:800; color:#081019;
+      background:linear-gradient(135deg, #7ad9ff, #ff86c8);
+      box-shadow: 0 10px 24px rgba(122,217,255,.25), 0 10px 28px rgba(255,134,200,.18);
+      transition: transform .12s, box-shadow .2s, filter .2s; }
+    .btn:hover{ transform:translateY(-1px); box-shadow:0 14px 30px rgba(122,217,255,.25); filter:brightness(1.02); }
+    .btn.ghost{ background: transparent; color:var(--fg); border:1px solid rgba(255,255,255,.22); box-shadow:none; }
 
-    .success{ color: var(--ok); font-weight:700;}
-    .error{ color: var(--error); font-weight:700;}
+    .success{ color: var(--ok); font-weight:700;} .error{ color: var(--error); font-weight:700;}
     .hint{ color:var(--muted); font-size:14px; }
-
     ul.clean{ list-style:none; padding-left:0; margin:0; display:grid; gap:8px;}
-    ul.clean li::before{ content:"❖"; margin-right:8px; color:var(--gold); }
+    ul.clean li::before{ content:"✦"; margin-right:8px; color:var(--neon1); }
 
-    /* Galerie & Lightbox */
     .gallery{ display:grid; gap:10px; grid-template-columns:repeat(2,1fr); }
     @media(min-width:700px){ .gallery{ grid-template-columns:repeat(4,1fr); } }
-    .gallery img{
-      border-radius:14px; aspect-ratio:1/1; object-fit:cover; cursor:pointer;
-      border:1px solid rgba(60,45,32,.10); box-shadow:0 8px 20px rgba(76,60,46,.06);
-      transition:transform .2s, box-shadow .2s, filter .2s;
-    }
-    .gallery img:hover{ transform:translateY(-2px) scale(1.01); box-shadow:0 14px 28px rgba(76,60,46,.10); filter:saturate(1.05); }
+    .gallery img{ border-radius:14px; aspect-ratio:1/1; object-fit:cover; cursor:pointer;
+      border:1px solid rgba(255,255,255,.14); box-shadow:0 8px 20px rgba(0,0,0,.35);
+      transition:transform .2s, box-shadow .2s, filter .2s; }
+    .gallery img:hover{ transform:translateY(-2px) scale(1.01); box-shadow:0 18px 34px rgba(0,0,0,.5); filter:saturate(1.08); }
 
-    .lightbox{
-      position:fixed; inset:0; background:rgba(255,255,255,.92);
-      display:none; align-items:center; justify-content:center; z-index:50; backdrop-filter: blur(4px);
-    }
+    .lightbox{ position:fixed; inset:0; background:rgba(5,7,12,.92); display:none; align-items:center; justify-content:center; z-index:50; backdrop-filter: blur(4px); }
     .lightbox.show{ display:flex; }
-    .lightbox img{
-      max-width:90vw; max-height:80vh; border-radius:16px; background:#fff;
-      border:1px solid rgba(60,45,32,.12); box-shadow:0 30px 60px rgba(76,60,46,.18);
-    }
-    .lightbox .close{
-      position:absolute; top:14px; right:18px; font-size:28px; cursor:pointer; color:#4a3a2f;
-      background:#fff; border-radius:999px; padding:4px 12px; border:1px solid rgba(60,45,32,.12); box-shadow: var(--shadow);
-    }
+    .lightbox img{ max-width:90vw; max-height:80vh; border-radius:16px; background:#0b1018; border:1px solid rgba(255,255,255,.16); box-shadow:0 30px 60px rgba(0,0,0,.65); }
+    .lightbox .close{ position:absolute; top:14px; right:18px; font-size:28px; cursor:pointer; color:#e3edff;
+      background:rgba(255,255,255,.06); border-radius:999px; padding:4px 12px; border:1px solid rgba(255,255,255,.18); box-shadow: var(--shadow); }
 
     footer{ padding:60px 20px; text-align:center; color:var(--muted); font-size:14px; }
-    .divider{ height:1px; background:linear-gradient(90deg, transparent, rgba(60,45,32,.12), transparent); margin:22px 0;}
+    .divider{ height:1px; background:linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent); margin:22px 0;}
   </style>
 </head>
 <body>
 
-  <!-- HERO Banner -->
+  <!-- HERO -->
   <section class="hero">
     <div class="hero-inner">
       <div class="photo">
-        <!-- Dein Foto (nicht überladen, wenig Beschnitt) -->
         <img src="img/hero.jpg" alt="Maria & Kim – Save the Date">
       </div>
       <div class="panel">
         <h1>Maria &amp; Kim</h1>
-        <p>Save the Date • 01. Juni 2026 • Koh Samui, Thailand</p>
+        <p class="muted">Save the Date • 01. Juni 2026 • Koh Samui, Thailand</p>
         <div class="pill" style="margin-top:10px;">💌 Dresscode: Festlich &amp; sommerlich</div>
       </div>
     </div>
@@ -223,16 +161,27 @@
   <header>
     <div class="wrap">
       <nav>
-        <div class="brand">
-          <span class="dot" aria-hidden="true"></span>
-          <span class="mk">Maria &amp; Kim</span>
+        <div class="brand" aria-label="Maria und Kim">
+          <!-- M♡K Monogramm (SVG) -->
+          <svg viewBox="0 0 64 64" role="img" aria-hidden="true">
+            <defs>
+              <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#7ad9ff"/><stop offset="1" stop-color="#ff86c8"/>
+              </linearGradient>
+            </defs>
+            <circle cx="32" cy="32" r="30" fill="url(#g)" opacity=".18"/>
+            <circle cx="32" cy="32" r="29" fill="none" stroke="url(#g)" stroke-width="1.5"/>
+            <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                  font-family="Playfair Display, Georgia, serif" font-size="20" fill="#f0cc7a">M♡K</text>
+          </svg>
+          <span>Maria &amp; Kim</span>
         </div>
         <div class="navlinks">
           <a href="#rsvp">Check-in</a>
           <a href="#infos">Infos</a>
           <a href="#galerie">Galerie</a>
           <a href="#chat">Gästebuch</a>
-          <a href="admin.html" title="Verwaltung">Admin</a>
+          <a href="admin.html">Admin</a>
         </div>
       </nav>
     </div>
@@ -243,8 +192,8 @@
       <div class="wrap grid">
         <div class="col-6">
           <div class="card">
-            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif; color:#7a5b2f;">Check-in / Zusage</h2>
-            <p class="hint">Bitte Name & Geburtsdatum eintragen. Begleitpersonen mit Geburtsdatum ergänzen.</p>
+            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif;">Check-in / Zusage</h2>
+            <p class="hint">Bitte Name & Geburtsdatum eintragen. Begleitpersonen inkl. Geburtsdatum.</p>
 
             <form id="rsvpForm" novalidate>
               <label for="name">Vor- &amp; Nachname *</label>
@@ -270,24 +219,12 @@
                 </div>
               </div>
 
-              <!-- Begleitpersonen: Name + Geburtsdatum (in bestehende age-Felder geschrieben) -->
+              <!-- Begleitpersonen -->
               <div id="companions">
-                <div class="row">
-                  <div><label for="c1name">Begleitung 1 – Name</label><input id="c1name" name="c1name" type="text" placeholder="Vor- & Nachname"></div>
-                  <div><label for="c1dob">Geburtsdatum</label><input id="c1dob" name="c1dob" type="date"></div>
-                </div>
-                <div class="row">
-                  <div><label for="c2name">Begleitung 2 – Name</label><input id="c2name" name="c2name" type="text"></div>
-                  <div><label for="c2dob">Geburtsdatum</label><input id="c2dob" name="c2dob" type="date"></div>
-                </div>
-                <div class="row">
-                  <div><label for="c3name">Begleitung 3 – Name</label><input id="c3name" name="c3name" type="text"></div>
-                  <div><label for="c3dob">Geburtsdatum</label><input id="c3dob" name="c3dob" type="date"></div>
-                </div>
-                <div class="row">
-                  <div><label for="c4name">Begleitung 4 – Name</label><input id="c4name" name="c4name" type="text"></div>
-                  <div><label for="c4dob">Geburtsdatum</label><input id="c4dob" name="c4dob" type="date"></div>
-                </div>
+                <div class="row"><div><label for="c1name">Begleitung 1 – Name</label><input id="c1name" type="text"></div><div><label for="c1dob">Geburtsdatum</label><input id="c1dob" type="date"></div></div>
+                <div class="row"><div><label for="c2name">Begleitung 2 – Name</label><input id="c2name" type="text"></div><div><label for="c2dob">Geburtsdatum</label><input id="c2dob" type="date"></div></div>
+                <div class="row"><div><label for="c3name">Begleitung 3 – Name</label><input id="c3name" type="text"></div><div><label for="c3dob">Geburtsdatum</label><input id="c3dob" type="date"></div></div>
+                <div class="row"><div><label for="c4name">Begleitung 4 – Name</label><input id="c4name" type="text"></div><div><label for="c4dob">Geburtsdatum</label><input id="c4dob" type="date"></div></div>
               </div>
 
               <label for="email">E-Mail (optional)</label>
@@ -312,7 +249,7 @@
 
         <div class="col-6">
           <div class="card">
-            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif; color:#7a5b2f;">Ablauf &amp; Ort</h2>
+            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif;">Ablauf &amp; Ort</h2>
             <ul class="clean">
               <li><strong>Datum:</strong> 01. Juni 2026</li>
               <li><strong>Trauung:</strong> 14:00 Uhr, Strandzeremonie Koh Samui</li>
@@ -332,8 +269,8 @@
       <div class="wrap grid">
         <div class="col-12">
           <div class="card">
-            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif; color:#7a5b2f;">Weitere Informationen</h2>
-            <p>Thailand-Flair, Palmen & Sonnenuntergang – wir freuen uns auf einen unvergesslichen Tag mit euch! 🇹🇭🌅</p>
+            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif;">Weitere Informationen</h2>
+            <p>Meer, Palmen & Neon-Sunset – wir freuen uns auf einen unvergesslichen Tag mit euch! 🌴🌅</p>
             <ul class="clean">
               <li><strong>Geschenke:</strong> Eure Anwesenheit ist unser Geschenk. Wer mag: <em>Reisekasse</em> 💞</li>
               <li><strong>Kinder:</strong> Sehr gern! Kinderbetreuung am Strand.</li>
@@ -348,7 +285,7 @@
       <div class="wrap grid">
         <div class="col-12">
           <div class="card">
-            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif; color:#7a5b2f;">Galerie</h2>
+            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif;">Galerie</h2>
             <div class="gallery" id="gallery">
               <img src="img/pic1.jpg" alt="Strand">
               <img src="img/pic2.jpg" alt="Palmen">
@@ -366,7 +303,7 @@
       <div class="wrap grid">
         <div class="col-12">
           <div class="card">
-            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif; color:#7a5b2f;">Gästebuch / Chat 💬</h2>
+            <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif;">Gästebuch / Chat 💬</h2>
             <p class="hint">Hinterlasst uns gern eine liebe Nachricht! (Öffentlich sichtbar)</p>
             <div class="row">
               <input id="chatName" type="text" placeholder="Dein Name">
@@ -384,30 +321,24 @@
   <footer>Mit Liebe gemacht. © Maria &amp; Kim</footer>
 
   <script>
-    const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbxb4kqalumOxwfAQkbOIyI3yUjFNaRo-LJsNOyx6UCHGw2WQ12-rh9sjBgocuDIBbwf/exec";
+    // >>> Dein neuer EXEC-Link:
+    const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec";
 
-    /* Utilities */
     const esc = s => String(s||'').replace(/[<>&"]/g, m=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[m]));
     const fmtDate = (v) => {
       if(!v) return "";
-      const d = new Date(v);
-      if (isNaN(d)) return v; // falls Browser den Wert schon als TT.MM.JJJJ liefert
-      const dd = String(d.getDate()).padStart(2,'0');
-      const mm = String(d.getMonth()+1).padStart(2,'0');
-      const yy = d.getFullYear();
+      const d = new Date(v); if (isNaN(d)) return v;
+      const dd = String(d.getDate()).padStart(2,'0'), mm = String(d.getMonth()+1).padStart(2,'0'), yy = d.getFullYear();
       return `${dd}.${mm}.${yy}`;
     };
 
-    /* Lightbox */
-    const lb = document.getElementById('lightbox');
-    const lbImg = document.getElementById('lbImg');
-    document.getElementById('gallery').addEventListener('click', (e) => {
-      if (e.target.tagName === 'IMG') { lbImg.src = e.target.src; lb.classList.add('show'); }
-    });
+    // Lightbox
+    const lb = document.getElementById('lightbox'); const lbImg = document.getElementById('lbImg');
+    document.getElementById('gallery').addEventListener('click', e => { if (e.target.tagName === 'IMG') { lbImg.src = e.target.src; lb.classList.add('show'); }});
     document.getElementById('lbClose').addEventListener('click', () => lb.classList.remove('show'));
-    lb.addEventListener('click', (e) => { if (e.target === lb) lb.classList.remove('show'); });
+    lb.addEventListener('click', e => { if (e.target === lb) lb.classList.remove('show'); });
 
-    /* Chips */
+    // Chips
     document.querySelectorAll('[data-chip]').forEach(label => {
       const input = label.querySelector('input[type="radio"]');
       input.addEventListener('change', () => {
@@ -416,7 +347,7 @@
       });
     });
 
-    /* RSVP */
+    // RSVP
     const form = document.getElementById('rsvpForm');
     const statusEl = document.getElementById('status');
     const resetBtn = document.getElementById('resetBtn');
@@ -432,13 +363,8 @@
       e.preventDefault();
       statusEl.textContent = ""; statusEl.className = "";
 
-      if (!SHEET_ENDPOINT || !SHEET_ENDPOINT.startsWith('https')) {
-        statusEl.textContent = "Konfiguration fehlt: SHEET_ENDPOINT ist nicht gesetzt.";
-        statusEl.className = "error"; return;
-      }
-
       const name = (document.getElementById('name').value || "").trim();
-      const birthday = (document.getElementById('birthday').value || "").trim(); // yyyy-mm-dd
+      const birthday = (document.getElementById('birthday').value || "").trim();
       const email = (document.getElementById('email').value || "").trim();
       const message = (document.getElementById('message').value || "").trim();
       const guests = document.getElementById('guests').value;
@@ -450,50 +376,47 @@
         statusEl.className = "error"; return;
       }
 
-      /* Name um Geburtstag erweitern – (TT.MM.JJJJ) */
       const nameWithBirthday = `${name} (${fmtDate(birthday)})`;
-
-      /* Begleitpersonen: Datum in die bestehenden *age*-Felder schreiben */
-      const c1name = document.getElementById('c1name').value || "";
-      const c2name = document.getElementById('c2name').value || "";
-      const c3name = document.getElementById('c3name').value || "";
-      const c4name = document.getElementById('c4name').value || "";
-      const c1age = fmtDate(document.getElementById('c1dob').value || "");
-      const c2age = fmtDate(document.getElementById('c2dob').value || "");
-      const c3age = fmtDate(document.getElementById('c3dob').value || "");
-      const c4age = fmtDate(document.getElementById('c4dob').value || "");
 
       const payload = new URLSearchParams({
         type:"rsvp",
-        name: nameWithBirthday,   // <-- wichtig: Geburtstag in Klammern
-        email, message, guests, attending,
-        c1name, c1age, c2name, c2age, c3name, c3age, c4name, c4age,
-        ua:navigator.userAgent
+        name: nameWithBirthday,
+        attending, guests, email, message,
+        c1name: document.getElementById('c1name').value || "",
+        c1age:  fmtDate(document.getElementById('c1dob').value || ""),
+        c2name: document.getElementById('c2name').value || "",
+        c2age:  fmtDate(document.getElementById('c2dob').value || ""),
+        c3name: document.getElementById('c3name').value || "",
+        c3age:  fmtDate(document.getElementById('c3dob').value || ""),
+        c4name: document.getElementById('c4name').value || "",
+        c4age:  fmtDate(document.getElementById('c4dob').value || ""),
+        ua: navigator.userAgent
       });
 
       try{
-        submitBtn && (submitBtn.disabled = true);
+        submitBtn.disabled = true;
         statusEl.textContent = "Sende …";
         const res = await fetch(SHEET_ENDPOINT, {
           method:"POST",
           headers:{ "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8" },
           body: payload.toString()
         });
-        if(!res.ok) throw new Error("HTTP "+res.status);
-        let ok = true; try{ const j = await res.json(); ok = !!j.ok; if(!ok && j.error) throw new Error(j.error);}catch(_){}
-        if(ok){
-          statusEl.textContent = attending === 'ja' ? "Danke für deine Zusage! ✨" : "Schade, aber danke fürs Bescheid sagen! 💌";
-          statusEl.className = "success";
-          form.reset(); document.querySelectorAll('[data-chip]').forEach(l => l.dataset.checked = 'false');
-        } else throw new Error("Antwort nicht bestätigt");
+        const text = await res.text();
+        // Versuchen JSON zu parsen (freundliche Fehlersuche)
+        let okResp = false;
+        try { const j = JSON.parse(text); okResp = !!j.ok; } catch { okResp = res.ok; }
+        if(!okResp) throw new Error(text || ("HTTP "+res.status));
+        statusEl.textContent = attending === 'ja' ? "Danke für deine Zusage! ✨" : "Schade, aber danke fürs Bescheid sagen! 💌";
+        statusEl.className = "success";
+        form.reset(); document.querySelectorAll('[data-chip]').forEach(l => l.dataset.checked = 'false');
       }catch(err){
         console.error(err);
         statusEl.textContent = "Speichern fehlgeschlagen. Bitte Apps Script (type=rsvp) prüfen.";
         statusEl.className = "error";
-      }finally{ submitBtn && (submitBtn.disabled = false); }
+      }finally{ submitBtn.disabled = false; }
     });
 
-    /* Chat */
+    // Chat
     const chatName = document.getElementById('chatName');
     const chatText = document.getElementById('chatText');
     const chatSend = document.getElementById('chatSend');
@@ -510,7 +433,9 @@
           headers:{ "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8" },
           body:new URLSearchParams({ type:"chat", name:n, message:t, ua:navigator.userAgent }).toString()
         });
-        if(!res.ok) throw new Error();
+        const text = await res.text();
+        let okResp=false; try{ const j=JSON.parse(text); okResp=!!j.ok; }catch{ okResp=res.ok; }
+        if(!okResp) throw new Error(text || ("HTTP "+res.status));
         chatText.value=""; chatStatus.textContent="Gesendet 💬"; loadChat();
       }catch(e){ chatStatus.textContent="Chat speichern fehlgeschlagen (type=chat)."; }
     });
@@ -519,7 +444,9 @@
       chatList.innerHTML="";
       try{
         const url = new URL(SHEET_ENDPOINT); url.searchParams.set("type","chat"); url.searchParams.set("list","1");
-        const res = await fetch(url,{method:"GET"}); const j = await res.json();
+        const res = await fetch(url,{method:"GET"});
+        const text = await res.text();
+        const j = JSON.parse(text);
         if(!j.ok) throw new Error(j.error||"Fehler");
         (j.rows||[]).slice(-40).forEach(r=>{
           const card=document.createElement('div'); card.className="card";
