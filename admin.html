@@ -3,111 +3,607 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Admin – Hochzeit</title>
+  <title>Admin – Hochzeit Maria & Kim</title>
+  <meta name="description" content="Adminbereich für RSVP, Chat, Galerie und Texte" />
+
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <!-- Für ZIP-Export der Galerie (clientseitig, kein Backend nötig) -->
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
   <style>
-    .lock-screen { display:flex; align-items:center; justify-content:center; min-height:60vh; gap:12px; }
-    .lock-screen input { max-width:220px; }
+    :root{
+      --bg-0:#080a0f;
+      --bg-1:#0c0f16;
+      --bg-2:#0f1420;
+      --fg:#e9eef6;
+      --muted:#a5b0c4;
+      --neon1:#7ad9ff;
+      --neon2:#ff86c8;
+      --gold:#f0cc7a;
+      --card: rgba(255,255,255,.06);
+      --card-edge: rgba(255,255,255,.12);
+      --glass-blur: 10px;
+      --radius: 16px;
+      --shadow: 0 18px 40px rgba(0,0,0,.45);
+      --ok:#39d353; --warn:#ffcc00; --error:#ff6b6b;
+    }
+    *{box-sizing:border-box}
+    html,body{
+      margin:0; padding:0; color:var(--fg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(122,217,255,.09), transparent 60%),
+        radial-gradient(1000px 580px at 110% 0%, rgba(255,134,200,.08), transparent 60%),
+        linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 60%, var(--bg-2) 100%);
+      min-height:100vh;
+    }
+    a{ color: var(--neon1); text-decoration: none; }
+    .wrap{ max-width:1100px; margin:0 auto; padding:20px;}
+    header{
+      position:sticky; top:0; z-index:20;
+      background:rgba(8,11,18,.6);
+      backdrop-filter: blur(12px);
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    nav{ display:flex; align-items:center; justify-content:space-between; gap:14px;}
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      font-weight:700; letter-spacing:.3px; color:var(--fg);
+      font-family:"Playfair Display", ui-serif, Georgia, serif;
+    }
+    .brand .dot{
+      width:12px; height:12px; border-radius:999px;
+      background: conic-gradient(from 45deg, var(--neon1), var(--neon2), var(--gold));
+      box-shadow: 0 0 20px rgba(122,217,255,.7), 0 0 28px rgba(255,134,200,.35);
+      border:1px solid rgba(255,255,255,.18);
+    }
+    .navlinks a{
+      padding:8px 12px; border-radius:10px; color:#cfd7e6; font-weight:700;
+    }
+    .navlinks a:hover{ background:rgba(255,255,255,.08); }
+
+    .card{
+      position:relative;
+      background: var(--card);
+      backdrop-filter: blur(var(--glass-blur));
+      border:1px solid var(--card-edge);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+    .card::after{
+      content:""; position:absolute; inset:-1px; border-radius:inherit; z-index:-1;
+      background: radial-gradient(1200px 300px at 10% 0%, rgba(122,217,255,.09), transparent 70%),
+                  radial-gradient(1200px 300px at 90% 100%, rgba(255,134,200,.08), transparent 70%);
+      filter: blur(12px);
+    }
+
+    .tabs{ display:flex; gap:8px; flex-wrap:wrap; margin:14px 0 18px; }
+    .tab{
+      padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:800;
+      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.16); color:#dbe6ff;
+    }
+    .tab.active{
+      border-color: rgba(122,217,255,.65);
+      box-shadow: 0 0 0 6px rgba(122,217,255,.16);
+      background: linear-gradient(180deg, rgba(122,217,255,.12), rgba(255,134,200,.10));
+    }
+
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px; cursor:pointer;
+      padding:10px 14px; border-radius:12px; border:1px solid rgba(122,217,255,.55);
+      font-weight:800; color:#081019;
+      background:linear-gradient(135deg, #7ad9ff, #ff86c8);
+      box-shadow: 0 10px 24px rgba(122,217,255,.25), 0 10px 28px rgba(255,134,200,.18);
+      transition: transform .12s, box-shadow .2s, filter .2s;
+    }
+    .btn:hover{ transform:translateY(-1px); box-shadow:0 14px 30px rgba(122,217,255,.25); filter:brightness(1.02); }
+    .btn.ghost{ background: transparent; color:var(--fg); border:1px solid rgba(255,255,255,.22); box-shadow:none; }
+    .btn.warn{ border-color:rgba(255,204,0,.7); background:linear-gradient(135deg, #ffd166, #ff9f43); color:#1b1200; }
+    .btn.danger{ border-color:rgba(255,107,107,.7); background:linear-gradient(135deg, #ff6b6b, #ff3b3b); color:#200; }
+
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .row > *{ flex:1; min-width:180px; }
+    .grid{ display:grid; gap:14px; grid-template-columns:repeat(12, 1fr); }
+    .col-12{ grid-column:span 12; }
+    .col-6{ grid-column:span 12; } @media(min-width:860px){ .col-6{ grid-column:span 6; } }
+
+    table{ width:100%; border-collapse: collapse; font-size:14px; }
+    th, td{ text-align:left; padding:10px 8px; border-bottom:1px solid rgba(255,255,255,.12); vertical-align:top; }
+    th{ color:#e8f3ff; font-weight:800; }
+    td .hint{ color:var(--muted); font-size:12px; }
+
+    .hint{ color:var(--muted); font-size:14px; }
+    .success{ color:var(--ok); font-weight:700;}
+    .error{ color:var(--error); font-weight:700;}
+
+    /* Login */
+    #loginBox{ display:grid; place-items:center; min-height:40vh; }
+    #app{ display:none; }
+
+    /* Galerie */
+    .gallery{ display:grid; gap:10px; grid-template-columns:repeat(2,1fr); }
+    @media(min-width:700px){ .gallery{ grid-template-columns:repeat(4,1fr); } }
+    .thumb{ position:relative; border:1px solid rgba(255,255,255,.14); border-radius:14px; overflow:hidden; }
+    .thumb img{ display:block; width:100%; aspect-ratio:1/1; object-fit:cover; }
+    .thumb .tools{ position:absolute; inset:auto 6px 6px 6px; display:flex; gap:6px; }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
   </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="inner">
-      <div class="brand">
-        <div class="heart">❤</div>
-        <div class="brand-text">
-          <h1>Admin</h1>
-          <p>Inhalte & Galerie verwalten</p>
+<header>
+  <div class="wrap">
+    <nav>
+      <div class="brand"><span class="dot" aria-hidden="true"></span><span>Admin · Maria &amp; Kim</span></div>
+      <div class="navlinks">
+        <a href="./">Zur Website</a>
+        <a id="logout" href="#" title="Abmelden">Logout</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Login -->
+  <section id="loginBox">
+    <div class="card col-6" style="max-width:520px;">
+      <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif;">Admin Login</h2>
+      <p class="hint">Gib das Admin-Passwort ein, um RSVPs, Chat, Galerie und Texte zu verwalten.</p>
+      <div class="row" style="margin-top:10px;">
+        <input id="pw" type="password" placeholder="Passwort" autocomplete="current-password">
+        <button id="loginBtn" class="btn">Login</button>
+      </div>
+      <p id="loginStatus" class="hint" style="margin-top:8px;"></p>
+    </div>
+  </section>
+
+  <!-- App -->
+  <section id="app">
+    <div class="tabs">
+      <button class="tab active" data-tab="dash">Übersicht</button>
+      <button class="tab" data-tab="rsvp">RSVP</button>
+      <button class="tab" data-tab="chat">Chat</button>
+      <button class="tab" data-tab="gallery">Galerie</button>
+      <button class="tab" data-tab="texts">Texte</button>
+    </div>
+
+    <!-- Übersicht -->
+    <div id="tab-dash" class="card">
+      <h2 style="margin:0 0 10px; font-family:'Playfair Display', ui-serif, Georgia, serif;">Kurzbericht</h2>
+      <div id="dashStats" class="grid">
+        <div class="col-6">
+          <div class="card">
+            <strong>RSVP</strong>
+            <p id="statRsvp" class="hint">Lade…</p>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="card">
+            <strong>Chat</strong>
+            <p id="statChat" class="hint">Lade…</p>
+          </div>
         </div>
       </div>
     </div>
-  </header>
 
-  <main class="content">
-    <section id="lock" class="card lock-screen">
-      <input id="pw" type="password" placeholder="Passwort" />
-      <button class="primary" id="unlockBtn">Öffnen</button>
-      <p class="muted">Passwort ist: <code>030520</code></p>
-    </section>
+    <!-- RSVP -->
+    <div id="tab-rsvp" class="card" style="display:none;">
+      <div class="row" style="justify-content:space-between; align-items:center;">
+        <h2 style="margin:0; font-family:'Playfair Display', ui-serif, Georgia, serif;">RSVP – Teilnehmer</h2>
+        <div class="row" style="flex:0 0 auto;">
+          <button id="rsvpReload" class="btn ghost">Neu laden</button>
+          <button id="rsvpCsv" class="btn">CSV Export</button>
+        </div>
+      </div>
+      <p class="hint">Zeigt Einträge aus deinem Apps Script.</p>
+      <div style="overflow:auto;">
+        <table id="rsvpTable">
+          <thead>
+            <tr>
+              <th>Zeit</th><th>Name</th><th>Teilnahme</th><th>Begleiter</th>
+              <th>E-Mail</th><th>Nachricht</th><th>UA</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p id="rsvpStatus" class="hint" style="margin-top:8px;"></p>
+    </div>
 
-    <section id="panel" class="card" style="display:none">
-      <div class="card-header"><h2>Texte & Infos</h2></div>
-      <form id="contentForm" class="grid-form">
-        <label class="span-2">Titel <input name="heroTitle" /></label>
-        <label class="span-2">Untertitel <input name="heroSubtitle" /></label>
-        <label class="span-2">Welcome-Text <textarea name="welcomeText" rows="3"></textarea></label>
-        <label>Datum <input name="dateText" /></label>
-        <label>Location <input name="locationText" /></label>
-        <label>Dresscode <input name="dresscodeText" /></label>
-        <button class="primary span-2" type="submit">Speichern</button>
-        <p id="contentStatus" class="status-line span-2"></p>
-      </form>
-    </section>
+    <!-- Chat -->
+    <div id="tab-chat" class="card" style="display:none;">
+      <div class="row" style="justify-content:space-between; align-items:center;">
+        <h2 style="margin:0; font-family:'Playfair Display', ui-serif, Georgia, serif;">Gästebuch / Chat</h2>
+        <button id="chatReload" class="btn ghost">Neu laden</button>
+      </div>
+      <p class="hint">Einträge können gelöscht werden.</p>
+      <div style="overflow:auto;">
+        <table id="chatTable">
+          <thead>
+            <tr>
+              <th>Zeit</th><th>Name</th><th>Nachricht</th><th>Aktion</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p id="chatStatus" class="hint" style="margin-top:8px;"></p>
+    </div>
 
-    <section id="galleryAdmin" class="card" style="display:none">
-      <div class="card-header"><h2>Galerie</h2></div>
-      <form id="uploadForm" class="grid-form">
-        <label class="span-2">Bilddateien
-          <input id="files" type="file" accept="image/*" multiple />
-        </label>
-        <button class="primary span-2" type="submit">Hochladen</button>
-        <p id="uploadStatus" class="status-line span-2"></p>
-      </form>
-      <div class="muted small">Hinweis: Die Bilder werden in einem Drive-Ordner gespeichert und öffentlich lesbar gemacht.</div>
-    </section>
-  </main>
+    <!-- Galerie -->
+    <div id="tab-gallery" class="card" style="display:none;">
+      <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif;">Galerie verwalten</h2>
+      <p class="hint">Lade neue Bilder hoch (mehrfach möglich). Besucher können später einzelne Bilder öffnen und speichern.</p>
+      <div class="row" style="align-items:flex-end; margin-bottom:10px;">
+        <div>
+          <label for="gFiles" style="display:block; font-weight:800; margin-bottom:6px;">Dateien wählen</label>
+          <input id="gFiles" type="file" accept="image/*" multiple>
+        </div>
+        <button id="gUpload" class="btn">Hochladen</button>
+        <button id="gReload" class="btn ghost">Neu laden</button>
+        <button id="gZip" class="btn">Alle als ZIP</button>
+      </div>
+      <p id="gStatus" class="hint"></p>
+      <div id="gList" class="gallery" style="margin-top:12px;"></div>
+    </div>
 
-  <script>
-    const EXEC_URL = "https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec";
-    const ADMIN_TOKEN = "030520";
+    <!-- Texte -->
+    <div id="tab-texts" class="card" style="display:none;">
+      <h2 style="margin-top:0; font-family:'Playfair Display', ui-serif, Georgia, serif;">Texte bearbeiten</h2>
+      <p class="hint">Diese Schlüssel werden im Sheet gespeichert. Deine aktuelle <em>index.html</em> liest sie noch nicht – du kannst sie aber schon pflegen.</p>
+      <div class="grid">
+        <div class="col-6">
+          <label>Hero Titel</label>
+          <input id="t_hero_title" type="text" placeholder="Maria &amp; Kim">
+        </div>
+        <div class="col-6">
+          <label>Hero Untertitel</label>
+          <input id="t_hero_subtitle" type="text" placeholder="Save the Date • 01. Juni 2026 • Koh Samui">
+        </div>
+        <div class="col-12">
+          <label>Infos (HTML erlaubt)</label>
+          <textarea id="t_infos" style="min-height:140px;"></textarea>
+        </div>
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <button id="tLoad" class="btn ghost">Aus Sheet laden</button>
+        <button id="tSave" class="btn">Speichern</button>
+      </div>
+      <p id="tStatus" class="hint" style="margin-top:8px;"></p>
+    </div>
+  </section>
+</main>
 
-    const qs = (s) => document.querySelector(s);
+<footer class="wrap" style="padding:40px 20px; text-align:center; color:var(--muted); font-size:14px;">
+  Admin © Maria &amp; Kim
+</footer>
 
-    function setVisible(id, on) {{ const el = document.getElementById(id); if (el) el.style.display = on ? "" : "none"; }}
+<script>
+  // ======= KONFIG =======
+  const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec";
+  const ADMIN_PASS = "030520"; // wie gewünscht
+  const esc = s => String(s||'').replace(/[<>&"]/g, m=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[m]));
 
-    function unlocked() {{ return localStorage.getItem("w_admin") === ADMIN_TOKEN; }}
+  // ======= LOGIN =======
+  const loginBox = document.getElementById('loginBox');
+  const appBox = document.getElementById('app');
+  const pw = document.getElementById('pw');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginStatus = document.getElementById('loginStatus');
+  const logout = document.getElementById('logout');
 
-    function tryUnlock() {{ const v = document.getElementById("pw").value.trim(); if (v === ADMIN_TOKEN) {{ localStorage.setItem("w_admin", ADMIN_TOKEN); init(); }} else alert("Falsches Passwort"); }}
+  function setAuth(ok){
+    if(ok){
+      loginBox.style.display='none';
+      appBox.style.display='';
+      localStorage.setItem('wedding_admin','1');
+      bootstrap();
+    } else {
+      loginBox.style.display='';
+      appBox.style.display='none';
+      localStorage.removeItem('wedding_admin');
+    }
+  }
+  loginBtn.addEventListener('click', () => {
+    if((pw.value||'') === ADMIN_PASS){ setAuth(true); }
+    else { loginStatus.textContent="Falsches Passwort."; }
+  });
+  logout.addEventListener('click', (e)=>{ e.preventDefault(); setAuth(false); });
+  // Auto-Login, wenn schon authentifiziert
+  if(localStorage.getItem('wedding_admin') === '1'){ setAuth(true); }
 
-    document.addEventListener("DOMContentLoaded", () => {{ qs("#unlockBtn").addEventListener("click", tryUnlock); if (unlocked()) init(); }});
+  // ======= TABs =======
+  document.querySelectorAll('.tab').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const id = btn.dataset.tab;
+      ['dash','rsvp','chat','gallery','texts'].forEach(t=>{
+        document.getElementById('tab-'+t).style.display = (t===id)?'':'none';
+      });
+    });
+  });
 
-    async function init() {{ setVisible("lock", false); setVisible("panel", true); setVisible("galleryAdmin", true); await loadContent(); }}
+  // ======= ÜBERSICHT (Stats) =======
+  async function loadStats(){
+    try{
+      // RSVP Count
+      const u1 = new URL(SHEET_ENDPOINT); u1.searchParams.set('type','rsvp'); u1.searchParams.set('list','1');
+      const r1 = await fetch(u1); const j1 = await r1.json();
+      const rows = Array.isArray(j1.rows)? j1.rows : [];
+      const total = rows.length;
+      const yes = rows.filter(r => (r.attending||'').toLowerCase().startsWith('j')).length;
+      const guests = rows.reduce((a,r)=> a + (parseInt(r.guests||0)||0), 0);
+      document.getElementById('statRsvp').innerHTML = `Einträge: <b>${total}</b> · Zusagen: <b>${yes}</b> · Begleiter: <b>${guests}</b>`;
 
-    async function loadContent() {{ 
-      const res = await fetch(EXEC_URL + "?type=contentGet");
-      const json = await res.json();
-      const f = document.getElementById("contentForm");
-      (json.rows || []).forEach(({key, value}) => {{ const el = f.elements[key]; if (el) el.value = value; }});
-    }}
+      // Chat Count
+      const u2 = new URL(SHEET_ENDPOINT); u2.searchParams.set('type','chat'); u2.searchParams.set('list','1');
+      const r2 = await fetch(u2); const j2 = await r2.json();
+      const c = Array.isArray(j2.rows)? j2.rows.length : 0;
+      document.getElementById('statChat').innerHTML = `Nachrichten: <b>${c}</b>`;
+    }catch(e){
+      document.getElementById('statRsvp').textContent = "Konnte nicht laden.";
+      document.getElementById('statChat').textContent = "Konnte nicht laden.";
+    }
+  }
 
-    document.getElementById("contentForm").addEventListener("submit", async (e) => {{ 
-      e.preventDefault();
-      const fd = new FormData(e.target);
-      fd.append("type", "contentSet");
-      fd.append("adminToken", ADMIN_TOKEN);
-      const res = await fetch(EXEC_URL, {{ method:"POST", body: fd }});
-      const json = await res.json();
-      document.getElementById("contentStatus").textContent = json.ok ? "Gespeichert." : (json.error || "Fehler");
-    }});
+  // ======= RSVP TAB =======
+  const rsvpTableBody = document.querySelector('#rsvpTable tbody');
+  const rsvpStatus = document.getElementById('rsvpStatus');
+  document.getElementById('rsvpReload').addEventListener('click', loadRsvp);
+  document.getElementById('rsvpCsv').addEventListener('click', exportRsvpCsv);
 
-    document.getElementById("uploadForm").addEventListener("submit", async (e) => {{ 
-      e.preventDefault();
-      const files = document.getElementById("files").files;
-      if (!files.length) return;
-      let okCount = 0;
-      for (const file of files) {{ 
-        const fd = new FormData();
-        fd.append("type", "galleryUpload");
-        fd.append("adminToken", ADMIN_TOKEN);
-        fd.append("file", file, file.name);
-        const res = await fetch(EXEC_URL, {{ method:"POST", body: fd }});
-        const json = await res.json();
-        if (json.ok) okCount++; else console.warn(json);
-      }}
-      document.getElementById("uploadStatus").textContent = okCount + " / " + files.length + " hochgeladen.";
-    }});
-  </script>
+  async function loadRsvp(){
+    rsvpTableBody.innerHTML = "";
+    rsvpStatus.textContent = "Lade …";
+    try{
+      const url = new URL(SHEET_ENDPOINT); url.searchParams.set('type','rsvp'); url.searchParams.set('list','1');
+      const res = await fetch(url);
+      const j = await res.json();
+      if(!j.ok) throw new Error(j.error || "Fehler");
+      (j.rows||[]).forEach(r=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${esc(r.timestamp||'')}</td>
+          <td>${esc(r.name||'')}</td>
+          <td>${esc(r.attending||'')}</td>
+          <td>${esc(r.guests||'0')}</td>
+          <td>${esc(r.email||'')}</td>
+          <td>${esc(r.message||'')}</td>
+          <td><span class="hint mono">${esc(r.ua||'')}</span></td>
+        `;
+        rsvpTableBody.appendChild(tr);
+      });
+      rsvpStatus.textContent = `${(j.rows||[]).length} Einträge geladen.`;
+    }catch(e){
+      rsvpStatus.textContent = "RSVP laden fehlgeschlagen (GET type=rsvp&list=1).";
+    }
+  }
+
+  function exportRsvpCsv(){
+    const rows = [['timestamp','name','attending','guests','email','message','ua']];
+    rsvpTableBody.querySelectorAll('tr').forEach(tr=>{
+      const cells = [...tr.children].map(td => `"${td.textContent.replace(/"/g,'""')}"`);
+      rows.push(cells);
+    });
+    const csv = rows.map(r=>r.join(',')).join('\n');
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    saveAs(blob, `rsvp_${new Date().toISOString().slice(0,10)}.csv`);
+  }
+
+  // ======= CHAT TAB =======
+  const chatBody = document.querySelector('#chatTable tbody');
+  const chatStatus = document.getElementById('chatStatus');
+  document.getElementById('chatReload').addEventListener('click', loadChatAdmin);
+
+  async function loadChatAdmin(){
+    chatBody.innerHTML=""; chatStatus.textContent = "Lade …";
+    try{
+      const url = new URL(SHEET_ENDPOINT); url.searchParams.set('type','chat'); url.searchParams.set('list','1');
+      const res = await fetch(url); const j = await res.json();
+      if(!j.ok) throw new Error(j.error||'Fehler');
+      (j.rows||[]).forEach((r,idx)=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${esc(r.timestamp||'')}</td>
+          <td>${esc(r.name||'')}</td>
+          <td>${esc(r.message||'')}</td>
+          <td><button class="btn danger" data-del="${esc(r.id||idx)}">Löschen</button></td>
+        `;
+        chatBody.appendChild(tr);
+      });
+      chatStatus.textContent = `${(j.rows||[]).length} Nachrichten geladen.`;
+    }catch(e){
+      chatStatus.textContent = "Chat laden fehlgeschlagen (GET type=chat&list=1).";
+    }
+  }
+
+  // Erwartet im Apps Script:
+  // POST type=chat_delete&id=<rowId>&token=030520  -> { ok:true }
+  chatBody.addEventListener('click', async (e)=>{
+    const btn = e.target.closest('button[data-del]');
+    if(!btn) return;
+    const id = btn.dataset.del;
+    if(!confirm('Nachricht wirklich löschen?')) return;
+    btn.disabled = true;
+    try{
+      const res = await fetch(SHEET_ENDPOINT, {
+        method:'POST',
+        headers:{ "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8" },
+        body: new URLSearchParams({ type:'chat_delete', id, token: ADMIN_PASS }).toString()
+      });
+      const j = await res.json();
+      if(!j.ok) throw new Error(j.error||'Fehler');
+      btn.closest('tr').remove();
+      chatStatus.textContent = "Gelöscht.";
+    }catch(e){
+      chatStatus.textContent = "Löschen fehlgeschlagen (POST type=chat_delete).";
+    }finally{ btn.disabled=false; }
+  });
+
+  // ======= GALERIE TAB =======
+  const gFiles = document.getElementById('gFiles');
+  const gUpload = document.getElementById('gUpload');
+  const gReload = document.getElementById('gReload');
+  const gZip = document.getElementById('gZip');
+  const gList = document.getElementById('gList');
+  const gStatus = document.getElementById('gStatus');
+
+  gReload.addEventListener('click', loadGallery);
+  gUpload.addEventListener('click', uploadGallery);
+  gZip.addEventListener('click', zipAll);
+
+  // Erwartet im Apps Script:
+  // GET  type=gallery&list=1                     -> { ok:true, items:[{id,url,name,width,height,ts}] }
+  // POST type=gallery_upload&token=... (form-data: files[]) -> { ok:true, items:[...] }
+  // POST type=gallery_delete&id=...&token=...    -> { ok:true }
+  async function loadGallery(){
+    gStatus.textContent = "Lade…"; gList.innerHTML = "";
+    try{
+      const url = new URL(SHEET_ENDPOINT); url.searchParams.set('type','gallery'); url.searchParams.set('list','1');
+      const res = await fetch(url); const j = await res.json();
+      if(!j.ok) throw new Error(j.error||'Fehler');
+      (j.items||[]).forEach(item=>{
+        const div = document.createElement('div');
+        div.className = 'thumb';
+        div.innerHTML = `
+          <img src="${esc(item.url)}" alt="${esc(item.name||'Foto')}">
+          <div class="tools">
+            <a class="btn ghost" href="${esc(item.url)}" download>Download</a>
+            <button class="btn danger" data-gdel="${esc(item.id||'')}">Löschen</button>
+          </div>
+        `;
+        gList.appendChild(div);
+      });
+      gStatus.textContent = `${(j.items||[]).length} Bilder.`;
+    }catch(e){
+      gStatus.textContent = "Galerie laden fehlgeschlagen (GET type=gallery&list=1).";
+    }
+  }
+
+  async function uploadGallery(){
+    const files = gFiles.files;
+    if(!files || files.length===0){ gStatus.textContent = "Bitte Dateien wählen."; return; }
+    const fd = new FormData();
+    fd.append('type','gallery_upload');
+    fd.append('token', ADMIN_PASS);
+    [...files].forEach(f => fd.append('files[]', f, f.name));
+    gStatus.textContent = "Lade hoch…";
+    try{
+      const res = await fetch(SHEET_ENDPOINT, { method:'POST', body: fd });
+      const j = await res.json();
+      if(!j.ok) throw new Error(j.error||'Fehler');
+      gStatus.textContent = `Hochgeladen: ${(j.items||[]).length} Datei(en).`;
+      gFiles.value = '';
+      loadGallery();
+    }catch(e){
+      gStatus.textContent = "Upload fehlgeschlagen (POST type=gallery_upload).";
+    }
+  }
+
+  gList.addEventListener('click', async (e)=>{
+    const btn = e.target.closest('button[data-gdel]');
+    if(!btn) return;
+    const id = btn.dataset.gdel;
+    if(!confirm('Bild wirklich löschen?')) return;
+    btn.disabled = true;
+    try{
+      const res = await fetch(SHEET_ENDPOINT, {
+        method:'POST',
+        headers:{ "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8" },
+        body: new URLSearchParams({ type:'gallery_delete', id, token: ADMIN_PASS }).toString()
+      });
+      const j = await res.json();
+      if(!j.ok) throw new Error(j.error||'Fehler');
+      gStatus.textContent = "Bild gelöscht.";
+      loadGallery();
+    }catch(e){
+      gStatus.textContent = "Löschen fehlgeschlagen (POST type=gallery_delete).";
+    }finally{ btn.disabled=false; }
+  });
+
+  async function zipAll(){
+    try{
+      gStatus.textContent = "Erstelle ZIP…";
+      const url = new URL(SHEET_ENDPOINT); url.searchParams.set('type','gallery'); url.searchParams.set('list','1');
+      const res = await fetch(url); const j = await res.json();
+      if(!j.ok) throw new Error(j.error||'Fehler');
+      const items = j.items||[];
+      if(items.length===0){ gStatus.textContent = "Keine Bilder vorhanden."; return; }
+      const zip = new JSZip();
+      let ok = 0;
+      for(const it of items){
+        const r = await fetch(it.url);
+        const b = await r.blob();
+        zip.file((it.name||`bild_${ok+1}`), b);
+        ok++;
+      }
+      const blob = await zip.generateAsync({type:'blob'});
+      saveAs(blob, `galerie_${new Date().toISOString().slice(0,10)}.zip`);
+      gStatus.textContent = `ZIP mit ${ok} Dateien erstellt.`;
+    }catch(e){
+      gStatus.textContent = "ZIP-Erstellung fehlgeschlagen (clientseitig).";
+    }
+  }
+
+  // ======= TEXTE TAB =======
+  const tStatus = document.getElementById('tStatus');
+  document.getElementById('tLoad').addEventListener('click', loadTexts);
+  document.getElementById('tSave').addEventListener('click', saveTexts);
+
+  // Erwartet im Apps Script:
+  // GET  type=texts&list=1                      -> { ok:true, data:{ hero_title:'', hero_subtitle:'', infos_html:'' } }
+  // POST type=texts_set&token=...               -> body keys hero_title, hero_subtitle, infos_html  -> { ok:true }
+  async function loadTexts(){
+    tStatus.textContent = "Lade …";
+    try{
+      const url = new URL(SHEET_ENDPOINT); url.searchParams.set('type','texts'); url.searchParams.set('list','1');
+      const res = await fetch(url); const j = await res.json();
+      if(!j.ok) throw new Error(j.error||'Fehler');
+      const d = j.data||{};
+      document.getElementById('t_hero_title').value = d.hero_title || '';
+      document.getElementById('t_hero_subtitle').value = d.hero_subtitle || '';
+      document.getElementById('t_infos').value = d.infos_html || '';
+      tStatus.textContent = "Geladen.";
+    }catch(e){
+      tStatus.textContent = "Texte laden fehlgeschlagen (GET type=texts&list=1).";
+    }
+  }
+
+  async function saveTexts(){
+    tStatus.textContent = "Speichere …";
+    try{
+      const body = new URLSearchParams({
+        type:'texts_set',
+        token: ADMIN_PASS,
+        hero_title: document.getElementById('t_hero_title').value || '',
+        hero_subtitle: document.getElementById('t_hero_subtitle').value || '',
+        infos_html: document.getElementById('t_infos').value || '',
+      });
+      const res = await fetch(SHEET_ENDPOINT, {
+        method:'POST',
+        headers:{ "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8" },
+        body
+      });
+      const j = await res.json();
+      if(!j.ok) throw new Error(j.error||'Fehler');
+      tStatus.textContent = "Gespeichert.";
+    }catch(e){
+      tStatus.textContent = "Speichern fehlgeschlagen (POST type=texts_set).";
+    }
+  }
+
+  // ======= Bootstrap =======
+  function bootstrap(){
+    loadStats();
+    loadRsvp();
+    loadChatAdmin();
+    loadGallery();
+    // Texte musst du manuell laden (Button), falls du sie nutzt:
+    // loadTexts();
+  }
+</script>
 </body>
 </html>
