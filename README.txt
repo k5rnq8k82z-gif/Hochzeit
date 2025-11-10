@@ -1,17 +1,15 @@
-Hochzeitsseite – MODERN (robuste Galerie + Admin + Chat)
-Endpoint: https://script.google.com/macros/s/AKfycbzFiGVXqdeDVQH7cENcb123mg4at0I9Xhjv-D599mkVkqUSMtSygDhgIUmP29PVS9CP/exec
-Admin-Passwort (Frontend + Script Properties TOKEN): 030520
+Hochzeitsseite – Pro (Thailand Flair) – mit Admin, Galerie-Lightbox & Gästebuch
 
-Wichtig – Galerie-URLs:
-Dein Apps Script soll in 'Gallery' pro Bild mindestens EINES der Felder liefern:
-- url (direkter Download/Öffnen)
-- ODER webContentLink (von Drive)
-- ODER id / fileId (wir bauen automatisch uc?export=download&id=...)
+Backend: Google Apps Script (Web-App). In index/admin ist dein Endpoint bereits gesetzt:
+https://script.google.com/macros/s/AKfycbxb4kqalumOxwfAQkbOIyI3yUjFNaRo-LJsNOyx6UCHGw2WQ12-rh9sjBgocuDIBbwf/exec
 
-Optional: thumb / thumbnailLink für schnelle Vorschaubilder. Fehlt der Thumb, nutzen wir die Haupt-URL.
+RSVP sendet: name, attending, guests, email, message, c1..c4 (name + age), ua.
 
-Sheets:
-- RSVP(timestamp,name,attending,guests,email,message,c1name,c1age,c2name,c2age,c3name,c3age,c4name,c4age,ua)
-- Chat(timestamp,name,message,ua)
-- Gallery(timestamp,url,thumb,filename,width,height,uploader,webContentLink,thumbnailLink,id)
-- Content(key,value)
+Admin & Chat benötigen Apps-Script-Erweiterung:
+- Öffne admin.html (unten im Codeblock) -> kopiere in dein Apps Script
+- Script Property setzen: TOKEN = dein geheimer Token (für Admin-GET)
+- Bereitstellen -> Als Web-App (Ich selbst, Jeder mit dem Link)
+- Admin: /admin.html öffnen, Token eingeben, Laden
+- Chat: öffentlich lesbar via GET ?type=chat&list=1 (optional absichern)
+
+Deploy: Gesamten Ordner oder ZIP bei https://app.netlify.com/drop hochladen.
